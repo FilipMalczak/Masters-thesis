@@ -74,6 +74,12 @@
 
 \floatname{algorithm}{Algorytm}
 
+\newcommand{\numberSet}{\mathbb}
+\newcommand{\important}{\mathcal}
+\newcommand{\R}{\mathbf{R}}
+\newcommand{\minorityRel}{{\R}_{\prec}}
+\newcommand{\param}{\mathtt}
+
 %uncomment for double spacing 
 %\usepackage{setspace}
 %\doublespacing
@@ -174,11 +180,11 @@ Wymienione wyżej pojęcia określają elementy heurystyki które musimy zdefini
 \begin{table}
 	\caption{Konwencje dotyczące czcionek \label{table_conventions}}
 	\begin{tabularx}{\linewidth}{lX}
-		$operator$ & operatory i parametry heurystyki \\
+		$\param{operator}, \param{n}$ & operatory i parametry heurystyki \\
 		$T, p$ & zbiory i parametry pomocnicze \\
-		$S$ & zbiory używane w definicjach \\
-		$R$ & relacje \\
-		$N$ & zbiory liczbowe
+		$\important{S}$ & zbiory używane w definicjach \\
+		$\R$ & relacje \\
+		$\numberSet{N}$ & zbiory liczbowe
 	\end{tabularx}
 \end{table}
 
@@ -233,19 +239,19 @@ Istnieją implementacje i frameworki do obliczeń ewolucyjnych które rozróżni
 \begin{signature}
 	\caption{Osobnik \label{signature_specimen}}
 	\begin{align}
-	osobnik \in &S
+	osobnik \in &\important{S}
 	\end{align}
-	Zbiór $S$ to przestrzeń rozwiązań.
+	Zbiór $\important{S}$ to przestrzeń rozwiązań.
 \end{signature}
 
 \begin{signature}
 	\caption{Funkcja oceny \label{signature_eval}}
 	\begin{align}
-		funkcjaOceny: S \rightarrow E \\
-		\exists R_{\prec} \in E \times E
+		\param{funkcjaOceny}: \important{S} \rightarrow \important{E} \\
+		\exists \minorityRel \subset \important{E} \times \important{E}
 	\end{align}
-	Zbiór $E$ to zbiór możliwych ocen osobnika, 
-	a $R_{\prec}$ to relacja porządku na nim określona. 
+	Zbiór $\important{E}$ to zbiór możliwych ocen osobnika, 
+	a $\minorityRel$ to relacja porządku na nim określona. 
 \end{signature}
 
 \subsection{Operatory genetyczne}
@@ -262,8 +268,8 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature_mutation}}
 	\begin{align}
-	operatorMutacji: S \rightarrow S^k \\
-	prawdopodobienstwoMutacji \in &[0, 1]
+	\param{operatorMutacji}: \important{S} \rightarrow \important{S}^k \\
+	\param{prawdopodobienstwoMutacji} \in &[0, 1]
 	\end{align}
 \end{signature}	
 
@@ -278,8 +284,8 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 \begin{signature}
 	\caption{Operator mutacji \label{signature_mutation}}
 	\begin{align}
-	operatorKrzyzowania: S^n \rightarrow S^m \\
-	prawdopodobienstwoKrzyzowania \in &[0, 1]
+	\param{operatorKrzyzowania}: \important{S}^n \rightarrow \important{S}^m \\
+	\param{prawdopodobienstwoKrzyzowania} \in &[0, 1]
 	\end{align}
 	$n$ to liczba rodziców, a $m$ to liczba potomków.
 \end{signature}	
@@ -296,15 +302,15 @@ rozmiarPopulacji$, ponieważ w populacji znajdą się osobniki z populacji na po
 \begin{signature}
 	\caption{Operator selekcji \label{signature_selection}}
 	\begin{align}
-	operatorSelekcji: &S^p \rightarrow S^{rozmiarPopulacji} \\
-	rozmiarPopulacji \in &N \\
-	p \approx &(1 + prawdopodobienstwoMutacji \times k \\
-	          &+ prawdopodobienstwoKrzyzowania \times m) \\
-	          &\times rozmiarPopulacji \\
-	          T \gets &\left\{ t_0, t_1, \ldots t_{rozmiarPopulacji-1} \right\} \\
-	s \in operatorSelekcji(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
-	P(i) \gets &P(t_i \in operatorSelekcji(T)) \\
-	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in R_{\prec}
+	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
+	\param{rozmiarPopulacji} \in &\numberSet{N} \\
+	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times k \\
+	          &+ \param{prawdopodobienstwoKrzyzowania} \times m) \\
+	          &\times \param{rozmiarPopulacji} \\
+	          T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
+	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
+	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
+	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minorityRel
 	\end{align}
 \end{signature}
 
