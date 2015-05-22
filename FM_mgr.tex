@@ -77,7 +77,8 @@
 \newcommand{\numberSet}{\mathbb}
 \newcommand{\important}{\mathcal}
 \newcommand{\R}{\mathbf{R}}
-\newcommand{\minorityRel}{{\R}_{\prec}}
+\newcommand{\minorityEvalRel}{{\R}_{\prec}}
+\newcommand{\minoritySpecimenRel}{{\R}_{\lhd}}
 \newcommand{\param}{\mathtt}
 
 %uncomment for double spacing 
@@ -247,11 +248,12 @@ Istnieją implementacje i frameworki do obliczeń ewolucyjnych które rozróżni
 \begin{signature}
 	\caption{Funkcja oceny \label{signature_eval}}
 	\begin{align}
-		\param{funkcjaOceny}: \important{S} \rightarrow \important{E} \\
-		\exists \minorityRel \subset \important{E} \times \important{E}
+		\param{funkcjaOceny}: &\important{S} \rightarrow \important{E} \\
+		\exists \minorityEvalRel \subset &\important{E} \times \important{E} \\
+		\minoritySpecimenRel \gets &\left\{ (x, y): (\param{funkcjaOceny}(x), \param{funkcjaOceny}(y)) \in \minorityEvalRel \right\}
 	\end{align}
 	Zbiór $\important{E}$ to zbiór możliwych ocen osobnika, 
-	a $\minorityRel$ to relacja porządku na nim określona. 
+	a $\minorityEvalRel$ to relacja porządku na nim określona. Ponadto określamy relację lepszego dopasowania $\minoritySpecimenRel$, porządkującą przestrzeń osobników według porządku określonego na ich ocenach. 
 \end{signature}
 
 \subsection{Operatory genetyczne}
@@ -268,7 +270,7 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature_mutation}}
 	\begin{align}
-	\param{operatorMutacji}: \important{S} \rightarrow \important{S}^k \\
+	\param{operatorMutacji}: &\important{S} \rightarrow \important{S}^k \\
 	\param{prawdopodobienstwoMutacji} \in &[0, 1]
 	\end{align}
 \end{signature}	
@@ -294,27 +296,53 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 
 Zadaniem operatora selekcji jest symulacja zjawiska przeżycia najsilniejszych (czyli najlepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez zastąpienie populacji używanej w kolejnym pokoleniu przez populację wyjściową.
 
-Dziedziną tego operatora jest $p$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. Wartość $p$ to ilość osobników w populacji pod koniec obecnej generacji, więc będzie w przybliżeniu równa $(1 + prawdopodobienstwoMutacji \times k + prawdopodobienstwoKrzyzowania \times m) \times \\
-rozmiarPopulacji$, ponieważ w populacji znajdą się osobniki z populacji na początku tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
+Dziedziną tego operatora jest $p$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. Wartość $p$ to ilość osobników w populacji pod koniec obecnej generacji, więc można ją przybliżać za pomocą równać z linii \ref{p_start}-\ref{p_stop} sygnatury \ref{signature_selection}, ponieważ w populacji znajdą się osobniki z populacji na początku tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
 
-\todo{przeciwdziedzina, ograniczenia}
+Przeciwdziedziną operatora selekcji jest $\param{rozmiarPopulacji}$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że wynikiem działania operatora powinien być zbiór $\param{rozmiarPopulacji}$ osobników. Wartość $\param{rozmiarPopulacji}$ to parametr całej heurystyki, określająca jak liczna powinna być populacja na początku każdego pokolenia. Im większą wartość przyjmuje ten parametr, tym lepsze przeszukiwanie przestrzeni rozwiązań, ale też tym dłużej trwa sama heurystyka (ponieważ trzeba ewaluować więcej osobników i do większej liczby z nich zastosować operatory genetyczne). 
+
+Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{constraint_sel_start}-\ref{constraint_sel_stop} sygnatury \ref{signature_selection}. Mówią one o tym, że prawdopodobieństwo tego, że osobnik z populacji wejściowej znajdzie się w populacji wyjściowej powinno być tym większe im lepiej dopasowany jest osobnik. Ma to symulować zasadę przetrwania osobników najlepiej przystosowanych do środowiska.
+
+\todo{jakiś przykład}
 
 \begin{signature}
 	\caption{Operator selekcji \label{signature_selection}}
 	\begin{align}
 	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
-	\param{rozmiarPopulacji} \in &\numberSet{N} \\
+	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
+	\label{p_start} 
 	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times k \\
 	          &+ \param{prawdopodobienstwoKrzyzowania} \times m) \\
-	          &\times \param{rozmiarPopulacji} \\
-	          T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
+	\label{p_stop} 
+	&\times \param{rozmiarPopulacji} \\
+	\label{constraint_sel_start}          
+	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
 	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
 	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
-	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minorityRel
+	\label{constraint_sel_stop} 
+	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel
 	\end{align}
 \end{signature}
 
-\subsection{Kryterium stopu}00
+\subsection{Kryterium stopu}
+
+Kryterium stopu, nazywane też kryterium zatrzymania lub przerwania to pojęcie określające warunek zakończenia heurystyki. Jest to odpowiedź na pytanie "kiedy należy przestać przetwarzać kolejne pokolenia?". Często stosuje się takie kryteria jak przekroczenie jakiejś arbitralnej liczby pokoleń, lub zaobserwowanie tzw. stagnacji. Zjawisko takie polega na znacznym zmniejszeniu różnorodności ocen w populacji, co oznacza, że znaleźliśmy optimum lokalne. Jeśli wariancja ocen przez kilka pokoleń się nie zmienia (lub zmienia, ale nie znacząco), to można uznać, że operatory genetyczne nie pozwolą na wyjście z tego optimum i przerwać działanie heurystyki. 
+Kryterium zatrzymania możemy traktować jako dodatkowy operator, jednak trudno jest określić jego jednoznaczną sygnaturę, ze względu na dowolność realizacji. W sygnaturze \ref{signature_stop} przedstawiono ogólny zapis operatora (z dowolną dziedziną, linia \ref{stop_general}) i sygnaturę jego przykładowej realizacji (opartej o stałą liczbę pokoleń, linia \ref{stop_maxGen}).
+
+\begin{signature}
+	\caption{Kryterium zatrzymania i jego przykładowa realizacja \label{signature_stop}} 
+	\begin{align}
+		\label{stop_general}
+		\param{kryteriumStop}: &\ldots \rightarrow \left\{ 0, 1 \right\}
+	\end{align}
+	\begin{align}
+		\label{stop_maxGen}
+		\param{kryteriumStop}: &\numberSet{N} \rightarrow \left\{ 0, 1 \right\} \\
+		\param{kryteriumStop}(g) = &1 \Leftrightarrow g \leq \overline{g}
+	\end{align}
+	Zwrócenie wartości $1$ oznacza, że należy zakończyć działanie heurystyki, a $0$ - sytuację odwrotną. \\ 
+	Wartość $g$ oznacza numer obecnego pokolenia (zaczynając od 1), a $\overline{g}$ - maksymalną dopuszczalną liczbę pokoleń w ramach jednego przebiegu algorytmu ewolucyjnego.
+\end{signature}	
+
 \subsection{Schemat algorytmu}
 pseudokod, sposób zbierania wyniku
 \section{Analiza jakości działania}
