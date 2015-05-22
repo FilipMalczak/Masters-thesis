@@ -1,0 +1,610 @@
+% compile with XeLaTeX
+% !TeX spellcheck = pl_PL
+% !TeX encoding = UTF-8
+\documentclass[twoside]{iisthesis}
+% ---
+\usepackage[MeX]{polski}
+%\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\usepackage{fontspec}
+\usepackage[table,xcdraw]{xcolor}
+
+% Dodane przeze mnie d
+\usepackage{fancyvrb} % dla srodowiska Verbatim
+\usepackage{color}
+\usepackage{lscape}
+
+%pakiety do grafiki
+\usepackage{pstricks}
+\usepackage{pst-tree}
+
+% definicje kolorow
+\definecolor{ciemnoSzary}{rgb}{0.15,0.15,0.15}
+\definecolor{szary}{rgb}{0.5,0.5,0.5}
+\definecolor{jasnoSzary}{rgb}{0.2,0.2,0.2}
+\definecolor{stal}{rgb}{0.75, 0.75, 0.75}
+
+% Konfiguracja verbatima
+\fvset{
+	frame=single,
+	numbers=left,
+	fontsize=\footnotesize,
+	numbersep=12pt,
+%	framerule=.5mm,
+	rulecolor=\color{ciemnoSzary},
+%	fillcolor=\color{jasnoSzary},
+	framesep=4pt,
+	stepnumber=1,
+	numberblanklines=false,
+	tabsize=2,
+%	formatcom=\color{szary}
+}
+
+% % % % % % % % % % % % % % % %
+% MY CONTENT
+% % % % % % % % % % % % % % % %
+
+
+\usepackage{tabularx}
+\usepackage{tabulary}
+\usepackage{placeins}
+\usepackage{algpseudocode}
+\usepackage{algorithm}
+\usepackage{mathtools}
+\usepackage{float}
+\usepackage{tocloft}
+\usepackage{tocbibind}
+\usepackage{amsfonts}
+
+\usepackage[labelsep=period]{caption}
+
+\algnewcommand\Var{\State\textbf{var\ }}
+\algnewcommand\To{\textbf{ to }}
+
+\newcommand{\defacto}{\emph{de facto }}
+\newcommand{\ergo}{\emph{ergo }}
+\newcommand{\Defacto}{\emph{De facto }}
+\newcommand{\Ergo}{\emph{Ergo }}
+
+\newcommand{\todo}{\colorbox{red}}
+
+\newfloat{signature}{H}{sig}
+\floatname{signature}{Sygnatura}
+
+\floatname{algorithm}{Algorytm}
+
+%uncomment for double spacing 
+%\usepackage{setspace}
+%\doublespacing
+
+\begin{document}
+
+\title{Algorytmy ewolucyjne z uwzględnieniem płci w rozwiązywaniu wybranych problemów}
+\author{Filip Malczak}
+\advisor{dr hab. inż. Urszula Markowska-Kaczmar}
+\instituteLogo{logos/pwr}
+\slowaKluczowe{algorytmy ewolucyjne\\płeć\\operator selekcji}
+
+\date{\number\the\year}
+
+% Wstawienie abstractu pracy
+	%\input {abstract}
+	
+\abstractSH{
+Bardzo krótkie streszczenie w którym powinno się znaleźć omówienie tematu pracy i poruszanych terminów. Tekst ten nie może być zbyt długi. 
+}
+
+\abstractPL{
+	Abstrakt
+}
+\abstractEN{
+	Abstrakt
+}
+
+\maketitle
+\textpages
+
+\chapter{Wprowadzenie}
+
+Optymalizacja to zadanie wyboru najlepszego elementu z danego zbioru (nazywanego przestrzenią rozwiązań), gdzie przez najlepszy rozumiemy taki, dla którego tzw. funkcja oceny, czy też kryterium przyjmuje najwyższą (w zadaniu maksymalizacji) lub najniższą (w zadaniu minimalizacji) wartość. Z takim problemem spotykamy się wszędzie tam, gdzie chcemy zwiększyć lub zmniejszyć jakieś wskaźniki,np. zminimalizować koszta produkcji lub transportu, albo zmaksymalizować zyski ze sprzedaży lub jakość klasyfikacji.
+
+Jeżeli funkcję oceny można zapisać w postaci analitycznej (np. w formie układu równań różniczkowych) to zazwyczaj możemy ją optymalizować metodami numerycznymi, analitycznymi lub algebraicznymi. Istnieją sytuacje, w których nie możemy skorzystać z żadnej z tych metod. Powody tego mogą być różne, m.in. możemy nie znać postaci funkcji (bo np. reprezentuje ona obserwacje jakiegoś procesu lub zjawiska), funkcja zapisana analitycznie może nie spełniać pewnych kryteriów (np. nie być różniczkowalna), lub obliczenia mogą zajmować zbyt wiele czasu (np. pełne przeszukiwanie przestrzeni rozwiązań będącej iloczynem kartezjańskim dużej liczby długich wektorów). Sytuacje takie często charakteryzują się tym, że \defacto nie jest nam potrzebne globalne optimum (tzn najlepsze rozwiązanie ze wszystkich możliwych), a wystarczy rozwiązanie jak najlepsze (tzn. optimum lokalne, lub punkt o wartości kryterium zbliżonej do wartości kryterium optimum globalnego).
+
+Do takich zastosowań przeznaczone są metody nazywane heurystykami. Heurystyką nazywamy skończony ciąg kroków, który może (ale nie musi) prowadzić do odnalezienia właściwego rozwiązania (czyli, w przypadku optymalizacji - znalezienia optimum).
+
+\section{Algorytmy ewolucyjne} \label{section_eaShortDesc}
+
+Ewolucja to proces zachodzący w naturze odpowiedzialny za dopasowywanie się osobników danego gatunku do środowiska w jakim żyją. Podstawą tego procesu jest przetrwanie lepiej przystosowanych osobników, dziedziczenie i mutacja.
+
+Przetrwanie lepiej przystosowanych osobników to zasada zgodnie z którą osobniki lepiej dopasowane do środowiska mają większą szansę na przeżycie, a co za tym idzie, na wydanie potomstwa. Oznacza to, że rodzice większości osobników z kolejnego pokolenia będą radzić sobie w tym środowisku lepiej niż pozostałe osobniki z ich pokolenia.
+
+Dziedziczenie to zjawisko przekazywania cech rodziców dzieciom. Odbywa się ono podczas rozmnażania, a więc zachodzi między dwojgiem rodziców, a potomstwem. Kod genetyczny potomstwa tworzony jest przez losowe łączenie odpowiednich części kodu genetycznego rodziców, przez co kolejne pokolenie dzieli ich cechy. W ten sposób losowe osobniki przejmą od rodziców te cechy, które pozwalały im się dopasować do środowiska i w niektórych przypadkach pozwoli im to na jeszcze lepsze dopasowanie się do otoczenia. Część osobników przejmie jednak nie tylko cechy poprawiające ich szansę przetrwania, ale również cechy negatywne, co przełoży się na ich gorsze dopasowanie.
+
+Mutacja to zjawisko zachodzenia losowych zmian w kodzie genetycznym osobnika, przez które ma on szansę zyskać nowe cechy, które w niektórych przypadkach doprowadzą do lepszego dopasowania. Osobniki z przypadkowymi zmianami, które poprawiają ich dopasowanie mają większe szanse na przeżycie i wydanie potomstwa, \ergo przypadkowe pozytywne zmiany powinny zostać rozpropagowane wśród osobników przyszłych pokoleń.
+
+Algorytmy ewolucyjne to rodzina heurystyk naśladujących proces ewolucji w celu optymalizacji. Pojedynczy punkt w przestrzeni rozwiązań jest w nich nazywany osobnikiem. Osobniki możemy między sobą porównywać pod względem wartości optymalizowanej funkcji dla nich, a relacja mniejszości (dla problemów minimalizacji) lub większości (dla problemów maksymalizacji) reprezentuje relację bycia lepiej przystosowanym do środowiska. Ponadto, na osobnikach określone są operatory mutacji i krzyżowania, które mają na celu kolejno symulację losowych zmian w osobniku i tworzenie nowych osobników na podstawie starych. Heurystyka polega na wielokrotnym przetworzeniu populacji (czyli zbioru osobników) poprzez zastosowanie każdego z operatorów z pewnym prawdopodobieństwem. W każdym kroku (nazywanym w nomeklaturze algorytmów ewolucyjnych pokoleniem) do dotychczasowej populacji dołączane są wyniki działania tych operatorów (czyli zbiory osobników zmutowanych i potomstwa), a następnie wybierana jest nowa populacja, używana w kolejnym kroku. Aby odwzorować zasadę przetrwania najlepiej dopasowanych osobników do kolejnej populacji wybierane są z wyższym prawdopodobieństwem osobniki lepiej przystosowane.
+
+W naturze rozmnażanie się osobników wielu gatunków jest ściśle związane ze zjawiskiej podziału gatunku na płcie. Bardziej szczegółowy opis tego zjawiska znajduje się w rozdziale \ref{chapter_proposed}. Dotychczasowe rozwiązania rzadko (patrz: rozdział \ref{chapter_literature}) uwzględniały ten aspekt procesu ewolucji. Powodem tego jest raczej uproszczenie działania samej heurystyki niż lepsza jakość wyników uzyskiwanych z pominięciem tego aspektu (\cite{GGA}, \cite{SexualGA}). 
+
+\section{Cele pracy}
+
+Cele tej pracy zostały opisane w tabeli \ref{table_goals}.
+
+\FloatBarrier
+
+\begin{table}
+	\caption{Cele pracy opisanej w tym dokumencie \label{table_goals}}
+	\begin{tabulary}{\linewidth}{LLL}
+		Nr. & Cel & Opis \\
+		1 & 
+		Formalizacja ogólnego schematu algorytmu ewolucyjnego korzystającego ze zjawiska płci & 
+		Schemat algorytmu ewolucyjnego jest w pewnym stopniu dowolny, a stosunkowo mała ilość publikacji w temacie używa różnych formalizmów (patrz: rozdział \ref{chapter_literature}). Powoduje to brak jednej standardowej implementacji, a co za tym idzie utrudnia porównywanie rozwiązań między sobą. Spełnienie tego celu powinno doprowadzić do określenia konkretnego schematu, który pozwoli zaimplementować wybrane istniejące rozwiązania oraz zaproponowane rozwiązanie autorskie. \\
+		2 &
+		Realizacja i implementacja w zaproponowanym schemacie wybranych rozwiązań literaturowych &
+		Spełnienie tego celu powinno doprowadzić do zdefiniowania wybranych rozwiązań literaturowych w schemacie określonym w celu nr. 1 i implementacji frameworku badawczego opartego o ten schemat, wraz z implementacją tych rozwiązań. \\
+		3 &
+		Propozycja, realizacja i implementacja nowego rozwiązania w proponowanym schemacie &
+		Jest to główny cel niniejszej pracy, którego efektem powinno być stworzenie nowego podejścia do zagadnienia płci, zbadanie go i porównanie z rozwiązaniami literaturowymi. Realizacja i implementacja powinna się odbyć we frameworku badawczym stworzonym przy celu 2.\\
+		4 &
+		Zbadanie działania różnych rozwiązań dla wybranych problemów &
+		Podczas realizacji tego celu powinny zostać zebrane wybrane miary jakości działania algorytmu ewolucyjnego dla każdego z podejść, tak aby możliwe było miarodajne porównanie ich ze sobą.
+	\end{tabulary}
+\end{table}
+
+\FloatBarrier
+
+
+
+\chapter{Algorytmy ewolucyjne} \label{chapter_eaDesc}
+Algorytmy ewolucyjne to rodzina heurystyk populacyjnych, tzn. heurystyk które operują i zwracają zbiór rozwiązań zamiast pojedynczego wyniku. Podstawowe pojęcia w tej dziedzine to osobnik, populacja, ocena (nazywana też funkcją oceny, kryterium lub funkcją dopasowania), operator krzyżowania, operator mutacji, operator selekcji i kryterium stopu (nazywane też kryterium zakończenia lub przerwania). 
+Poniższe rozdziały opisują szczegółowe znaczenie wymienionych pojęć, sposób zastosowania heurystyki do rozwiązania problemu oraz sposoby oceny działania heurystyki.
+\section{Działanie}
+
+Wymienione wyżej pojęcia określają elementy heurystyki które musimy zdefiniować aby ją zastosować w celu rozwiązania problemu. Każde z tych pojęć niesie ze sobą nie tylko znaczenie przekładające się na przyrodę, ale również ogranizenia nałożone na realizację danego elementu.
+
+%TODO
+%W tabeli \ref{table_conventions} zostały pokazane konwencje dotyczące czcionki używane w tej pracy.
+%
+%\newcommand{\important}{\mathcal}
+%\newcommand{\relation}{\mathsf}
+%\newcommand{\numberSet}{\mathbb}
+%\newcommand{\operator}{\mathtt}
+
+\begin{table}
+	\caption{Konwencje dotyczące czcionek \label{table_conventions}}
+	\begin{tabularx}{\linewidth}{lX}
+		$operator$ & operatory i parametry heurystyki \\
+		$T, p$ & zbiory i parametry pomocnicze \\
+		$S$ & zbiory używane w definicjach \\
+		$R$ & relacje \\
+		$N$ & zbiory liczbowe
+	\end{tabularx}
+\end{table}
+
+\subsection{Pojęcie operatora} \label{subsection_operator}
+
+W dalszych rozdziałach będziemy używać pojęcia "\textbf{operator}", które jest zbliżone do pojęcia funkcji. Różnica między tymi dwoma terminami jest taka, że funkcja musi zawsze zwrócić tą samą wartość dla tego samego argumentu, podczas gdy takie ograniczenie nie musi być spełnione dla operatora. Innymi słowy pojęcie operatora pokrywa się z pojęciem funkcji z imperatywnych języków programowania, ale nie pokrywa się z funkcją w rozumieniu matematycznym.
+
+Operator możemy też rozumieć jako zmienną losową opisaną rozkładem parametryzowanym argumentami operatora.
+
+Warto pamiętać, że każda funkcja (w rozumieniu matematycznym) jest operatorem.
+
+Do operatorów możemy stosować niektóre pojęcia używane w stosunku do funkcji. Przez \emph{dziedzinę} operatora rozumiemy przestrzeń dozwolonych argumentów operatora, a przez \emph{przeciwdziedzinę} - zbiór wartości które może zwrócić. Aby uzyskać \emph{wynik} operatora (czyli wartość przez niego zwracaną) \emph{stosujemy} ten operator na argumentach.
+
+Dodatkowo, operator możemy \emph{sparametryzować} aby uzyskać inny operator. Przez parametry rozumiemy argumenty które w ramach danego ciągu obliczeń są stałe. Przykładowo, operator sąsiedztwa o określonym rozmiarze \emph{d} dla punktu \emph{(x, y)}:
+
+\begin{displaymath}
+	sasiedztwo((x, y), d) \in [x-d, x+d] \times [y-d, y+d]
+\end{displaymath}
+
+możemy sparametryzować rozmiarem sąsiedztwa, aby uzyskać operator sąsiedztwa o konkretnym rozmiarze:
+
+\begin{displaymath}
+sasiedztwo_5 (P) = sasiedztwo (P, 5)
+\end{displaymath}
+
+\Defacto każdy operator opisywany w tej pracy może być parametryzowany. W kolejnych rozdziałach przyjęto konwencję według której definiując nowy operator zapisywana jest jego minimalna dziedzina, co nie oznacza, że podczas realizacji nie może on być parametryzowany. Analogicznie stwierdzenie, że operator powinien przyjmować daną liczbę argumentów nie oznacza, że nie może on przyjmować ich więcej. Innymi słowy sygnatura postaci:
+
+\begin{displaymath}
+operator: D \rightarrow C
+\end{displaymath}
+
+gdzie $D$ oznacza dziedzinę, a $C$ przeciwdziedzinę, jest równoważna z:
+
+\begin{displaymath}
+operator: D \times P \rightarrow C
+\end{displaymath}
+
+gdzie $P$ oznacza przestrzeń parametrów, zależnych od realizacji operatora.
+
+\subsection{Osobnik, populacja i ocena}
+
+Podstawowym pojęciem używanym w opisywanej heurystyce jest \textbf{osobnik}. Jest to abstrakcja pojedynczego rozwiązania, nawiązująca do pojedynczego żywego stworzenia charakteryzującego się pewnymi cechami które wpływają na prawdopodobieństwo jego przeżycia i wydania potomstwa. Pojęciem symulującym wpływ cech na prawdopodobieństwo przeżycia jest \textbf{funkcja oceny}. Dodatkowo wprowadzamy pojęcie populacji, czyli zbioru osobników istniejących w danym momencie w procesie ewolucji.
+
+Realizacją osobnika w heurystyce jest reprezentacja rozwiązania problemu, a realizacją populacji - zbiór rozwiązań, czyli podzbiór przestrzeni rozwiązań.
+
+Ważniejszym pojęciem jest funkcja oceny. Wbrew nazwie nie musi być to funkcja w rozumieniu matematycznym, a operator (patrz: rozdział \ref{subsection_operator}) \footnote{Stochastyczną funkcję oceny możemy zastosować na przykład w sytuacji, w której za pomocą algorytmu ewolucyjnego szukamy konfiguracji innej heurystyki. Osobnikiem w takiej sytuacji może być zestaw parametrów konfigurowanej heurystyki, a oceną - średnia jakość działania dla kilku uruchomień.}. Jego dziedziną powinna być przestrzeń możliwych osobników, a przeciwdziedziną dowolny zbiór na którym możemy określić relację porządku. Relacja ta odpowiada relacji bycia lepiej przystosowanym do środowiska w rzeczywistym procesie ewolucji.
+
+Standardową realizacją osobnika (zaproponowaną w pierwszym artykule dot. EA \todo{cytować toto}) jest wektor binarny. Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. Reprezentacja jest jednak uzależniona od rozwiązywanego problemu. Często wykorzystuje się bardziej skomplikowane przedstawienia rozwiązania, jak wektor wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo (np. dla problemów aproksymacji funkcji).
+
+Istnieją implementacje i frameworki do obliczeń ewolucyjnych które rozróżniają pojęcie genotypu osobnika (czyli reprezentacji na której stosujemy operatory genetyczne, jak krzyżowanie i mutacja) i jego fenotypu (czyli reprezentacji, na podstawie której oceniamy osobnika), jednak jest to jedynie abstrakcja umożliwiająca czytelniejsze zapisanie realizacji odpowiednich pojęć w języku programowania.
+
+\begin{signature}
+	\caption{Osobnik \label{signature_specimen}}
+	\begin{align}
+	osobnik \in &S
+	\end{align}
+	Zbiór $S$ to przestrzeń rozwiązań.
+\end{signature}
+
+\begin{signature}
+	\caption{Funkcja oceny \label{signature_eval}}
+	\begin{align}
+		funkcjaOceny: S \rightarrow E \\
+		\exists R_{\prec} \in E \times E
+	\end{align}
+	Zbiór $E$ to zbiór możliwych ocen osobnika, 
+	a $R_{\prec}$ to relacja porządku na nim określona. 
+\end{signature}
+
+\subsection{Operatory genetyczne}
+
+Dwa podstawowe operatory używane w algorytmach ewolucyjnych to operator mutacji i operator krzyżowania. Są one stosowane na osobnikach z populacji w danym pokoleniu w celu przeszukania lokalnej przestrzeni rozwiązań. W zależności od implementacji, kolejność stosowania operatorów jest różna, a wyniki ich zastosowania są dołączane do całej populacji w danym pokoleniu, lub składają się na nową populację, używaną w kolejnym pokoleniu. W niniejszej pracy stosowane będzie podejście zgodnie z którym osobniki są dołączane do obecnej populacji, która pod koniec obecnego pokolenia jest zmniejszana za pomocą operatora selekcji (opisanego w rozdziale \ref{subsection_natSel}).
+
+\subsubsection{Operator mutacji}
+Operator mutacji odpowiada za symulowanie losowych zmian zachodzących w kodzie genetycznym. Jego zadaniem jest sterowanie eksploracją przestrzeni rozwiązań.
+
+Dziedziną tego operatora jest przestrzeń rozwiązań, a przeciwdziedziną - $k$krotny iloczyn kartezjański przestrzeni rozwiązań. Oznacza to, że jednokrotne zastosowanie operatora mutacji daje w wyniku $k$ osobników powstałych przez modyfikację osobnika pierwotnego. Każdy ze zwróconych osobników powinien być nieznacznie różny od argumentu operatora. Jedną z popularnych realizacji tego operatora dla osobnika reprezentowanego jako wektor bitów jest odwrócenie losowych bitów, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami.
+
+Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolucyjnego - prawdopodobieństwo mutacji. Jest to wartość określająca prawdopodobieństwo zastosowania operatora mutacji do osobnika w danym pokoleniu. Jeśli wartość ta jest równa 0, to operator mutacji nie jest w ogóle używany, a jeśli jest równa 1, to operator zostanie zastosowany do każdego osobnika.
+
+\begin{signature}
+	\caption{Operator mutacji \label{signature_mutation}}
+	\begin{align}
+	operatorMutacji: S \rightarrow S^k \\
+	prawdopodobienstwoMutacji \in &[0, 1]
+	\end{align}
+\end{signature}	
+
+\subsubsection{Operator krzyżowania}
+
+Operator krzyżowania symuluje proces krzyżowania się osobników w naturze. Jego zadaniem jest sterowanie eksploatacją przestrzeni rozwiązań.
+
+Dziedziną tego operatora jest $n$krotny iloczyn kartezjański przestrzeni rozwiązań, a przeciwdziedziną - $m$krotny iloczyn tej przestrzeni. Oznacza to, że operator ten przyjmuje $n$ osobników (nazywanych \emph{rodzicami}) jako argument, a zwraca $m$ osobników (nazywanych \emph{potomstwem}). Zazwyczaj przyjmuje się $ n = 2 $ i $m \in \left\{1, 2 \right\}$. Zwracane osobniki powinny być podobne (w takim sensie, że mają podobną reprezentację) do osobników wejściowych (argumentów). Jedną z popularnych realizacji dla osobnika reprezentowanego jako wektor bitów dla $n=2$ jest wybranie losowej pozycji w wektorze (tzw. punktu przecięcia) i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż.
+
+Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu ewolucyjnego - prawdopodobieństwo krzyżowania. Jest to wartość określająca prawdopodobieństwo zastosowania operatora krzyżowania do osobnika w danym pokoleniu. Jeśli wartość ta jest równa 0, to operator krzyżowania nie jest w ogóle używany, a jeśli jest równa 1, to operator zostanie zastosowany do każdego osobnika.
+
+\begin{signature}
+	\caption{Operator mutacji \label{signature_mutation}}
+	\begin{align}
+	operatorKrzyzowania: S^n \rightarrow S^m \\
+	prawdopodobienstwoKrzyzowania \in &[0, 1]
+	\end{align}
+	$n$ to liczba rodziców, a $m$ to liczba potomków.
+\end{signature}	
+
+\subsection{Operator selekcji} \label{subsection_natSel}
+
+Zadaniem operatora selekcji jest symulacja zjawiska przeżycia najsilniejszych (czyli najlepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez zastąpienie populacji używanej w kolejnym pokoleniu przez populację wyjściową.
+
+Dziedziną tego operatora jest $p$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. Wartość $p$ to ilość osobników w populacji pod koniec obecnej generacji, więc będzie w przybliżeniu równa $(1 + prawdopodobienstwoMutacji \times k + prawdopodobienstwoKrzyzowania \times m) \times \\
+rozmiarPopulacji$, ponieważ w populacji znajdą się osobniki z populacji na początku tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
+
+\todo{przeciwdziedzina, ograniczenia}
+
+\begin{signature}
+	\caption{Operator selekcji \label{signature_selection}}
+	\begin{align}
+	operatorSelekcji: &S^p \rightarrow S^{rozmiarPopulacji} \\
+	rozmiarPopulacji \in &N \\
+	p \approx &(1 + prawdopodobienstwoMutacji \times k \\
+	          &+ prawdopodobienstwoKrzyzowania \times m) \\
+	          &\times rozmiarPopulacji \\
+	          T \gets &\left\{ t_0, t_1, \ldots t_{rozmiarPopulacji-1} \right\} \\
+	s \in operatorSelekcji(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
+	P(i) \gets &P(t_i \in operatorSelekcji(T)) \\
+	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in R_{\prec}
+	\end{align}
+\end{signature}
+
+\subsection{Kryterium stopu}00
+\subsection{Schemat algorytmu}
+pseudokod, sposób zbierania wyniku
+\section{Analiza jakości działania}
+\subsection{Analiza przebiegu}
+wykres avg/best/worst/etc
+\subsection{Analiza wielu przebiegów}
+średnia, wariancja, zbieranie najlepszych, etc
+\chapter{Przegląd literatury} \label{chapter_literature}
+\chapter{Proponowane rozwiązania} \label{chapter_proposed}
+
+Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
+
+Jak zostało pokazane w rozdziale \ref{chapter_literature}, istnieją rozwiązania które nie ignorują podziału populacji na płcie. Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania heurystki, opisany w algorytmie \ref{algorithm_proposedEa} (jego parametry są opisane w tabeli \ref{table_proposedEa}). Ujmuje on wyżej opisany aspekt biologii organizmów w ramach nowego operatora genetycznego.
+
+\begin{algorithm}
+	\caption{Proponowany schemat działania algorytmu ewolucyjnego}
+	\label{algorithm_proposedEa}
+	\begin{algorithmic}[1]
+		\Procedure{algorytmEwolucyjny}{}
+		\Var $populacja \gets |populacja|$ \textit{losowych osobników}
+		\While{\textit{nie zachodzi kryteriumStopu}}
+		\Var $zbioryRodzicow \gets operatorSelekcjiPlciowej(populacja, cp)$
+		\ForAll{$rodzice \in zbioryRodzicow$}
+		\State $populacja \gets populacja \cup operatorKrzyzowania(rodzice)$
+		\EndFor
+		\Var $mutanty\ \gets\ \emptyset$
+		\ForAll{$kandydat \in populacja$}
+		\If{\textit{zachodzi losowe zdarzenie z prawdopodobieństwem mp}}
+		\State $mutanty \gets mutanty\ \cup\ operatorMutacji(kandydat)$
+		\EndIf
+		\EndFor
+		\State $populacja \gets populacja \cup mutanty$    
+		\State $populacja \gets operatorSelekcjiNaturalnej(populacja)$
+		\EndWhile  
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{table}
+	\caption{Parametry i zmienne użyte w algorytmie \ref{algorithm_proposedEa}}
+	\label{table_proposedEa}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\textbf{Parametr} & \textbf{Znaczenie} \\
+		\hline
+		\hline
+		$|populacja|$ & rozmiar populacji \\
+		\hline
+		$kryteriumStopu$ & kryterium zakończenia działania heurystyki \\
+		\hline
+		$operatorSelekcjiPlciowej$ & operator selekcji płciowej (patrz: rozdział \ref{section_genderSel}) \\
+		\hline
+		$cp$ & prawdopodobieństwo krzyżowania (patrz: rozdział \ref{section_genderSel}) \\
+		\hline
+		$operatorKrzyzowania$ & operator krzyżowania \\
+		\hline
+		$mp$ & prawdopodobieństwo mutacji \\
+		\hline
+		$operatorMutacji$ & operator mutacji \\
+		\hline
+		$operatorSelekcjiNaturalnej$ & operator selekcji naturalnej (patrz: rozdział \ref{section_natSel}) \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+Kryterium stopu, operatory krzyżowania i mutacji oraz prawdopobieństwo mutacji zachowują znaczenie zgodne z przedstawionym w rozdziale \ref{chapter_eaDesc}.
+
+W liniach 2-3 procedura optymalizacji zaczyna się tak, jak w standardowym schemacie - od wygenerowania populacji początkowej i reiteracji (tj. przechodzeniu przez kolejne pokolenia), aż do osiągnięcia kryterium zatrzymania.
+Znacząca zmiana zachodzi w liniach 4-7, opisujących tworzenie krzyżówek, tj. potomstwa wybranych osobników z populacji. Zamiast, jak dotychczas, wybierać z pewnym prawdopodobieństwem losowych rodziców, kwestię wyboru osobników krzyżujących się przekazujemy do operatora selekcji naturalnej. Do każdego z wybranych zbiorów przykładamy operator krzyżowania, a jego wynik dodajemy do populacji.
+Linie 8-14 opisują niezmienione podejście do tworzenia osobników zmutowanych. Zbiór mutantów inicjalizujemy na pusty, a następnie z populacji wybieramy z pewnym prawdopodobieństwem losowe osobniki i przykładamy do nich operator mutacji. Jego wynik dodajemy do zbioru mutantów. Po zmutowaniu wybranych osobników zbiór mutantów dołączamy do populacji.
+Linia 15 jest taka sama jak w standardowym schemacie - opisuje przyłożenie operatora selekcji naturalnej do populacji w celu uzyskania zbioru osobników, które mają przeżyć do kolejnej generacji.
+
+
+\section{Operator selekcji naturalnej} \label{section_natSel}
+
+Operator selekcji naturalnej jest zbliżony w swojej roli do dotychczasowego operatora selekcji. Ma on symulować przetrwanie osobników między kolejnymi generacjami, z większym prawdopodobieństwem pozwalając na przeżycie jednostkom lepiej przystosowanym. Przyłożenie tego operatora do zbioru osobników będącego sumą poprzedniej populacji oraz zbiorów krzyżówek i mutantów z obecnego pokolenia powinno zwrócić populację używaną w kolejnej generacji. W ogólności standardowe implementacje operatora selekcji da się zastosować jako operatory selekcji naturalnej.
+
+\section{Operator selekcji naturalnej, a operator wyboru} \label{section_chooseOperator}
+
+Operator selekcji naturalnej można zaimplementować jako powtórzenie wyboru osobnika ze zbioru (bez zwracania). Komponent odpowiedzialny za pojedyncze wybranie osobnika nazywany jest operatorem wyboru, z nazwą taką samą jak schemat selekcji, np. wybór osobnika przez turniej o rozmiarze 2 nazywa się operatorem wyboru przez turniej o rozmiarze 2.
+
+Poza standardowymi operatorami wyboru takimi jak operator elitarny (wybierający najlepiej dopasowanego osobnika), turniejowy (losujący określoną liczbę osobników i wybierający najlepszego z nich; liczbę porównywanych instancji nazywamy rozmiarem turnieju) lub ruletkowy (losujący osobnika z puli dostępnych z prawdopodobieństwem proporcjonalnym do jego dopasowania lub pozycji w rankingu) możemy mówić również o operatorach takich jak:
+\begin{itemize}
+	\item \emph{losowy operator wyboru} \\ losujący osobnika z puli z równym prawdopodobieństwem,
+	\item \emph{operator wyboru najbardziej odmiennego osobnika} \\ mający sens tylko wtedy, gdy wybraliśmy osobnika referencyjnego. Polega na wybraniu osobnika który jest najbardziej odmienny od osobnika referencyjnego. Stosując ten operator wyboru musimy określić funkcję odległości między osobnikami.
+\end{itemize}
+
+\section{Operator selekcji płciowej i prawdopodobieństwo krzyżowania} \label{section_genderSel}
+
+Operator selekcji płciowej jest nowym elementem schematu heurystyki. Jego zadaniem jest symulowanie zachowań osobników prowadzących do dobierania się w pary w celu wydania potomstwa. Osobniki lepiej dopasowane do środowiska powinny mieć większą szansę na zostanie rodzicami niż te dopasowane gorzej. Przyłożenie operatora do populacji z poprzedniego pokolenia powinno zwrócić zestaw par (lub w ogólności zbiorów) osobników-rodziców, z których każda para zostanie dalej przekazana do operatora krzyżowania.
+
+Zmienia się znaczenie prawdopodobieństwa krzyżowania. Nazwa tego parametru zostaje bez zmian, aby nie komplikować nomeklatury, jednak sama wartość nie przekłada się na matematyczne prawdopodobieństwo tego, że losowy osobnik zostanie rodzicem. Zamiast tego może być rozumiana jako stosunek liczby zdarzeń krzyżowania w każdym pokoleniu do rozmiaru populacji. Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, jednak przez to, że krzyżowanie może skutkować utworzeniem więcej niż jednego potomka, nie należy rozumieć tego parametru jako stosunku liczby krzyżówek do rozmiaru populacji.
+
+\section{Schemat implementacji wybranych operatorów selekcji płciowej} \label{section_literatureSel}
+
+Mimo, że dotychczas w literaturze nie był używany termin ,,operator selekcji płciowej'', to istniejące rozwiązania da się zaimplementować w modelu uwzględniającym podział na różne operatory selekcji. W tym celu definiujemy rodzinę operatorów parametryzowanych przez:
+\begin{itemize}
+	\item tyle operatorów wyboru ile rodziców jest wymaganych przez operator krzyżowania (zazwyczaj są to 2 operatory), oraz
+	\item zmienną logiczną określającą, czy rodzice muszą być różnej płci; jeśli zmienna przyjmuje wartość ,,fałsz'', to w rzeczywistości płeć jest ignorowana.
+\end{itemize}
+
+Wybór wszystkich zestawów rodziców jest opisany pseudokodem algorytmu \ref{algorithm_stdGenSel}. Jego parametry są zdefiniowane w tabeli \ref{table_stdGenSel}.
+
+\begin{algorithm}
+	\caption{Schemat działania rodziny operatorów selekcji płciowej opisywanej w rozdziale \ref{section_literatureSel}}
+	\label{algorithm_stdGenSel}
+	\begin{algorithmic}[1]
+		\Function{standardowaSelekcjaPlciowa}{$kandydaciNaRodzicow, cp$}
+		\Var $zbioryRodzicow \gets \emptyset$
+		\Var $kandydaci \gets $\textit{tablica\ zbiorów\ o\ rozmiarze\ }$liczbaRodzicow$
+		\For{ $i \gets 1 \To liczbaRodzicow$ }
+		\If{$plecMaZnaczenie$}
+		\State $kandydaci[i] \gets \left\{  x \in kandydaciNaRodzicow : plec(x) = i \right\}$
+		\Else
+		\State $kandydaci[i] \gets kandydaciNaRodzicow$
+		\EndIf
+		\EndFor
+		\While{$|zbioryRodzicow|<\lceil cp\times|populacja| \rceil$}
+		\Var $rodzice \gets \bigcup_{i=1}^{liczbaRodzicow} \left\{ operatorWyboru[i](kandydaci[i]) \right\} $
+		\State $zbioryRodzicow \gets zbioryRodzicow\cup \left\{ rodzice \right\}$
+		\EndWhile
+		\State \Return $zbioryRodzicow$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{table}
+	\caption{Parametry i zmnienne użyte w algorytmie \ref{algorithm_stdGenSel}}
+	\label{table_stdGenSel}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\textbf{Parametr} & \textbf{Znaczenie} \\
+		\hline
+		\hline
+		$kandydaciNaRodzicow$ & zbiór osobników spośród których wybieramy rodziców \\
+		\hline
+		$cp$ & prawdopodobieństwo krzyżowania \\
+		\hline
+		$liczbaRodzicow$ & liczba osobników wymagana przez operator krzyżowania \\
+		\hline
+		$plecMaZnaczenie$ & zmienna logiczna opisana w rozdziale \ref{section_literatureSel} \\
+		\hline
+		$plec(x)$ & funkcja zwracająca płeć osobnika jako liczbę z zakresu [$1$, $liczbaRodzicow$] \\
+		\hline
+		$|populacja|$ & rozmiar populacji \\
+		\hline
+		$operatorWyboru[i]$ & operator wyboru $i$tej płci \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+W linii 2. inicjalizowana jako pusty zbiór jest zmienna, która zostanie zwrócona w linii 15.
+W liniach 3-10 zainicjalizowana zostaje tablica zbiorów kandydatów na rodziców, która następnie jest wypełniana w zależności od wartości zmiennej logicznej sterującej podejściem do płci tak, aby na pozycji \textit{i} znajdował się zbiór osobników nadających się na \textit{i}tego rodzica.
+Linie 11-14 tworzą odpowiednią liczbę zbiorów rodziców. Każdy z nich powstaje przez przyłożenie odpowiedniego operatoru wyboru do kolejnego elementu tablicy kandydatów.
+
+Jeśli za wszystkie operatory wyboru przyjmiemy operator losowy i będziemy ignorować płeć, to \defacto  sprowadzamy heurystykę do standardowego algorytmu ewolucyjnego, w którym wydanie potomstwa przez osobnika zależy jedynie od operatora selekcji naturalnej (tożsamego z operatorem selekcji z rozdziału \ref{chapter_eaDesc}.).
+Jeżeli jednak wymusimy różne płci dla rodziców, dalej korzystając z losowych operatorów wyboru, to zrealizujemy metodę GGA \cite{GGA}.
+Aby sprowadzić heurystykę do SexualGA \cite{SexualGA} należy ignorować płeć osobników, każdego rodzica wybierać innym operatorem wyboru, a wewnątrz operatora selekcji naturalnej używać losowego operatora wyboru.
+
+\section{Proponowany nowy operator selekcji płciowej} \label{section_proposedGenSel}
+
+Proponowany operator selekcji płciowej jest inspirowany zachowaniem gatunków, u których niewiele osobników danej płci (tzw. osobników alfa) jest rodzicami większości potomstwa. Wokół tych osobników tworzą się grupy osobników płci przeciwnej, nazywane haremami. Rodzicami pozostałej części potomstwa są osobniki, którym udaje się rozmnożyć kiedy osobniki alfa są zajęte czymś innym. W dalszej części pracy będziemy nazywać je osobnikami beta, jeśli są tej samej płci co osobniki alfa i partnerami, jeśli są odmiennej płci.
+
+Algorytm \ref{algorithm_proposedGenSel} przedstawia schemat działania tego operatora, a tabela \ref{table_proposedGenSel} opisuje jego parametry.
+
+\begin{algorithm}
+	\caption{Schemat działania haremowego operatora selekcji płciowej (opisywanego w rozdziale \ref{section_proposedGenSel})}
+	\label{algorithm_proposedGenSel}
+	\begin{algorithmic}[1]
+		\Function{haremowaSelekcjaPlciowa}{$kandydaciNaRodzicow, cp$}
+		\Var $zbioryRodzicow \gets \emptyset$
+		\Var $perPlec \gets $\textit{tablica\ zbiorów\ o\ rozmiarze\ }$liczbaPlci$
+		\For {$i \gets 1 \To liczbaPlci$}
+		\State $perPlec[i] \gets \left\{  x \in kandydaciNaRodzicow : plec(x) = i \right\}$
+		\EndFor
+		\Var $liczbaZbiorowRodzicow \gets \lceil cp \times |populacja| \rceil$
+		\Var $liczbaBeta \gets \lceil wspolczynnikBeta \times liczbaZbiorowRodzicow \rceil$
+		\Var $perAlfa \gets \lceil (liczbaZbiorowRodzicow-liczbaBeta)/liczbaAlfa \rceil$
+		\For {$i \gets 1 \To liczbaAlfa$}
+		\Var $alfa \gets operatorWyboruAlfa(perPlec[plecAlfa])$
+		\State $perPlec[plecAlfa] \gets perPlec[plecAlfa]\ \backslash\ \left\{ alfa \right\}$
+		\For {$j \gets 1 \To perAlfa$}
+		\Var $rodzice \gets \left\{ alfa \right\}$
+		\For {$k \gets 1 \To liczbaPlci$}
+		\If {$k \neq plecAlfa$}
+		\State $rodzice \gets rodzice \cup \left\{ operatorWyboru[k](perPlec[k]) \right\}$
+		\EndIf
+		\EndFor
+		\State $zbioryRodzicow \gets zbioryRodzicow \cup \left\{ rodzice \right\}$
+		\EndFor
+		\EndFor
+		\For {$i \gets 1 \To liczbaBeta$}
+		\Var $beta \gets operatorWyboruBeta(perPlec[plecAlfa])$
+		\Var $rodzice \gets \left\{ beta \right\}$
+		\For {$j \gets 1 \To liczbaPlci$}
+		\If {$j \neq plecAlfa$}
+		\State $rodzice \gets rodzice \cup \left\{ operatorWyboru[j](perPlec[j]) \right\}$
+		\EndIf
+		\EndFor
+		\State $zbioryRodzicow \gets zbioryRodzicow\ \cup\ \left\{ rodzice \right\}$
+		\EndFor
+		\State \Return $zbioryRodzicow$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{table}
+	\caption{Parametry i zmnienne użyte w algorytmie \ref{algorithm_proposedGenSel}}
+	\label{table_proposedGenSel}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\textbf{Parametr} & \textbf{Znaczenie} \\
+		\hline
+		\hline
+		$kandydaciNaRodzicow$ & zbiór osobników spośród których wybieramy rodziców \\
+		\hline
+		$cp$ & prawdopodobieństwo krzyżowania \\
+		\hline
+		$liczbaPlci$ & liczba płci branych pod uwagę (zazwyczaj 2), równa liczbie rodziców wymaganej przez operator krzyżowania \\
+		\hline
+		$plec(x)$ & funkcja zwracająca płeć osobnika jako liczbę z zakresu [$1$, $liczbaRodzicow$] \\
+		\hline 
+		$|populacja|$ & rozmiar populacji \\
+		\hline
+		$wspolczynnikBeta$ & stosunek liczby zdarzeń krzyżowania w których biorą udział osobniki beta, do liczby wszystkich zdarzeń krzyżowania  \\
+		\hline
+		$liczbaAlfa$ & liczba osobników alfa, wokół których tworzone są ,,haremy'' \\
+		\hline
+		$operatorWyboruAlfa$ & operator wyboru używany do określenia osobników alfa \\
+		\hline
+		$plecAlfa$ & numer płci z której pochodzą osobniki alfa \\
+		\hline
+		$operatorWyboruBeta$ & operator wyboru używany do określenia osobników beta \\
+		\hline
+		$operatorWyboru[i]$ & operator wyboru $i$tej płci \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+W linii 2. następuje inicjalizacja zmiennej zwracanej w linii 32. Przypisywany jest jej zbiór pusty.
+W liniach 3-6 populacja osobników jest dzielona względem płci tak, że tablica \textit{perPlec} zawiera na pozycji \textit{i} kandydatów na rodziców \textit{i}tej płci.
+Linia 7 inicjalizuje zmienną określającą rozmiar zwracanego zbioru, tj. liczbę generowanych zestawów rodziców.
+Linie 8 i 9 obliczają liczby kolejno osobników alfa i beta. Wartości te niekoniecznie sumują się do wartości z linii 7, ponieważ są zaokrąglane w górę. Z tego powodu faktyczny rozmiar zwracanego zbioru może być większy niż wcześniej obliczony, jednak jedyną konsekwencją tego może być sprawdzenie nieznacznie większej liczby osobników w każdej populacji (konkretnie \textit{liczbaAlfa+1}).
+Linie 10-22 opisują pętlę, w której najpierw przy pomocy odpowiedniego operatora wybierany jest osobnik alfa (linia 11), usuwany następnie ze zbioru kandydatów tej płci (aby każdy osobnik alfa był różny oraz aby osobniki alfa nie były brane pod uwagę przy wyborze osobników beta). Kolejne linie (11-20) opisują dobranie partnerów dla osobników alfa, przy użyciu odpowiednich operatorów wyboru. Na końcu ciała pętli nowo utworzony zestaw rodziców jest dołączany do zwracanego zbioru.
+Linie 22-32 opisują pętlę tworząca rodziców związanych z osobnikami beta, jednak zamiast wybierać osobnika płci alfa (czyli osobnika beta) dla grupy partnerów pozostałych płci, jest on wybierany do każdego zestawu rodziców oddzielnie (z dopuszczeniem powtórzeń).
+
+Innymi słowy, w liniach 10-22 wybierane są osobniki alfa i ich haremy, a w liniach 23-32 - osobniki beta i ich partnerzy.
+
+\chapter{Eksperymenty}
+\section{Implementacja}
+\subsection{Komponenty niezależne od problemu}
+\subsection{TSP}
+działanie operatorów, etc
+\subsection{Knapsack}
+...
+\subsection{(?)}
+...
+\section{Procedury eksperymentów}
+eksploracja z nawrotami/czysty przegląd/inne procedury z etapu 2
+\section{Przeprowadzone eksperymenty}
+Wyjaśnić strukture
+\subsection{TSP}
+\subsubsection{Initial}
+\paragraph{Konfiguracja}
+zakresy parametrów, parametry początkowe, ilość nawrotów i powtórzeń
+\paragraph{Przebieg}
+Kolejno znajdowane konfiguracje
+\paragraph{Wyniki}
+10 najlepszych max, 10 najlepszych avg, zestawić w tabelki, opisać
+1 najlepszy pokazać i opisać przebieg
+\subsubsection{Tweak}
+...
+\subsubsection{Compare}
+...
+\subsubsection{SexualGA}
+... - co tu będzie?
+\subsubsection{GGA}
+... - jw?
+\subsection{Knapsack}
+...
+\subsection{(?)}
+...
+
+\chapter{Wnioski i spostrzeżenia}
+\chapter{Dalsze drogi rozwoju}
+
+
+
+\pagestyle{plain}
+
+\listoffigures
+\listoftables
+\listof{signature}{Spis sygnatur}
+
+\bibliographystyle{iisthesis}
+\bibliography{bibliografia}
+
+\end{document}
+
