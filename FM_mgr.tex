@@ -50,17 +50,30 @@
 \usepackage{tabulary}
 \usepackage{placeins}
 \usepackage{algpseudocode}
-\usepackage{algorithm}
+\usepackage[chapter]{algorithm}
 \usepackage{mathtools}
 \usepackage{float}
 \usepackage{tocloft}
 \usepackage{tocbibind}
 \usepackage{amsfonts}
+\usepackage{nicefrac}
 
 \usepackage[labelsep=period]{caption}
 
+
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
+
+\algnewcommand{\Params}[1]{%
+	\Statex \textbf{Potrzebne zmienne, parametry i operatory:}
+	\Statex \hspace*{\algorithmicindent}\parbox[t]{.8\linewidth}{\raggedright #1}
+}
+
+%\algnewcommand{\MyComment}[1]{\Comment{\parbox[t]{.5\linewidth}{#1}}}
+%\algnewcommand{\MyComment}[1]{\Comment{\begin{flushright}#1\end{flushright}}}
+%\algnewcommand{\MyComment}[1]{\Comment{\begin{flushright}\parbox[t]{\linewidth}{#1}\end{flushright}}}
+%\algnewcommand{\MyComment}[1]{\begin{flushright}$\rhd$\quad #1\end{flushright}}
+%\algnewcommand{\MyComment}[1]{\parbox[t]{\linewidth}{\begin{flushright}$\rhd$\quad #1\end{flushright}}}
 
 \newcommand{\defacto}{\emph{de facto }}
 \newcommand{\ergo}{\emph{ergo }}
@@ -80,6 +93,13 @@
 \newcommand{\minorityEvalRel}{{\R}_{\prec}}
 \newcommand{\minoritySpecimenRel}{{\R}_{\lhd}}
 \newcommand{\param}{\mathtt}
+
+\newcommand{\circled}[1]{\textcircled{\small{#1}}}
+
+\newcommand{\img}[1]{\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{pictures/#1}}
+\newcommand{\graph}[1]{\input{graphs/#1}}
+
+\newcolumntype{s}{>{\hsize=.5\hsize}c}
 
 %uncomment for double spacing 
 %\usepackage{setspace}
@@ -130,7 +150,7 @@ Dziedziczenie to zjawisko przekazywania cech rodziców dzieciom. Odbywa się ono
 
 Mutacja to zjawisko zachodzenia losowych zmian w kodzie genetycznym osobnika, przez które ma on szansę zyskać nowe cechy, które w niektórych przypadkach doprowadzą do lepszego dopasowania. Osobniki z przypadkowymi zmianami, które poprawiają ich dopasowanie mają większe szanse na przeżycie i wydanie potomstwa, \ergo przypadkowe pozytywne zmiany powinny zostać rozpropagowane wśród osobników przyszłych pokoleń.
 
-Algorytmy ewolucyjne to rodzina heurystyk naśladujących proces ewolucji w celu optymalizacji. Pojedynczy punkt w przestrzeni rozwiązań jest w nich nazywany osobnikiem. Osobniki możemy między sobą porównywać pod względem wartości optymalizowanej funkcji dla nich, a relacja mniejszości (dla problemów minimalizacji) lub większości (dla problemów maksymalizacji) reprezentuje relację bycia lepiej przystosowanym do środowiska. Ponadto, na osobnikach określone są operatory mutacji i krzyżowania, które mają na celu kolejno symulację losowych zmian w osobniku i tworzenie nowych osobników na podstawie starych. Heurystyka polega na wielokrotnym przetworzeniu populacji (czyli zbioru osobników) poprzez zastosowanie każdego z operatorów z pewnym prawdopodobieństwem. W każdym kroku (nazywanym w nomeklaturze algorytmów ewolucyjnych pokoleniem) do dotychczasowej populacji dołączane są wyniki działania tych operatorów (czyli zbiory osobników zmutowanych i potomstwa), a następnie wybierana jest nowa populacja, używana w kolejnym kroku. Aby odwzorować zasadę przetrwania najlepiej dopasowanych osobników do kolejnej populacji wybierane są z wyższym prawdopodobieństwem osobniki lepiej przystosowane.
+Algorytmy ewolucyjne to rodzina heurystyk naśladujących proces ewolucji w celu optymalizacji \cite{davis1991handbook}. Pojedynczy punkt w przestrzeni rozwiązań jest w nich nazywany osobnikiem. Osobniki możemy między sobą porównywać pod względem wartości optymalizowanej funkcji dla nich, a relacja mniejszości (dla problemów minimalizacji) lub większości (dla problemów maksymalizacji) reprezentuje relację bycia lepiej przystosowanym do środowiska. Ponadto, na osobnikach określone są operatory mutacji i krzyżowania, które mają na celu kolejno symulację losowych zmian w osobniku i tworzenie nowych osobników na podstawie starych. Heurystyka polega na wielokrotnym przetworzeniu populacji (czyli zbioru osobników) poprzez zastosowanie każdego z operatorów z pewnym prawdopodobieństwem. W każdym kroku (nazywanym w nomeklaturze algorytmów ewolucyjnych pokoleniem) do dotychczasowej populacji dołączane są wyniki działania tych operatorów (czyli zbiory osobników zmutowanych i potomstwa), a następnie wybierana jest nowa populacja, używana w kolejnym kroku. Aby odwzorować zasadę przetrwania najlepiej dopasowanych osobników do kolejnej populacji wybierane są z wyższym prawdopodobieństwem osobniki lepiej przystosowane.
 
 W naturze rozmnażanie się osobników wielu gatunków jest ściśle związane ze zjawiskiej podziału gatunku na płcie. Bardziej szczegółowy opis tego zjawiska znajduje się w rozdziale \ref{chapter_proposed}. Dotychczasowe rozwiązania rzadko (patrz: rozdział \ref{chapter_literature}) uwzględniały ten aspekt procesu ewolucji. Powodem tego jest raczej uproszczenie działania samej heurystyki niż lepsza jakość wyników uzyskiwanych z pominięciem tego aspektu (\cite{GGA}, \cite{SexualGA}). 
 
@@ -142,20 +162,27 @@ Cele tej pracy zostały opisane w tabeli \ref{table_goals}.
 
 \begin{table}
 	\caption{Cele pracy opisanej w tym dokumencie \label{table_goals}}
-	\begin{tabulary}{\linewidth}{LLL}
+	\begin{tabulary}{\linewidth}{|C|L|L|}
+		\hline
 		Nr. & Cel & Opis \\
+		\hline
+		\hline
 		1 & 
 		Formalizacja ogólnego schematu algorytmu ewolucyjnego korzystającego ze zjawiska płci & 
 		Schemat algorytmu ewolucyjnego jest w pewnym stopniu dowolny, a stosunkowo mała ilość publikacji w temacie używa różnych formalizmów (patrz: rozdział \ref{chapter_literature}). Powoduje to brak jednej standardowej implementacji, a co za tym idzie utrudnia porównywanie rozwiązań między sobą. Spełnienie tego celu powinno doprowadzić do określenia konkretnego schematu, który pozwoli zaimplementować wybrane istniejące rozwiązania oraz zaproponowane rozwiązanie autorskie. \\
+		\hline
 		2 &
 		Realizacja i implementacja w zaproponowanym schemacie wybranych rozwiązań literaturowych &
 		Spełnienie tego celu powinno doprowadzić do zdefiniowania wybranych rozwiązań literaturowych w schemacie określonym w celu nr. 1 i implementacji frameworku badawczego opartego o ten schemat, wraz z implementacją tych rozwiązań. \\
+		\hline
 		3 &
 		Propozycja, realizacja i implementacja nowego rozwiązania w proponowanym schemacie &
 		Jest to główny cel niniejszej pracy, którego efektem powinno być stworzenie nowego podejścia do zagadnienia płci, zbadanie go i porównanie z rozwiązaniami literaturowymi. Realizacja i implementacja powinna się odbyć we frameworku badawczym stworzonym przy celu 2.\\
+		\hline
 		4 &
 		Zbadanie działania różnych rozwiązań dla wybranych problemów &
-		Podczas realizacji tego celu powinny zostać zebrane wybrane miary jakości działania algorytmu ewolucyjnego dla każdego z podejść, tak aby możliwe było miarodajne porównanie ich ze sobą.
+		Podczas realizacji tego celu powinny zostać zebrane wybrane miary jakości działania algorytmu ewolucyjnego dla każdego z podejść, tak aby możliwe było miarodajne porównanie ich ze sobą. \\
+		\hline
 	\end{tabulary}
 \end{table}
 
@@ -170,23 +197,23 @@ Poniższe rozdziały opisują szczegółowe znaczenie wymienionych pojęć, spos
 
 Wymienione wyżej pojęcia określają elementy heurystyki które musimy zdefiniować aby ją zastosować w celu rozwiązania problemu. Każde z tych pojęć niesie ze sobą nie tylko znaczenie przekładające się na przyrodę, ale również ogranizenia nałożone na realizację danego elementu.
 
-%TODO
-%W tabeli \ref{table_conventions} zostały pokazane konwencje dotyczące czcionki używane w tej pracy.
-%
+W tabeli \ref{table_signature_conventions} zostały pokazane konwencje dotyczące znaczenia czcionek używane w tej pracy.
+
 %\newcommand{\important}{\mathcal}
 %\newcommand{\relation}{\mathsf}
 %\newcommand{\numberSet}{\mathbb}
 %\newcommand{\operator}{\mathtt}
 
 \begin{table}
-	\caption{Konwencje dotyczące czcionek \label{table_conventions}}
-	\begin{tabularx}{\linewidth}{lX}
+	\caption{Konwencje dotyczące czcionek \label{table_signature_conventions}}
+	\centering
+	\begin{tabular}{cl}
 		$\param{operator}, \param{n}$ & operatory i parametry heurystyki \\
 		$T, p$ & zbiory i parametry pomocnicze \\
 		$\important{S}$ & zbiory używane w definicjach \\
 		$\R$ & relacje \\
 		$\numberSet{N}$ & zbiory liczbowe
-	\end{tabularx}
+	\end{tabular}
 \end{table}
 
 \subsection{Pojęcie operatora} \label{subsection_operator}
@@ -344,14 +371,184 @@ Kryterium zatrzymania możemy traktować jako dodatkowy operator, jednak trudno 
 \end{signature}	
 
 \subsection{Schemat algorytmu}
-pseudokod, sposób zbierania wyniku
+
+Na rysunku \ref{figure_flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pract, opisane w tabeli \ref{table_flowchart_conventions}. Ponadto, w algorytmach używany jest operator $random(X)$ opisany sygnaturą \ref{signature_random}, zwracający losowy element zbioru $X$ (z rozkładem równomiernym).
+
+\begin{signature}
+	\caption{Sygnatura operatora $random(S)$ \label{signature_random}}
+	\begin{align}
+	random: &A^n \rightarrow A \\
+	n \in &\numberSet{N}_{+} \\
+	X \gets &\left\{ x_0, x_1, \dots x_{n-1} \right\} \\
+	\forall_{x_i, x_j \in X} P(random(X) = x_i) = &P(random(X) = x_j)
+	\end{align}
+	$A$ to dowolny zbiór, a $n$ jego rozmiar.
+\end{signature}
+
+\begin{figure}[H]
+	\caption{Elementy schematów blokowych używane w tej pracy \label{figure_flowchart_conventions}}
+	\img{conventions.png}
+\end{figure}
+
+\begin{table}[H]
+	\caption{Opis konwencji dotyczących elementów schematów blokowych \label{table_flowchart_conventions}}
+	\begin{tabularx}{\linewidth}{|c|X|}
+		\hline 
+		\circled{1} & Symbol rozpoczęcia heurystyki \\
+		\hline
+		\circled{2} & Symbol rozpoczęcia heurystyki \\
+		\hline
+		\circled{3} & Symbol oznaczający ewaluację warunku C i kontynuację procesu zgodnie z jego wynikiem \\
+		\hline
+		\circled{4} & Symbol oznaczający wykonanie kroku opisanego przez S \\
+		\hline
+		\circled{5} & Symbol tożsamy z symbolem \circled{4}, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter_proposed})\\
+		\hline
+		\circled{6} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest operator O \\
+		\hline
+		\circled{7} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest parametr P \\
+		\hline
+		\circled{8} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D \\
+		\hline
+		\circled{9} & Symbol oznaczający rozpoczęcie lub zakończenie szczegółowo opisywanego kroku \\
+		\hline
+		\circled{10} & Symbol oznaczający wykonanie kolejnego symbolu dla każdego z elementów opisanych przez E \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\todo{lepiej działające kółka, patrz: \circled{10}}
+
+\newpage
+
+Na rysunku \ref{figure_ea_general} zobrazowany został ogólny schemat działania algorytmów ewolucyjnych. 
+
+\begin{figure}
+	\caption{Ogólny schemat działania algorytmów ewolucyjnych \label{figure_ea_general}}
+	\img{ea_general.png}
+\end{figure}
+
+Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych osobników. Następnie, póki warunek zatrzymania nie jest spełniony, powtarzane jest kilka kroków wykonywanych w ramach jednego pokolenia. Są to kolejno: krzyżowanie, mutacja i selekcja naturalna.
+
+Algorytm \ref{algorithm_crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 10. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia 4). Jeżeli tak, to losowo dobierany jest jego partner (linia 5), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania, którego wynik jest dołączany do zbioru $noweOsobniki$. Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $n = 2$), przez co wartość, z którą porównujemy losowo wybraną wartość z przedziału $[0, 1]$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $n$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{n}$, a zamiast jednego partnera należy wybrać ich $n-1$.
+
+Algorytm \ref{algorithm_mutation_std} opisuje szczegóły kroku "Wykonaj mutację". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 9. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać na nim mutację (linia 4), a jeśli tak, to stosowany jest do niego operator mutacji, którego wynik zostaje dołączony do zbioru $noweOsobniki$ (linie 5 i 6).
+
+Algorytm \ref{algorithm_natSel_std} opisuje szczegóły kroku "Dokonaj selekcji naturalnej", który \defacto sprowadza się do zastąpienia dotychczasowej populacji wynikiem zastosowania operatora selekcji na niej (linia 1).
+
+\begin{algorithm}
+	\caption{Szczegółowy schemat działania kroku "Wykonaj krzyżowanie"	\label{algorithm_crossOver_std}}
+	\begin{algorithmic}[1]
+		\Params{
+			$populacja$ 
+				\Comment{Obecna populacja, tj. zbiór osobników}\\ 
+			$\param{prawdopodobienstwoKrzyzowania}$
+				\Comment{Prawd. krzyżowania}\\ 
+			$\param{operatorKrzyzowania}$  
+				\Comment{Operator krzyżowania}
+			}
+		\Procedure{crossingOver}{}
+			\Var $noweOsobniki \gets \emptyset$
+			\ForAll {$osobnik \in populacja$}
+				\If {$random([0,1]) \leq \nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$}
+					\Var $partner \gets random(populacja \setminus \left\{ osobnik \right\})$ 
+					\Var $potomek \gets \param{operatorKrzyzowania}(osobnik, partner)$
+					\State $noweOsobniki \gets noweOsobniki \cup \left\{ potomek \right\}$
+				\EndIf 
+			\EndFor
+			\State $populacja \gets populacja \cup noweOsobniki$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{Szczegółowy schemat działania kroku "Wykonaj mutację"	\label{algorithm_mutation_std}}
+	\begin{algorithmic}[1]
+		\Params{
+			$populacja$ 
+			\Comment{Obecna populacja, tj. zbiór osobników}\\ 
+			$\param{prawdopodobienstwoMutacji}$
+			\Comment{Prawd. mutacji}\\ 
+			$\param{operatorMutacji}$  
+			\Comment{Operator mutacji}
+		}
+		\Procedure{mutation}{}
+		\Var $noweOsobniki \gets \emptyset$
+		\ForAll {$osobnik \in populacja$}
+			\If {$random([0,1]) \leq \param{prawdopodobienstwoMutacji}$}
+				\Var $mutant \gets \param{operatorMutacji}(osobnik)$
+				\State $noweOsobniki \gets noweOsobniki \cup \left\{ mutant \right\}$
+			\EndIf 
+		\EndFor
+		\State $populacja \gets populacja \cup noweOsobniki$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+	\caption{Szczegółowy schemat działania kroku "Dokonaj selekcji naturalnej"	\label{algorithm_natSel_std}}
+	\begin{algorithmic}[1]
+		\Params{
+			$populacja$ 
+			\Comment{Obecna populacja, tj. zbiór osobników}\\ 
+			$\param{rozmiarPopulacji}$
+			\Comment{Rozmiar populacji}\\ 
+			$\param{operatorSelekcji}$  
+			\Comment{Operator selekcji}
+		}
+		\Procedure{naturalSelection}{}
+		\State $populacja \gets \param{operatorSelekcji}_{\param{rozmiarPopulacji}}(populacja)$
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+
+Tak zdefiniowany proces służy do efektywnego przeszukiwania przestrzeni rozwiązań, tymczasem zadanie optymalizacji ma na celu znalezienie jednego, jak najlepszego rozwiązania. Oznacza to, że jedno z rozwiązań, które zostanie zbadane w trakcie działania heurystyki musi być zapamiętane i zwrócone jako wynik. Naiwnym podejściem jest analiza populacji po ostatnim pokoleniu i zwrócenie najlepszego z osobników. Jako że operator selekcji nie gwarantuje tego, że w zbiorze wynikowym znajdzie się najlepszy osobnik ze zbioru wejściowego, to istnieje szansa, że najlepsze rozwiązanie z ostatniej populacji nie jest najlepszym znanym nam rozwiązaniem. Zamiast tego podczas działania heurystyki zapamiętujemy globalnie najlepsze rozwiązanie na jakie trafiliśmy i je traktujemy jako rozwiązanie problemu optymalizacji. Zazwyczaj realizuje się to w ten sposób, że definiuje się zmienną przechowującą globalne optimum, która początkowa ma wartość pustą. Po zakończeniu pierwszego pokolenia, ale przed zastosowaniem operatora selekcji zapisuje się w niej najlepsze rozwiązanie w tym pokoleniu. W dalszych pokoleniach, również przed zastosowaniem operatora selekcji porównuje się ocenę obecnego globalnego optimum i najlepszego osobnik z danego pokolenia (optimum lokalne). Jeśli optimum lokalne jest lepsze niż globalne, to zastępuje je ono.
+
 \section{Analiza jakości działania}
-\subsection{Analiza przebiegu}
+
+Algorytmy ewolucyjne to rodzina losowych, iteracyjnych heurystyk populacyjnych. Określenie "losowych" oznacza, że każde uruchomienie procesu optymalizacji może zwrócić inne znalezione optimum. Co za tym idzie, ocena działania heurystyki dla danego zestawu parametrów jest trudna i wymaga wielokrotnego zebrania wyników. W następnych rozdziałach opisane zostaną sposoby analizy jakości działania pojedynczego przebiegu heurystyki, jak i wielu przebiegów o tych samych parametrach.
+
+\subsection{Analiza jednego przebiegu heurystyki}
+
+Jak było wspomniane wyżej, algorytmy ewolucyjne to iteracyjne heurystyki populacyjne. Oznacza to, że w ramach jednego procesu optymalizacji wielokrotnie powtarzamy pewien krok (stąd określenie "iteracyjne") w którym badamy wiele rozwiązań (stąd określenie "populacyjne").
+
+Aby ocenić pojedynczy przebieg, możemy analizować pewne statystyki oceny w skali populacji na przestrzeni wielu pokoleń.
+
+Podstawowe statystyki używane w tym celu, to m.in.:
+\begin{itemize}
+	\item najlepsza i najgorsza ocena osobnika z populacji,
+	\item średnia i odchylenie standardowe (lub wariancja \footnote{Często wariancji używa się do automatyzacji oceny, ponieważ nie wymaga czasochłonnego pierwiastkowania. Znając wariancje w dowolnym momencie możemy obliczyć odchylenie standardowe, np. w celu prezentacji oceny.}) oceny osobników w populacji,
+	\item mediana i kwantyle oceny osobników w populacji.
+\end{itemize}
+
+Wartości te można wygodnie zobrazować na wykresie pudełkowym, na osi odciętych umieszczając numery pokoleń, a na osi rzędnych - wartości odpowiednich statystyk. Takie zobrazowanie przebiegu heurystyki pozwala na wyciągnięcie wniosków i stosowne dopasowanie parametrów heurystyki (np. jeśli w problemie minimalizacji wszystkie wartości stopniowo maleją, to być może warto zwiększyć rozmiar populacji lub zmienić kryterium zatrzymania, aby cały proces trwał dłużej).
+
+W tej pracy do analizy wykorzystano tylko 4 z wyżej wymienionych statystyk: średnią, wariancja \footnote{Zdecydowano się na wykorzystanie zamiast odchylenia standardowego ponieważ wartości odchylenia okazały się być zbyt małe, aby były dostrzegalne na wykresach.}, minimum i maksimum. Są one w pełni wystarczające do analizy porównawczej między uruchomieniami. Na rysunku \ref{plot_conventions} przedstawiono konwencje dotyczące rysowania wykresów przyjęte w tym dokumencie.
+
+\begin{figure}[H]
+	\caption{Konwencje dotyczące rysowania wykresów \label{plot_conventions}}
+	\centering
+	\graph{example_whiskers.tex}
+%	\input{graphs/example_whiskers.tex}
+\end{figure}
+
+\todo{wykres z konwencją, przykładowy wykres i jego interpretacja, przykład ze stagnacją, przykład z wcześniejszym globalBest}
+
+\begin{figure}[H]
+	\caption{Przykładowy przebieg, w którym globalne optimum nie znajduje się w ostatniej populacji \label{plot_mid_opt}}
+	\centering
+	\graph{mid_optimum.tex}
+\end{figure}
+
 wykres avg/best/worst/etc
-\subsection{Analiza wielu przebiegów}
+\subsection{Analiza wielu przebiegów heurystyki}
 średnia, wariancja, zbieranie najlepszych, etc
+
+
+
 \chapter{Przegląd literatury} \label{chapter_literature}
 \chapter{Proponowane rozwiązania} \label{chapter_proposed}
+\todo{This stuff gotta be fixed - patrz: notatki od promotora}
 
 Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
 
