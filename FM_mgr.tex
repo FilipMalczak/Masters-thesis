@@ -268,11 +268,9 @@ Realizacją osobnika w heurystyce jest reprezentacja rozwiązania problemu, a re
 
 Ważniejszym pojęciem jest funkcja oceny. Wbrew nazwie nie musi być to funkcja w rozumieniu matematycznym, a operator (patrz: rozdział \ref{subsection_operator}) \footnote{Stochastyczną funkcję oceny możemy zastosować na przykład w sytuacji, w której za pomocą algorytmu ewolucyjnego szukamy konfiguracji innej heurystyki. Osobnikiem w takiej sytuacji może być zestaw parametrów konfigurowanej heurystyki, a oceną - średnia jakość działania dla kilku uruchomień.}. Jego dziedziną powinna być przestrzeń możliwych osobników, a przeciwdziedziną dowolny zbiór na którym możemy określić relację porządku. Relacja ta odpowiada relacji bycia lepiej przystosowanym do środowiska w rzeczywistym procesie ewolucji.
 
-Standardową realizacją osobnika (zaproponowaną w pierwszym artykule dot. EA \todo{cytować toto}) jest wektor binarny. Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. Reprezentacja jest jednak uzależniona od rozwiązywanego problemu. Często wykorzystuje się bardziej skomplikowane przedstawienia rozwiązania, jak wektor wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo (np. dla problemów aproksymacji funkcji) \todo{może znajde źródła z czymś takim}.
+Standardową realizacją osobnika jest wektor binarny, który sprawdza się w wielu zastosowaniach i jest prosty w realizacji programowej lub sprzętowej. Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. Reprezentacja jest jednak uzależniona od rozwiązywanego problemu. Często wykorzystuje się bardziej skomplikowane przedstawienia rozwiązania, jak wektor wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo \cite{gen_prog} (np. dla problemów aproksymacji funkcji \cite{gen_prog_foo_approx}).
 
-Istnieją implementacje i frameworki do obliczeń ewolucyjnych które rozróżniają pojęcie genotypu osobnika (czyli reprezentacji na której stosujemy operatory genetyczne, jak krzyżowanie i mutacja) i jego fenotypu (czyli reprezentacji, na podstawie której oceniamy osobnika), jednak jest to jedynie abstrakcja umożliwiająca czytelniejsze zapisanie realizacji odpowiednich pojęć w języku programowania. Niniejsza praca nie wprowadza takiego rozróżnienia.
-
-\todo{framework - czy to się da przetłumaczyć?}
+Istnieją implementacje i narzędzia do obliczeń ewolucyjnych które rozróżniają pojęcie genotypu osobnika (czyli wewnętrznej reprezentacji rozwiązania, na której stosujemy operatory genetyczne takie jak krzyżowanie i mutacja) i jego fenotypu (czyli reprezentacji zewnętrznej, na podstawie której oceniamy osobnika), jednak jest to jedynie abstrakcja umożliwiająca czytelniejsze zapisanie realizacji odpowiednich pojęć w języku programowania. Niniejsza praca nie wprowadza takiego rozróżnienia, ponieważ nie zmienia ono w żadnym stopniu jakości działania heurystyki i nie jest związane z tematem badań.
 
 \begin{signature}
 	\caption{Osobnik \label{signature_specimen}}
@@ -413,7 +411,7 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 
 \subsection{Operator selekcji} \label{subsection_natSel}
 
-Zadaniem \textbf{operatora selekcji} jest symulacja zjawiska przeżycia najsilniejszych (czyli najlepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu.
+Zadaniem \textbf{operatora selekcji} jest symulacja zjawiska przeżycia silniejszych (czyli lepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu.
 
 Dziedziną tego operatora jest $p$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. Wartość $p$ to ilość osobników w populacji pod koniec danej generacji, więc można ją przybliżać za pomocą równać z linii \ref{p_start}-\ref{p_stop} sygnatury \ref{signature_selection}, ponieważ w populacji znajdą się osobniki z populacji początkowej tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
 
@@ -421,7 +419,7 @@ Przeciwdziedziną operatora selekcji jest $\param{rozmiarPopulacji}$krotny ilocz
 
 Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{constraint_sel_start}-\ref{constraint_sel_stop} sygnatury \ref{signature_selection}. Mówią one o tym, że prawdopodobieństwo tego, że osobnik z populacji wejściowej znajdzie się w populacji wyjściowej powinno być tym większe im lepiej dopasowany jest osobnik. Ma to symulować zasadę przetrwania osobników najlepiej przystosowanych do środowiska.
 
-\todo{jakiś przykład}
+Najprostsza realizacja takiego operatora polega na posortowaniu populacji pod kątem wartości funkcji oceny (w kolejności rosnącej dla zadania minimalizacji lub malejącej dla zadania maksymalizacji) i zwrócenia pierwszych (czyli najlepszych) $\param{rozmiarPopulacji}$ osobników. Takie podejście jest czasami nazywane operatorem elitystycznym lub elitarnym. Mimo tego, że wydaje się ono intuicyjne, to praktyka pokazuje, że nie daje ono tak dobrych wyników jak realizacje które nie zawsze zwracają populację zawierającą najlepszego osobnika. Operator elitarny ma tendencję do szybkiego doprowadzania do stagnacji, ponieważ nie pozwala nowym osobnikom (wynikom mutacji lub krzyżowania) na przeżycie, co skutkuje zahamowaniem eksploracji przestrzeni rozwiązań.
 
 \begin{signature}
 	\caption{Operator selekcji \label{signature_selection}}
@@ -600,7 +598,7 @@ Algorytmy ewolucyjne to rodzina losowych, iteracyjnych heurystyk populacyjnych. 
 
 \subsection{Analiza jednego przebiegu heurystyki}
 
-Jak było wspomniane wyżej, algorytmy ewolucyjne to iteracyjne heurystyki populacyjne. Oznacza to, że w ramach jednego procesu optymalizacji wielokrotnie powtarzamy pewien krok (stąd określenie ,,iteracyjne'') w którym badamy wiele rozwiązań (stąd określenie ,,populacyjne''). \todo{polskie cudzysłowie}
+Jak było wspomniane wyżej, algorytmy ewolucyjne to iteracyjne heurystyki populacyjne. Oznacza to, że w ramach jednego procesu optymalizacji wielokrotnie powtarzamy pewien krok (stąd określenie ,,iteracyjne'') w którym badamy wiele rozwiązań (stąd określenie ,,populacyjne'').
 
 Aby ocenić pojedynczy przebieg, możemy analizować pewne statystyki oceny w skali populacji na przestrzeni wielu pokoleń.
 
