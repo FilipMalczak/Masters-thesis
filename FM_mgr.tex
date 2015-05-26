@@ -226,7 +226,7 @@ W tabeli \ref{table_signature_conventions} zostały pokazane konwencje dotycząc
 
 \subsection{Pojęcie operatora} \label{subsection_operator}
 
-W dalszych rozdziałach będziemy używać pojęcia "\textbf{operator}", które jest zbliżone do pojęcia funkcji. Różnica między tymi dwoma terminami jest taka, że funkcja musi zawsze zwrócić tą samą wartość dla tego samego argumentu, podczas gdy takie ograniczenie nie musi być spełnione dla operatora. Innymi słowy pojęcie operatora pokrywa się z pojęciem funkcji z imperatywnych języków programowania, ale nie pokrywa się z funkcją w rozumieniu matematycznym.
+W dalszych rozdziałach będziemy używać pojęcia ,,\textbf{operator}'', które jest zbliżone do pojęcia funkcji. Różnica między tymi dwoma terminami jest taka, że funkcja musi zawsze zwrócić tą samą wartość dla tego samego argumentu, podczas gdy takie ograniczenie nie musi być spełnione dla operatora. Innymi słowy pojęcie operatora pokrywa się z pojęciem funkcji z imperatywnych języków programowania, ale nie pokrywa się z funkcją w rozumieniu matematycznym.
 
 Operator możemy też rozumieć jako zmienną losową opisaną rozkładem parametryzowanym argumentami operatora.
 
@@ -300,7 +300,47 @@ Dwa podstawowe operatory używane w algorytmach ewolucyjnych to \textbf{operator
 \subsubsection{Operator mutacji}
 Operator mutacji odpowiada za symulowanie losowych zmian zachodzących w kodzie genetycznym. Jego zadaniem jest sterowanie eksploracją przestrzeni rozwiązań.
 
-Dziedziną tego operatora jest przestrzeń rozwiązań, a przeciwdziedziną - $k$krotny iloczyn kartezjański przestrzeni rozwiązań. Oznacza to, że jednokrotne zastosowanie operatora mutacji daje w wyniku $k$ osobników powstałych przez modyfikację osobnika pierwotnego. Każdy ze zwróconych osobników powinien być nieznacznie różny od argumentu operatora. Jedną z popularnych realizacji tego operatora dla osobnika reprezentowanego jako wektor bitów jest odwrócenie losowych bitów, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami.
+Dziedziną tego operatora jest przestrzeń rozwiązań, a przeciwdziedziną - $k$krotny iloczyn kartezjański przestrzeni rozwiązań. Oznacza to, że jednokrotne zastosowanie operatora mutacji daje w wyniku $k$ osobników powstałych przez modyfikację osobnika pierwotnego. Każdy ze zwróconych osobników powinien być nieznacznie różny od argumentu operatora. 
+
+Jedną z popularnych realizacji tego operatora dla osobnika reprezentowanego jako wektor bitów jest negacja losowych wartości, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami. Na rysunku \ref{vector_example_mutation} zobrazowano działanie takiego podejścia. Wektor $(1, 0, 0, 1, 1, 1, 0, 0, 1, 0)$ to argument operatora. Kolorem zaznaczono losowe pozycje w wektorze, które zostaną zanegowane, w wyniku czego powstanie wektor wyjściowy $(1, \textbf{1}, 0, 1, \textbf{0}, 1, 0, 0, 1, \textbf{1})$.
+
+\begin{figure}[h]
+	\caption{Działanie przykładowej realizacji operatora mutacji \label{vector_example_mutation}}
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
+	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
+	\tikzstyle{mutated}=[cellStyle, fill=gray!50]
+	
+	%original
+	\node[cellStyle] at(0, 0) {$1$};
+	\node[mutated] at(1, 0) {$0$};
+	\node[cellStyle] at(2, 0) {$0$};
+	\node[cellStyle] at(3, 0) {$1$};
+	\node[mutated] at(4, 0) {$1$};
+	\node[cellStyle] at(5, 0) {$1$};
+	\node[cellStyle] at(6, 0) {$0$};
+	\node[cellStyle] at(7, 0) {$0$};
+	\node[cellStyle] at(8, 0) {$1$};
+	\node[mutated] at(9, 0) {$0$};
+	
+	%operator arrow
+	\draw [->, thick] (4.5, -1)  -- (4.5, -3); 
+	\node[right] at (4.5, -2) {$\param{operatorMutacji}$};
+				
+	%mutated
+	\node[cellStyle] at(0, -4) {$1$};
+	\node[mutated] at(1, -4) {$1$};
+	\node[cellStyle] at(2, -4) {$0$};
+	\node[cellStyle] at(3, -4) {$1$};
+	\node[mutated] at(4, -4) {$0$};
+	\node[cellStyle] at(5, -4) {$1$};
+	\node[cellStyle] at(6, -4) {$0$};
+	\node[cellStyle] at(7, -4) {$0$};
+	\node[cellStyle] at(8, -4) {$1$};
+	\node[mutated] at(9, -4) {$1$};				
+				
+	\end{tikzpicture} 
+\end{figure}
 
 Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolucyjnego - prawdopodobieństwo mutacji. Jest to wartość określająca prawdopodobieństwo zastosowania operatora mutacji do osobnika w danym pokoleniu. Jeśli wartość ta jest równa 0, to operator mutacji nie jest w ogóle używany, a jeśli jest równa 1, to operator zostanie zastosowany do każdego osobnika.
 
@@ -317,9 +357,10 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 Operator krzyżowania symuluje proces krzyżowania się osobników w naturze. Jego zadaniem jest sterowanie eksploatacją przestrzeni rozwiązań.
 
 Dziedziną tego operatora jest $n$krotny iloczyn kartezjański przestrzeni rozwiązań, a przeciwdziedziną - $m$krotny iloczyn tej przestrzeni. Oznacza to, że operator ten przyjmuje $n$ osobników (nazywanych \emph{rodzicami}) jako argument, a zwraca $m$ osobników (nazywanych \emph{potomstwem}). Zazwyczaj przyjmuje się $ n = 2 $ i $m \in \left\{1, 2 \right\}$. Zwracane osobniki powinny być podobne (w takim sensie, że mają podobną reprezentację) do osobników wejściowych (argumentów operatora). 
+
 Jedną z popularnych realizacji dla osobnika reprezentowanego jako wektor dla $n=2$ jest wybranie losowej pozycji w wektorze (tzw. punktu przecięcia) i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż. Na rysunku \ref{vector_example_crossover} zobrazowano działanie takiego podejścia. Wektory $(x_0, \ldots, x_9)$ i $(y_0, \ldots, y_9)$ to wektory wejściowe. Grubą linią zaznaczono wylosowany punkt przecięcia, wyznaczający podwektory które zostają zamienione. Wynikiem zastosowania operatora są wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots x_9)$.
 
-\begin{figure}
+\begin{figure}[h]
 	\caption{Działanie przykładowej realizacji operatora krzyżowania \label{vector_example_crossover}}
 	\centering
 	\begin{tikzpicture}[>=triangle 60]
@@ -403,7 +444,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{constraint_sel
 
 \subsection{Warunek stopu} \label{subsection_stop}
 
-\textbf{Warunek stopu}, nazywany też warunkiem zatrzymania lub przerwania to pojęcie określające warunek zakończenia heurystyki. Jest to odpowiedź na pytanie "kiedy należy przestać przetwarzanie kolejnych pokoleń?" \todo{polskie cudzysłowia}. Często stosuje się takie kryteria jak przekroczenie jakiejś arbitralnej liczby pokoleń, lub zaobserwowanie tzw. stagnacji. Zjawisko takie polega na znacznym zmniejszeniu różnorodności ocen w populacji, co oznacza, że znaleźliśmy optimum lokalne. Jeśli wariancja ocen przez kilka pokoleń się nie zmienia (lub zmienia, ale nie znacząco), to można uznać, że operatory genetyczne nie pozwolą na wyjście z tego optimum i przerwać działanie heurystyki. 
+\textbf{Warunek stopu}, nazywany też warunkiem zatrzymania lub przerwania to pojęcie określające warunek zakończenia heurystyki. Jest to odpowiedź na pytanie ,,kiedy należy przestać przetwarzanie kolejnych pokoleń?''. Często stosuje się takie kryteria jak przekroczenie jakiejś arbitralnej liczby pokoleń, lub zaobserwowanie tzw. stagnacji. Zjawisko takie polega na znacznym zmniejszeniu różnorodności ocen w populacji, co oznacza, że znaleźliśmy optimum lokalne. Jeśli wariancja ocen przez kilka pokoleń się nie zmienia (lub zmienia, ale nie znacząco), to można uznać, że operatory genetyczne nie pozwolą na wyjście z tego optimum i przerwać działanie heurystyki. 
 Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno jest określić jego jednoznaczną sygnaturę, ze względu na dowolność realizacji. W sygnaturze \ref{signature_stop} przedstawiono ogólny zapis operatora (z dowolną dziedziną, linia \ref{stop_general}) i sygnaturę jego przykładowej realizacji (opartej o stałą liczbę pokoleń, linia \ref{stop_maxGen}).
 
 \begin{signature}
@@ -445,28 +486,27 @@ Na rysunku \ref{figure_flowchart_conventions} zobrazowane zostały różne eleme
 	\caption{Opis konwencji dotyczących elementów schematów blokowych \label{table_flowchart_conventions}}
 	\begin{tabularx}{\linewidth}{|c|X|}
 		\hline 
-		\circled{1} & Symbol rozpoczęcia heurystyki \\
+		\circled{1} & Symbol rozpoczęcia heurystyki. \\
 		\hline
-		\circled{2} & Symbol rozpoczęcia heurystyki \\
+		\circled{2} & Symbol rozpoczęcia heurystyki. \\
 		\hline
-		\circled{3} & Symbol oznaczający ewaluację warunku C i kontynuację procesu zgodnie z jego wynikiem \\
+		\circled{3} & Symbol oznaczający ewaluację warunku C i kontynuację procesu zgodnie z jego wynikiem. \\
 		\hline
-		\circled{4} & Symbol oznaczający wykonanie kroku opisanego przez S \\
+		\circled{4} & Symbol oznaczający wykonanie kroku opisanego przez S. \\
 		\hline
-		\circled{5} & Symbol tożsamy z symbolem \circled{4}, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter_proposed})\\
+		\circled{5} & Symbol tożsamy z symbolem \circled{4}, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter_proposed}).\\
 		\hline
-		\circled{6} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest operator O \\
+		\circled{6} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest operator O. \\
 		\hline
-		\circled{7} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest parametr P \\
+		\circled{7} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest parametr P. \\
 		\hline
-		\circled{8} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D \\
+		\circled{8} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D. \\
 		\hline
-		\circled{9} & Symbol oznaczający rozpoczęcie lub zakończenie szczegółowo opisywanego kroku \\
+		\circled{9} & Symbol oznaczający rozpoczęcie lub zakończenie szczegółowo opisywanego kroku. \\
 		\hline
-		\circled{10} & Symbol oznaczający wykonanie kolejnego symbolu dla każdego z elementów opisanych przez E \\
+		\circled{10} & Symbol oznaczający wykonanie kolejnego symbolu dla każdego z elementów opisanych przez E. \\
 		\hline
 	\end{tabularx}
-	\todo{kropki po opisach?}
 \end{table}
 
 \newpage
@@ -560,7 +600,7 @@ Algorytmy ewolucyjne to rodzina losowych, iteracyjnych heurystyk populacyjnych. 
 
 \subsection{Analiza jednego przebiegu heurystyki}
 
-Jak było wspomniane wyżej, algorytmy ewolucyjne to iteracyjne heurystyki populacyjne. Oznacza to, że w ramach jednego procesu optymalizacji wielokrotnie powtarzamy pewien krok (stąd określenie "iteracyjne") w którym badamy wiele rozwiązań (stąd określenie "populacyjne"). \todo{polskie cudzysłowie}
+Jak było wspomniane wyżej, algorytmy ewolucyjne to iteracyjne heurystyki populacyjne. Oznacza to, że w ramach jednego procesu optymalizacji wielokrotnie powtarzamy pewien krok (stąd określenie ,,iteracyjne'') w którym badamy wiele rozwiązań (stąd określenie ,,populacyjne''). \todo{polskie cudzysłowie}
 
 Aby ocenić pojedynczy przebieg, możemy analizować pewne statystyki oceny w skali populacji na przestrzeni wielu pokoleń.
 
