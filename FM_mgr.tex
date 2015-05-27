@@ -89,12 +89,19 @@
 
 \floatname{algorithm}{Algorytm}
 
-\newcommand{\numberSet}{\mathbb}
-\newcommand{\important}{\mathcal}
+
+\newcommand{\numberSet}[1]{\mathbb{#1}}
+\newcommand{\important}[1]{\mathcal{#1}}
 \newcommand{\R}{\mathbf{R}}
 \newcommand{\minorityEvalRel}{{\R}_{\prec}}
 \newcommand{\minoritySpecimenRel}{{\R}_{\lhd}}
-\newcommand{\param}{\mathtt}
+\newcommand{\param}[1]{\mathtt{#1}}
+\newcommand{\variable}[1]{\mathsf{#1}}
+%\newcommand{\variable}[1]{\textbf{#1}}
+%\newcommand{\inputVar}[1]{\variable{#1_{I}}}
+%\newcommand{\outputVar}[1]{\variable{#1_{O}}}
+\newcommand{\inputVar}[1]{\variable{\overline{#1}}}
+\newcommand{\outputVar}[1]{\variable{\underline{#1}}}
 
 %\newcommand{\circled}[1]{\textcircled{\small{#1}}}
 %\newcommand{\circled}[1]{\tikz \node[anchor=south west, draw,circle, inner sep=0pt, minimum size=7mm, pos=0.5]{#1};}
@@ -217,6 +224,7 @@ W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotycząc
 	\centering
 	\begin{tabular}{cl}
 		$\param{operator}, \param{n}$ & operatory i parametry heurystyki \\
+		$\variable{k}$ & parametry zależne od realizacji operatorów \\
 		$T, p$ & zbiory i parametry pomocnicze \\
 		$\important{S}$ & zbiory używane w definicjach \\
 		$\R$ & relacje \\
@@ -298,7 +306,7 @@ Dwa podstawowe operatory używane w algorytmach ewolucyjnych to \textbf{operator
 \subsubsection{Operator mutacji}
 Operator mutacji odpowiada za symulowanie losowych zmian zachodzących w kodzie genetycznym. Jego zadaniem jest sterowanie eksploracją przestrzeni rozwiązań.
 
-Dziedziną tego operatora jest przestrzeń rozwiązań, a przeciwdziedziną - $k$krotny iloczyn kartezjański przestrzeni rozwiązań. Oznacza to, że jednokrotne zastosowanie operatora mutacji daje w wyniku $k$ osobników powstałych przez modyfikację osobnika pierwotnego. Każdy ze zwróconych osobników powinien być nieznacznie różny od argumentu operatora. 
+Dziedziną tego operatora jest przestrzeń rozwiązań, a przeciwdziedziną - $\variable{m}$krotny iloczyn kartezjański przestrzeni rozwiązań. Oznacza to, że jednokrotne zastosowanie operatora mutacji daje w wyniku $\variable{m}$ osobników powstałych przez modyfikację osobnika pierwotnego. Każdy ze zwróconych osobników powinien być nieznacznie różny od argumentu operatora. 
 
 Jedną z popularnych realizacji tego operatora dla osobnika reprezentowanego jako wektor bitów jest negacja losowych wartości, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami. Na rysunku \ref{vector:example_mutation} zobrazowano działanie takiego podejścia. Wektor $(1, 0, 0, 1, 1, 1, 0, 0, 1, 0)$ to argument operatora. Kolorem zaznaczono losowe pozycje w wektorze, które zostaną zanegowane, w wyniku czego powstanie wektor wyjściowy $(1, \textbf{1}, 0, 1, \textbf{0}, 1, 0, 0, 1, \textbf{1})$.
 
@@ -345,18 +353,19 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature:mutation}}
 	\begin{align}
-	\param{operatorMutacji}: &\important{S} \rightarrow \important{S}^k \\
-	\param{prawdopodobienstwoMutacji} \in &[0, 1]
+	\param{operatorMutacji}: & \important{S} \rightarrow \important{S}^\variable{m} \\
+	\param{prawdopodobienstwoMutacji} \in & [0, 1]
 	\end{align}
+	$\variable{m}$ to liczba zwracanych wyników mutacji.
 \end{signature}	
 
 \subsubsection{Operator krzyżowania} \label{subsection:crossover}
 
 Operator krzyżowania symuluje proces krzyżowania się osobników w naturze. Jego zadaniem jest sterowanie eksploatacją przestrzeni rozwiązań.
 
-Dziedziną tego operatora jest $n$krotny iloczyn kartezjański przestrzeni rozwiązań, a przeciwdziedziną - $m$krotny iloczyn tej przestrzeni. Oznacza to, że operator ten przyjmuje $n$ osobników (nazywanych \emph{rodzicami}) jako argument, a zwraca $m$ osobników (nazywanych \emph{potomstwem}). Zazwyczaj przyjmuje się $ n = 2 $ i $m \in \left\{1, 2 \right\}$. Zwracane osobniki powinny być podobne (w takim sensie, że mają podobną reprezentację) do osobników wejściowych (argumentów operatora). 
+Dziedziną tego operatora jest $\inputVar{c}$krotny iloczyn kartezjański przestrzeni rozwiązań, a przeciwdziedziną - $\outputVar{c}$krotny iloczyn tej przestrzeni. Oznacza to, że operator ten przyjmuje $\inputVar{c}$ osobników (nazywanych \emph{rodzicami}) jako argument, a zwraca $\outputVar{c}$ osobników (nazywanych \emph{potomstwem}). Zazwyczaj przyjmuje się $ \inputVar{c} = 2 $ i $\outputVar{c} \in \left\{1, 2 \right\}$. Zwracane osobniki powinny być podobne (w takim sensie, że mają podobną reprezentację) do osobników wejściowych (argumentów operatora). 
 
-Jedną z popularnych realizacji dla osobnika reprezentowanego jako wektor dla $n=2$ jest wybranie losowej pozycji w wektorze (tzw. punktu przecięcia) i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż. Na rysunku \ref{vector:example_crossover} zobrazowano działanie takiego podejścia. Wektory $(x_0, \ldots, x_9)$ i $(y_0, \ldots, y_9)$ to wektory wejściowe. Grubą linią zaznaczono wylosowany punkt przecięcia, wyznaczający podwektory które zostają zamienione. Wynikiem zastosowania operatora są wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots x_9)$.
+Jedną z popularnych realizacji dla osobnika reprezentowanego jako wektor dla $\inputVar{c} = 2$ i $\outputVar{c} = 2$ jest wybranie losowej pozycji w wektorze (tzw. punktu przecięcia) i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż. Na rysunku \ref{vector:example_crossover} zobrazowano działanie takiego podejścia. Wektory $(x_0, \ldots, x_9)$ i $(y_0, \ldots, y_9)$ to wektory wejściowe. Grubą linią zaznaczono wylosowany punkt przecięcia, wyznaczający podwektory które zostają zamienione. Wynikiem zastosowania operatora są wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots x_9)$.
 
 \begin{figure}[h]
 	\caption{Działanie przykładowej realizacji operatora krzyżowania \label{vector:example_crossover}}
@@ -379,7 +388,7 @@ Jedną z popularnych realizacji dla osobnika reprezentowanego jako wektor dla $n
 		
 		%operator arrow
 		\draw [->, thick] (4.5, -2.5)  -- (4.5, -4.5); 
-		\node[right] at (4.5, -3.5) {$\param{operatorKrzyzowania}_{n=2, m=2}$};
+		\node[right] at (4.5, -3.5) {$\param{operatorKrzyzowania}_{\inputVar{c}=2, \outputVar{c}=2}$};
 		
 		%first output
 		\foreach \x in {0,1,...,3}
@@ -403,10 +412,10 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 \begin{signature}
 	\caption{Operator krzyżowania \label{signature:crossover}}
 	\begin{align}
-	\param{operatorKrzyzowania}: \important{S}^n \rightarrow \important{S}^m \\
-	\param{prawdopodobienstwoKrzyzowania} \in &[0, 1]
+	\param{operatorKrzyzowania}: & \important{S}^\inputVar{c} \rightarrow \important{S}^\outputVar{c} \\
+	\param{prawdopodobienstwoKrzyzowania} \in & [0, 1]
 	\end{align}
-	$n$ to liczba rodziców, a $m$ to liczba potomków.
+	$\inputVar{c}$ to liczba rodziców, a $\outputVar{c}$ to liczba potomków.
 \end{signature}	
 
 \subsection{Operator selekcji} \label{subsection:natSel}
@@ -419,7 +428,7 @@ Przeciwdziedziną operatora selekcji jest $\param{rozmiarPopulacji}$krotny ilocz
 
 Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constraint_sel_start}-\ref{line:constraint_sel_stop} sygnatury \ref{signature:selection}. Mówią one o tym, że prawdopodobieństwo tego, że osobnik z populacji wejściowej znajdzie się w populacji wyjściowej powinno być tym większe im lepiej dopasowany jest osobnik. Ma to symulować zasadę przetrwania osobników najlepiej przystosowanych do środowiska.
 
-Najprostsza realizacja takiego operatora polega na posortowaniu populacji pod kątem wartości funkcji oceny (w kolejności rosnącej dla zadania minimalizacji lub malejącej dla zadania maksymalizacji) i zwrócenia pierwszych (czyli najlepszych) $\param{rozmiarPopulacji}$ osobników. Takie podejście jest czasami nazywane operatorem elitystycznym lub elitarnym. Mimo tego, że wydaje się ono intuicyjne, to praktyka pokazuje, że nie daje ono tak dobrych wyników jak realizacje które nie zawsze zwracają populację zawierającą najlepszego osobnika. Operator elitarny ma tendencję do szybkiego doprowadzania do stagnacji, ponieważ nie pozwala nowym osobnikom (wynikom mutacji lub krzyżowania) na przeżycie, co skutkuje zahamowaniem eksploracji przestrzeni rozwiązań.
+Najprostsza realizacja takiego operatora polega na posortowaniu populacji pod kątem wartości funkcji oceny (w kolejności rosnącej dla zadania minimalizacji lub malejącej dla zadania maksymalizacji) i zwrócenia najlepszych $\param{rozmiarPopulacji}$ osobników. Takie podejście jest czasami nazywane operatorem elitystycznym lub elitarnym. Mimo tego, że wydaje się ono intuicyjne, to praktyka pokazuje, że nie daje ono tak dobrych wyników jak realizacje które nie zawsze zwracają populację zawierającą najlepszego osobnika. Operator elitarny ma tendencję do szybkiego doprowadzania do stagnacji, ponieważ nie pozwala nowym osobnikom (wynikom mutacji lub krzyżowania) na przeżycie, co skutkuje zahamowaniem eksploracji przestrzeni rozwiązań.
 
 \begin{signature}
 	\caption{Operator selekcji \label{signature:selection}}
@@ -427,8 +436,8 @@ Najprostsza realizacja takiego operatora polega na posortowaniu populacji pod k�
 	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
 	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
 	\label{line:p_start} 
-	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times k \\
-	          &+ \param{prawdopodobienstwoKrzyzowania} \times m) \\
+	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times \variable{m} \\
+	          &+ \param{prawdopodobienstwoKrzyzowania} \times \outputVar{c}) \\
 	\label{line:p_stop} 
 	&\times \param{rozmiarPopulacji} \\
 	\label{line:constraint_sel_start}          
@@ -454,10 +463,10 @@ Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno je
 	\begin{align}
 		\label{line:stop_maxGen}
 		\param{warunekStopu}: &\numberSet{N} \rightarrow \left\{ 0, 1 \right\} \\
-		\param{warunekStopu}(g) = &1 \Leftrightarrow g \leq \overline{g}
+		\param{warunekStopu}(g) = &1 \Leftrightarrow g \leq \overline{\variable{g}}
 	\end{align}
 	Zwrócenie wartości $1$ oznacza, że należy zakończyć działanie heurystyki, a $0$ - sytuację odwrotną. \\ 
-	Wartość $g$ oznacza numer obecnego pokolenia (zaczynając od 1), a $\overline{g}$ - maksymalną dopuszczalną liczbę pokoleń w ramach jednego przebiegu algorytmu ewolucyjnego.
+	Wartość $g$ oznacza numer obecnego pokolenia (zaczynając od 1), a $\overline{\variable{g}}$ - maksymalną dopuszczalną liczbę pokoleń w ramach jednego przebiegu algorytmu ewolucyjnego.
 \end{signature}	
 
 \subsection{Schemat algorytmu} \label{subsection:general_ea_scheme}
@@ -668,16 +677,15 @@ Na rysunku \ref{figure:dsea} przedstawiono schemat działania heurystyki DSEA w 
 
 W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w rozdziale \ref{subsection:general_ea_scheme}. Istotne różnice między diagramami to zmiana działania kroku "Wykonaj krzyżowanie oraz dodanie nowego kroku "Zadbaj o różnorodność populacji" zaraz przed nim. Zostały one zdefiniowane w rozdziałach kolejno \ref{subsubsection:my_crossover} i  i \ref{figure:fixing}. Ponadto, zmieniła się nazwa operatora używanego w kroku "Dokonaj selekcji naturalnej", co zostanie opisane w rozdziale \ref{subsection:new_natSel}.
 
-\newpage
-
 \subsubsection{Krok ,,Wykonaj krzyżowanie''} \label{subsubsection:my_crossover}
+
+
+Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok "Wykonaj krzyżowanie" jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{W rozdziale \ref{subsection:new_genSel} opisane zostanie znaczenie i sygnatura tego operatora, wyjaśnione jest uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdopodobienstwoKrzyzowania}$. } generowana jest lista par rodziców. Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. W przeciwieństwie do realizacji opisanej w rozdziale \ref{subsection:general_ea_scheme} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. Jest tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
 \begin{figure}[H]
 	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
 	\img{my_crossover.png}
 \end{figure}
-
-Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok "Wykonaj krzyżowanie" jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{W rozdziale \ref{subsection:new_genSel} opisane zostanie znaczenie i sygnatura tego operatora, wyjaśnione jest uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdopodobienstwoKrzyzowania}$. } generowana jest lista par rodziców. Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. W przeciwieństwie do realizacji opisanej w rozdziale \ref{subsection:general_ea_scheme} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. Jest tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
 \subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
 
@@ -688,9 +696,11 @@ Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowa
 	\img{fixing.png}
 \end{figure}
 
-Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej.
+Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej. 
 
-\todo{opisać schemat, odwoływać się do poprzednich rozdziałów, nowe elementy opisane są w kolejnych rozdziałach}
+W pierwszej jego części do populacji dodajemy tzw. ,,domieszki'' (ang. \emph{mixins}), czyli losowe osobniki (tworzone w ten sam sposób co populacja początkowa). Ma to na celu regularne uzupełnianie puli genów obecnych w populacji, na wypadek gdyby geny odpowiedzialne za pozytywną cechę zanikły z powodu losowości operatora selekcji naturalnej lub płciowej. Ilość domieszek jest kontrolowana przez współczynnik domieszek ($\param{wspDomieszek}$), będący stosunkiem pożądanej ilości nowych osobników do wartości $\param{rozmiarPopulacji}$.
+
+Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie występuje w populacji, lub jest zbyt słabo reprezentowana. Jeśli liczność którejś z płci w populacji spadnie poniżej arbitralnie dobranej liczby $\param{d}$, to do populacji dołączane jest co najmniej $\param{d}$, a co najwyżej $\lceil \param{wspSamorodków} \times \param{rozmiarPopulacji} \rceil$ losowych osobników tej płci\footnote{Alternatywnym rozwiązaniem mogłaby być zmiana płci losowych osobników pozostałych płci.}. W praktyce, w ramach tej pracy użyto arbitralnie dobranych wartości $\param{d} = 5$ i $\param{wspSamorodków} = 0.05$.
 
 \subsection{Operator selekcji naturalnej} \label{subsection:new_natSel}
 
