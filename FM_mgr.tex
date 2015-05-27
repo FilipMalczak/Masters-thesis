@@ -469,6 +469,8 @@ Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno je
 	Wartość $g$ oznacza numer obecnego pokolenia (zaczynając od 1), a $\overline{\variable{g}}$ - maksymalną dopuszczalną liczbę pokoleń w ramach jednego przebiegu algorytmu ewolucyjnego.
 \end{signature}	
 
+\clearpage
+
 \subsection{Schemat algorytmu} \label{subsection:general_ea_scheme}
 
 Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pract, opisane w tabeli \ref{table:flowchart_conventions}. Ponadto, w algorytmach używany jest operator $random(X)$ opisany sygnaturą \ref{signature:random}, zwracający losowy element zbioru $X$ (z rozkładem równomiernym).
@@ -488,6 +490,8 @@ Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne eleme
 	\caption{Elementy schematów blokowych używane w tej pracy \label{figure:flowchart_conventions}}
 	\img{conventions.png}
 \end{figure}
+
+\clearpage
 
 \begin{table}[H]
 	\caption{Opis konwencji dotyczących elementów schematów blokowych \label{table:flowchart_conventions}}
@@ -516,7 +520,7 @@ Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne eleme
 	\end{tabularx}
 \end{table}
 
-\newpage
+\clearpage
 
 Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działania algorytmów ewolucyjnych. 
 
@@ -527,13 +531,7 @@ Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działani
 
 Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych osobników. Następnie, póki warunek zatrzymania nie jest spełniony, powtarzane jest kilka kroków wykonywanych w ramach jednego pokolenia. Są to kolejno: krzyżowanie, mutacja i selekcja naturalna.
 
-Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 10. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia 4). Jeżeli tak, to losowo dobierany jest jego partner (linia 5), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania, którego wynik jest dołączany do zbioru $noweOsobniki$. Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $n = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $[0, 1]$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $n$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{n}$, a zamiast jednego partnera należy wybrać ich $n-1$.
-
-Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutację". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 9. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać na nim mutację (linia 4), a jeśli tak, to stosowany jest do niego operator mutacji, którego wynik zostaje dołączony do zbioru $noweOsobniki$ (linie 5 i 6).
-
-Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji naturalnej", który \defacto sprowadza się do zastąpienia dotychczasowej populacji wynikiem zastosowania operatora selekcji na niej (linia 1).
-
-\begin{algorithm}
+\begin{algorithm}[H]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj krzyżowanie"	\label{algorithm:crossOver_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -558,7 +556,9 @@ Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji 
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}
+Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 10. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia 4). Jeżeli tak, to losowo dobierany jest jego partner (linia 5), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania, którego wynik jest dołączany do zbioru $noweOsobniki$. Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $n = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $[0, 1]$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $n$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{n}$, a zamiast jednego partnera należy wybrać ich $n-1$.
+
+\begin{algorithm}[H]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj mutację"	\label{algorithm:mutation_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -582,7 +582,9 @@ Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji 
 	\end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}
+Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutację". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 9. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać na nim mutację (linia 4), a jeśli tak, to stosowany jest do niego operator mutacji, którego wynik zostaje dołączony do zbioru $noweOsobniki$ (linie 5 i 6).
+
+\begin{algorithm}[H]
 	\caption{Szczegółowy schemat działania kroku "Dokonaj selekcji naturalnej"	\label{algorithm:natSel_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -598,6 +600,10 @@ Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji 
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
+
+Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji naturalnej", który \defacto sprowadza się do zastąpienia dotychczasowej populacji wynikiem zastosowania operatora selekcji na niej (linia 1).
+
+\clearpage
 
 Tak zdefiniowany proces służy do efektywnego przeszukiwania przestrzeni rozwiązań, tymczasem zadanie optymalizacji ma na celu znalezienie jednego, jak najlepszego rozwiązania. Oznacza to, że jedno z rozwiązań, które zostanie zbadane w trakcie działania heurystyki musi być zapamiętane i zwrócone jako wynik. Naiwnym podejściem jest analiza populacji po ostatnim pokoleniu i zwrócenie najlepszego z osobników. Jako że operator selekcji nie gwarantuje tego, że w zbiorze wynikowym znajdzie się najlepszy osobnik ze zbioru wejściowego, to istnieje szansa, że najlepsze rozwiązanie z ostatniej populacji nie jest najlepszym rozwiązaniem znalezionym w trakcie działania heurystyki. Zamiast tego podczas działania heurystyki zapamiętujemy globalnie najlepsze rozwiązanie na jakie trafiliśmy i właśnie je traktujemy jako rozwiązanie problemu optymalizacji. Zazwyczaj realizuje się to w ten sposób, że definiuje się zmienną przechowującą globalne optimum, która początkowa ma wartość pustą. Po zakończeniu pierwszego pokolenia, ale przed zastosowaniem operatora selekcji zapisuje się w niej najlepsze rozwiązanie w tym pokoleniu. W dalszych pokoleniach, również przed zastosowaniem operatora selekcji, porównuje się ocenę obecnego globalnego optimum i najlepszego osobnika z danego pokolenia (optimum lokalnego). Jeśli optimum lokalne jest lepsze niż globalne, to zastępuje je ono.
 
@@ -628,7 +634,7 @@ W tej pracy do analizy wykorzystano tylko 4 z wyżej wymienionych statystyk: śr
 	\graph{example_whiskers.tex}
 \end{figure}
 
-Na rysunku \ref{plot:random_example} przedstawiony jest przykładowy wykres statystyk populacji na przestrzeni wielu pokoleń. Wykresy takie, nazywane w skrócie \emph{wykresami przebiegów}, będą wykorzystywane w tej pracy do analizy pojedynczych uruchomień heurystyki. 
+%\clearpage
 
 \begin{figure}[H]
 	\caption{Przykładowy wykres przebiegu \label{plot:random_example}}
@@ -636,7 +642,7 @@ Na rysunku \ref{plot:random_example} przedstawiony jest przykładowy wykres stat
 	\graph{random_example.tex}
 \end{figure}
 
-Na rysunku \ref{plot:mid_opt} przedstawiony jest wykres przebiegu na którym możemy zaobserwować sytuację opisaną na końcu rozdziału \ref{subsection:general_ea_scheme}, tzn. taką, w której optimum globalne jest znalezione w innym pokoleniu niż ostatnie.
+Na rysunku \ref{plot:random_example} przedstawiony jest przykładowy wykres statystyk populacji na przestrzeni wielu pokoleń. Wykresy takie, nazywane w skrócie \emph{wykresami przebiegów}, będą wykorzystywane w tej pracy do analizy pojedynczych uruchomień heurystyki. 
 
 \begin{figure}[H]
 	\caption{Wykres przebiegu, w którym globalne optimum nie znajduje się w ostatniej populacji \label{plot:mid_opt}}
@@ -644,13 +650,15 @@ Na rysunku \ref{plot:mid_opt} przedstawiony jest wykres przebiegu na którym mo�
 	\graph{mid_optimum.tex}
 \end{figure}
 
-Na rysunku \ref{plot:stagnation} przedstawiono sytuację, w której obserwujemy tzw. stagnację (wspominaną już w rozdziale \ref{subsection:stop}). Możemy zaobserwować, że od pewnego momentu (około sześćdziesiątej generacji) kolejne pokolenia nie przynoszą znaczącej zmiany wyniku, co mogłoby być powodem do przerwania działania heurystyki.
+Na rysunku \ref{plot:mid_opt} przedstawiony jest wykres przebiegu na którym możemy zaobserwować sytuację opisaną na końcu rozdziału \ref{subsection:general_ea_scheme}, tzn. taką, w której optimum globalne jest znalezione w innym pokoleniu niż ostatnie.
 
 \begin{figure}[H]
 	\caption{Wykres przebiegu w którym obserwujemy stagnację \label{plot:stagnation}}
 	\centering
 	\graph{stagnation.tex}
 \end{figure}
+
+Na rysunku \ref{plot:stagnation} przedstawiono sytuację, w której obserwujemy tzw. stagnację (wspominaną już w rozdziale \ref{subsection:stop}). Możemy zaobserwować, że od pewnego momentu (około sześćdziesiątej generacji) kolejne pokolenia nie przynoszą znaczącej zmiany wyniku, co mogłoby być powodem do przerwania działania heurystyki.
 
 \subsection{Analiza wielu przebiegów heurystyki}
 
@@ -661,6 +669,18 @@ Jak zostało wspomniane na początku tego rozdziału, algorytmy ewolucyjne to he
 \chapter{Proponowane rozwiązania} \label{chapter:proposed}
 
 Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
+
+Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć. 
+
+\begin{signature}
+	\caption{Funkcja $plec(osobnik)$ \label{signature:genderFoo}}
+	\begin{align}
+	plec: & \important{S} \rightarrow \important{G} \\
+	\important{G} \neq & \emptyset
+	\end{align}
+	$\important{G}$ to zbiór możliwych płci.
+\end{signature}
+
 
 \section{Heurystyka DSEA} \label{section:dsea}
 
@@ -704,6 +724,29 @@ Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie wyst�
 
 \subsection{Operator selekcji naturalnej} \label{subsection:new_natSel}
 
+Heurystyka DSEA, jak nazwa wskazuje, korzysta z dwóch operatorów selekcji, które należy rózróżnić. Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operator selekcji naturalnej}. Zachowuje on to samo znaczenie i zastosowanie, opisane w rozdziale \ref{subsection:natSel}. 
+
+Dodatkowo, wymaga się, aby prawdopodobieństwo znalezienia się osobnika w zbiorze zwracanym przez ten operator było niezależne od płci osobnika. Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signature:natSel}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
+
+\begin{signature}
+	\caption{Operator selekcji naturalnej \label{signature:natSel}}
+	\begin{align}
+	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
+	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
+	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times \variable{m} \\
+	&+ \param{prawdopodobienstwoKrzyzowania} \times \outputVar{c}) \\
+	&\times \param{rozmiarPopulacji} \\
+	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
+	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
+	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
+	\forall_{i, j = 0, 1, \ldots, \param{rozmiarPopulacji}-1}P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel \\
+	\label{line:gender_resistant}
+	\forall_{i= 0, 1, \ldots, \param{rozmiarPopulacji}-1, g \in \important{G}}P(i \wedge & plec(t) = g) = P(i) \times P(plec(t_i) = g)
+	\end{align}
+\end{signature}
+
+Standardowo korzysta się z operatorów selekcji naturalnej które w konkretny dla siebie sposób wybierają odpowiednią ilość osobników z populacji wejściowej. O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączające do populacji wyjściowej są zazwyczaj wybierane w ten sam sposób. Pozwala to na zapisanie 
+
 \todo{ta sama semantyka, ściślejsza nazwa, powtórzyć sygnature, opisać realizację opartą o op. wyboru}
 
 \subsubsection{Operator wyboru}
@@ -716,7 +759,7 @@ Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie wyst�
 
 \subsection{Realizacja wybranych \todo{rozwiązań literaturowych (?)} w modelu DSEA}
 
-\todo{troche prozy}
+\todo{troche prozy, wspólna realizacja}
 
 \subsubsection{GGA}
 
