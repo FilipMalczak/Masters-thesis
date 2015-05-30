@@ -85,7 +85,7 @@
 \newcommand{\todo}{\colorbox{red}}
 \newcommand{\fixme}{\colorbox{blue}}
 
-\newfloat{signature}{H}{sig}
+\newfloat{signature}{h}{sig}
 \floatname{signature}{Sygnatura}
 
 \floatname{algorithm}{Algorytm}
@@ -103,6 +103,9 @@
 %\newcommand{\outputVar}[1]{\variable{#1_{O}}}
 \newcommand{\inputVar}[1]{\variable{\overline{#1}}}
 \newcommand{\outputVar}[1]{\variable{\underline{#1}}}
+
+\newcommand{\withSize}[2]{{#1}^{ \{ #2 \}}}
+\newcommand{\range}[2]{\langle#1, #2\rangle}
 
 %\newcommand{\circled}[1]{\textcircled{\small{#1}}}
 %\newcommand{\circled}[1]{\tikz \node[anchor=south west, draw,circle, inner sep=0pt, minimum size=7mm, pos=0.5]{#1};}
@@ -161,7 +164,7 @@ Często nie jest nam potrzebne globalne optimum (tzn najlepsze rozwiązanie ze w
 
 Do takich zastosowań przeznaczone są metody nazywane heurystykami. 
 W zależności od źródła definicje tego pojęcia są różne. 
-W dziedzinie informatyki, a w szczególności obliczeń miękkich i sztucznej inteligencji, termin ten możemy nieformalnie opisać jako algorytm który nie daje gwarancji uzyskania poprawnego wyniku.
+W dziedzinie informatyki, a w szczególności obliczeń miękkich i sztucznej inteligencji, termin ten możemy nieformalnie opisać jako algorytm który nie daje gwarancji uzyskania poprawnego wyniku, ale z większym prawdopodobieństwe zwróci wyniki ,,lepsze''.
 Heurystyki stosowane są wszędzie tam, gdzie nie mamy rzeczywistej możliwości uzyskania wyniku, więc dowolne jego przybliżenie będzie lepsze niż brak jakichkolwiek rezultatów.
 
 \section{Algorytmy ewolucyjne} \label{section:eaShortDesc}
@@ -208,11 +211,11 @@ Cel trzeci to opracowanie nowego podejścia uwzględniającego płeć.
 Jest to główny cel tej pracy, mający wnieść coś nowego do dziedziny algorytmów ewolucyjnych.
 
 Ostatnim celem jest zbadanie wcześniej opisanych i zbadanych podejść.
-Polega to na zebraniu miar jakości działania algorytmów ewolucyjnych dla każdego z nich i porównanie ich ze sobą.
+Polega to na zebraniu miar jakości działania algorytmów ewolucyjnych dla każdego z nich i porównaniu ich ze sobą.
 
 \chapter{Algorytmy ewolucyjne} \label{chapter:eaDesc}
 
-Ten rozdział ma na celu opisanie zagadnienia algorytmów ewolucyjnych, zaczynając od ogólnych informacji, stopniowo przechodząc do szczegółowych faktów. \fixme{to nie brzmi}
+Ten rozdział ma na celu opisanie zagadnienia algorytmów ewolucyjnych, zaczynając od ogólnych informacji, stopniowo przechodząc do szczegółów.
 W pierwszej jego części opisana jest ogólna idea tych heurystyk. 
 Kolejna sekcja skupia się na formalnym opisie poszczególnych pojęć.
 Po niej znajduje się część w której znajdziemy szczegóły idei opisanej na początku, zapisane z użyciem pojęć przedstawionych w sekcji drugiej.
@@ -228,12 +231,8 @@ Dodatkowo wprowadzamy pojęcie \emph{populacji}, czyli zbioru osobników istniej
 Realizacją osobnika w heurystyce jest reprezentacja rozwiązania problemu, a realizacją populacji - zbiór rozwiązań, czyli podzbiór przestrzeni rozwiązań.
 Populację możemy też rozumieć jako zbiór próbek z pewnej podprzestrzeni zbioru rozwiązań.
 
-\fixme{zbyt ścisłe, przenieść dalej, a to opisać słownomuzycznie}
-Ważniejszym pojęciem jest funkcja oceny. 
-Wbrew nazwie nie musi być to funkcja w rozumieniu matematycznym, a operator (patrz: rozdział \ref{subsection:operator}) 
-\footnote{Stochastyczną funkcję oceny możemy zastosować na przykład w sytuacji, w której za pomocą algorytmu ewolucyjnego szukamy konfiguracji innej heurystyki. Osobnikiem w takiej sytuacji może być zestaw parametrów konfigurowanej heurystyki, a oceną - średnia jakość działania dla kilku uruchomień.}. 
-Jego dziedziną powinna być przestrzeń możliwych osobników, a przeciwdziedziną dowolny zbiór na którym możemy określić relację porządku. 
-Relacja ta odpowiada relacji bycia lepiej przystosowanym do środowiska w rzeczywistym procesie ewolucji.
+Przez pojęcie funkcji oceny (nazywanej też kryterium) rozumiemy pewne przyporządkowanie (w idealnej sytuacji - funkcję, jednak nie zawsze jest to możliwe; patrz: rozdział \ref{subsection:specimen_and_foo}) każdemu osobnikowi, czyli rozwiązaniu problemu, jakiejś wartości, na której możemy określić porządek.
+Taka relacja porządku powinna określać czy dane rozwiązanie jest równie dobre lub lepsze niż inne, czy nie.
 
 Standardową realizacją osobnika jest wektor binarny, który sprawdza się w wielu zastosowaniach i jest prosty w realizacji programowej lub sprzętowej. 
 Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. 
@@ -249,7 +248,7 @@ Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działani
 		\label{figure:ea_general}
 		}
 	\img{ea_general.png}
-	Konwencje dotyczące rysowania schematów blokowych zostały wyjaśnione \todo{gdzie?}
+	Konwencje dotyczące rysowania schematów blokowych zostały wyjaśnione w podsekcji \ref{subsection:conventions}.
 \end{figure}
 
 Współczesna nauka dalej nie jest w stanie dać nam odpowiedzi na pytanie ,,skąd wzięło się życie'', a co za tym idzie, nie jesteśmy w stanie zasymulować momentu rozpoczęcia ewolucji.
@@ -416,11 +415,11 @@ Druga podsekcja opisuje pojęcie operatora, które jest często stosowane przy f
 
 Kolejne pięć podsekcji skupia się już na konkretnych częściach heurystyki, które należy określić w celu jej wykorzystania.
 
-\subsection{Konwencje}
+\subsection{Konwencje} \label{subsection:conventions}
 
 W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotyczące znaczenia czcionek używane w tej pracy.
 
-\begin{table}
+\begin{table}[b]
 	\caption{Konwencje dotyczące czcionek \label{table:signature_conventions}}
 	\centering
 	\begin{tabular}{cl}
@@ -433,10 +432,10 @@ W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotycząc
 	\end{tabular}
 \end{table}
 
-Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pract, opisane w tabeli \ref{table:flowchart_conventions}.
+Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pracy, opisane w tabeli \ref{table:flowchart_conventions}.
 
 \begin{figure}
-	\caption{Elementy schematów blokowych używane w tej pracy \label{figure:flowchart_conventions}}
+	\caption{Konwencje dotyczące elementów schematów blokowych \label{figure:flowchart_conventions}}
 	\img{conventions.png}
 \end{figure}
 
@@ -454,9 +453,9 @@ Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne eleme
 		\hline
 		\circled{5} & Symbol tożsamy z symbolem \circled{4}, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter:proposed}).\\
 		\hline
-		\circled{6} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest operator O. \\
+		\circled{6} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest operator O. \\
 		\hline
-		\circled{7} & Taka kombinacja symboli oznacza, że podczas wykonywania kroku S używany jest parametr P. \\
+		\circled{7} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest parametr P. \\
 		\hline
 		\circled{8} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D. \\
 		\hline
@@ -474,6 +473,16 @@ Na rysunku \ref{plot:conventions} przedstawiono konwencje dotyczące rysowania w
 	\centering
 	\graph{example_whiskers.tex}
 \end{figure}
+
+Ponadto, w sygnaturach operatorów i funkcji będą często wykorzystywane zbiory o konkretnym rozmiarze. Jako, że nie istnieje \todo{a przynajmniej ja nie znam} powszechnie przyjęta konwencja zapisu takiego faktu, w niniejszej pracy przyjęto, że zapis $\withSize{A}{n}$ oznacza klasę zbiorów $n$elementowych, w której każdy element należy do zbioru $A$. Zapis $A^n$, zgodnie ze standardową konwencją oznacza $n$krotny iloczyn kartezjański zbioru $A$, czyli klasę wektorów o długości $n$, których składowe pochodzą ze zbioru $A$.
+
+\begin{align}
+	\withSize{A}{n} \equiv &\{ a: a \subset A, |a|=n  \} \\
+	\withSize{A}{0} \equiv &\emptyset \\
+	A^n \equiv &\underbrace{A \times A \times \ldots \times A}_{n} \\
+	A^0 \equiv &\emptyset \\
+	A \times B \equiv &\{ (a, b): a \in A, b \in B \}
+\end{align}
 
 \subsection{Pojęcie operatora} \label{subsection:operator}
 
@@ -516,17 +525,17 @@ Ponadto, w algorytmach znajdujących się w tej pracy używany jest operator $ra
 \begin{signature}
 	\caption{Operator $random(S)$ \label{signature:random}}
 	\begin{align}
-	random: &A^n \rightarrow A \\
-	n \in &\numberSet{N}_{+} \\
+	random: &\withSize{A}{n} \rightarrow A \\
 	X \gets &\left\{ x_0, x_1, \dots x_{n-1} \right\} \\
 	\forall_{x_i, x_j \in X} P(random(X) = x_i) = &P(random(X) = x_j)
 	\end{align}
 	$A$ to dowolny zbiór, a $n$ jego rozmiar.
 \end{signature}
 
-\subsection{Osobnik, populacja i ocena}
+\subsection{Osobnik, populacja i ocena} \label{subsection:specimen_and_foo}
 
-\fixme{formalniej}
+Podstawowym pojęciem w dziedzinie algorytmów ewolucyjnych jest osobnik, czyli rozwiązanie. Definiujemy go jako element przestrzeni rozwiązań, którą również musimy zdefiniować. Na te pojęcia nie ma nałożonych żadnych ograniczeń, jednak od ich realizacji zależy prostota i efektywność pozostałych pojęć, opisanych w dalszych podsekcjach.
+
 Ważniejszym pojęciem jest funkcja oceny. 
 Wbrew nazwie nie musi być to funkcja w rozumieniu matematycznym, a operator (patrz: rozdział \ref{subsection:operator}) 
 \footnote{Stochastyczną funkcję oceny możemy zastosować na przykład w sytuacji, w której za pomocą algorytmu ewolucyjnego szukamy konfiguracji innej heurystyki. Osobnikiem w takiej sytuacji może być zestaw parametrów konfigurowanej heurystyki, a oceną - średnia jakość działania dla kilku uruchomień.}. 
@@ -563,8 +572,8 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature:mutation}}
 	\begin{align}
-	\param{operatorMutacji}: & \important{S} \rightarrow \important{S}^\variable{m} \\
-	\param{prawdopodobienstwoMutacji} \in & [0, 1]
+	\param{operatorMutacji}: & \important{S} \rightarrow \withSize{\important{S}}{\variable{m}} \\
+	\param{prawdopodobienstwoMutacji} \in & \range{0}{1}
 	\end{align}
 	$\variable{m}$ to liczba zwracanych wyników mutacji.
 \end{signature}	
@@ -578,16 +587,15 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 \begin{signature}
 	\caption{Operator krzyżowania \label{signature:crossover}}
 	\begin{align}
-	\param{operatorKrzyzowania}: & \important{S}^\inputVar{c} \rightarrow \important{S}^\outputVar{c} \\
-	\param{prawdopodobienstwoKrzyzowania} \in & [0, 1]
+	\param{operatorKrzyzowania}: & \withSize{\important{S}}{\inputVar{c}} \rightarrow \withSize{\important{S}}{\outputVar{c}} \\
+	\param{prawdopodobienstwoKrzyzowania} \in & \range{0}{1}
 	\end{align}
 	$\inputVar{c}$ to liczba rodziców, a $\outputVar{c}$ to liczba potomków.
 \end{signature}	
 
 \subsection{Operator selekcji} \label{subsection:natSel}
 
-\fixme{Zadaniem \textbf{operatora selekcji} jest symulacja zjawiska przeżycia silniejszych (czyli lepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu. Zmniejsza on różnorodność genetyczną w obrębie populacji, co w ogólności jest negatywnym efektem, ponieważ zahamowywuje proces eksplorację przestrzeni rozwiązań. Operator mutacji powinien eksplorować ją na tyle efektywnie, żeby operator selekcji odrzucał mało obiecujące kierunki eksploracji zamiast całkiem zatrzymywać jej proces.
-}
+Zadaniem \textbf{operatora selekcji} jest symulacja zjawiska przeżycia silniejszych (czyli lepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu. Zmniejsza on różnorodność genetyczną w obrębie populacji, co w ogólności jest negatywnym efektem, ponieważ zahamowywuje proces eksplorację przestrzeni rozwiązań. Operator mutacji powinien eksplorować ją na tyle efektywnie, żeby operator selekcji odrzucał mało obiecujące kierunki eksploracji zamiast całkiem zatrzymywać jej proces.
 
 Dziedziną tego operatora jest $p$krotny iloczyn kartezjański przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. Wartość $p$ to ilość osobników w populacji pod koniec danej generacji, więc można ją przybliżać za pomocą równać z linii \ref{line:p_start}-\ref{line:p_stop} sygnatury \ref{signature:selection}, ponieważ w populacji znajdą się osobniki z populacji początkowej tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
 
@@ -598,7 +606,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 \begin{signature}
 	\caption{Operator selekcji \label{signature:selection}}
 	\begin{align}
-	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
+	\param{operatorSelekcji}: &\withSize{\important{S}}{p} \rightarrow \withSize{\important{S}}{\param{rozmiarPopulacji}} \\
 	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
 	\label{line:p_start} 
 	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times \variable{m} \\
@@ -607,7 +615,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 	&\times \param{rozmiarPopulacji} \\
 	\label{line:constraint_sel_start}          
 	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
+	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t = s \\
 	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
 	\label{line:constraint_sel_stop} 
 	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel
@@ -617,7 +625,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 \subsection{Warunek stopu} \label{subsection:stop}
 
 \textbf{Warunek stopu}, nazywany też warunkiem zatrzymania lub przerwania to pojęcie określające warunek zakończenia heurystyki. Jest to odpowiedź na pytanie ,,kiedy należy przestać przetwarzanie kolejnych pokoleń?''. Często stosuje się takie kryteria jak przekroczenie jakiejś arbitralnej liczby pokoleń, lub zaobserwowanie tzw. stagnacji. Zjawisko takie polega na znacznym zmniejszeniu różnorodności ocen w populacji, co oznacza, że znaleźliśmy optimum lokalne. Jeśli wariancja ocen przez kilka pokoleń się nie zmienia (lub zmienia, ale nie znacząco), to można uznać, że operatory genetyczne nie pozwolą na wyjście z tego optimum i przerwać działanie heurystyki. 
-Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno jest określić jego jednoznaczną sygnaturę, ze względu na dowolność realizacji. W sygnaturze \ref{signature:stop} przedstawiono ogólny zapis operatora (z dowolną dziedziną, linia \ref{line:stop_general}) i sygnaturę jego przykładowej realizacji (opartej o stałą liczbę pokoleń, linia \ref{line:stop_maxGen}).
+Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno jest określić jego jednoznaczną sygnaturę, ze względu na dowolność realizacji. W sygnaturze \ref{signature:stop} przedstawiono ogólny zapis operatora (z dowolną dziedziną, linia \ref{line:stop_general}) i sygnaturę jego przykładowej realizacji (opartej o stałą liczbę pokoleń, linie \ref{line:stop_maxGen_begin}-\ref{line:stop_maxGen_end}).
 
 \begin{signature}
 	\caption{Warunek zatrzymania i jego przykładowa realizacja \label{signature:stop}} 
@@ -626,8 +634,9 @@ Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno je
 		\param{warunekStopu}: &\ldots \rightarrow \left\{ 0, 1 \right\}
 	\end{align}
 	\begin{align}
-		\label{line:stop_maxGen}
+		\label{line:stop_maxGen_begin}
 		\param{warunekStopu}: &\numberSet{N} \rightarrow \left\{ 0, 1 \right\} \\
+		\label{line:stop_maxGen_end}
 		\param{warunekStopu}(g) = &1 \Leftrightarrow g \leq \overline{\variable{g}}
 	\end{align}
 	Zwrócenie wartości $1$ oznacza, że należy zakończyć działanie heurystyki, a $0$ - sytuację odwrotną. \\ 
@@ -636,10 +645,11 @@ Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno je
 
 \section{Szczegóły działania heurystyki} \label{section:ea_details}
  
+Ogólny schemat działania algorytmu ewolucyjnego został przedstawiony w sekcji \ref{section:general_idea}. Kolejne kroki przedstawionego tam diagramu zostaną opisane ze szczegółami w kolejnych akapitach.
 
 Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych osobników. Następnie, póki warunek zatrzymania nie jest spełniony, powtarzane jest kilka kroków wykonywanych w ramach jednego pokolenia. Są to kolejno: krzyżowanie, mutacja i selekcja naturalna.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj krzyżowanie"	\label{algorithm:crossOver_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -652,21 +662,28 @@ Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych oso
 			}
 		\Procedure{crossingOver}{}
 			\Var $noweOsobniki \gets \emptyset$
+			\label{line:cross_init} 
 			\ForAll {$osobnik \in populacja$}
+			\label{line:cross_each} 
 				\If {$random([0,1]) \leq \nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$}
+				\label{line:cross_check} 
 					\Var $partner \gets random(populacja \setminus \left\{ osobnik \right\})$ 
+					\label{line:cross_choose}
 					\Var $potomek \gets \param{operatorKrzyzowania}(osobnik, partner)$
+					\label{line:cross_apply} 
 					\State $noweOsobniki \gets noweOsobniki \cup \left\{ potomek \right\}$
+					\label{line:cross_add}
 				\EndIf 
 			\EndFor
-			\State $populacja \gets populacja \cup noweOsobniki$
+			\State $populacja \gets populacja \cup noweOsobniki$ 
+			\label{line:cross_merge}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 10. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia 4). Jeżeli tak, to losowo dobierany jest jego partner (linia 5), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania, którego wynik jest dołączany do zbioru $noweOsobniki$. Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $n = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $[0, 1]$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $n$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{n}$, a zamiast jednego partnera należy wybrać ich $n-1$.
+Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii \ref{line:cross_init}), który w linii \ref{line:cross_merge}. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia \ref{line:cross_each}) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia \ref{line:cross_check}). Jeżeli tak, to losowo dobierany jest jego partner (linia \ref{line:cross_choose}), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania (linia \ref{line:cross_apply}), którego wynik jest dołączany do zbioru $noweOsobniki$ (linia \ref{line:cross_add}). Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $\inputVar{c} = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $\range{0}{1}$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $\inputVar{c}$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{\inputVar{c}}$, a zamiast jednego partnera należy wybrać ich $\inputVar{c}-1$.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj mutację"	\label{algorithm:mutation_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -679,20 +696,26 @@ Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyż
 		}
 		\Procedure{mutation}{}
 		\Var $noweOsobniki \gets \emptyset$
+		\label{line:mut_init}
 		\ForAll {$osobnik \in populacja$}
+		\label{line:mut_each}
 			\If {$random([0,1]) \leq \param{prawdopodobienstwoMutacji}$}
+			\label{line:mut_check}
 				\Var $mutant \gets \param{operatorMutacji}(osobnik)$
+				\label{line:mut_apply}
 				\State $noweOsobniki \gets noweOsobniki \cup \left\{ mutant \right\}$
+				\label{line:mut_add}
 			\EndIf 
 		\EndFor
 		\State $populacja \gets populacja \cup noweOsobniki$
+		\label{line:mut_merge}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutację". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii 2.), który w linii 9. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia 3) sprawdzane jest, czy należy wykonać na nim mutację (linia 4), a jeśli tak, to stosowany jest do niego operator mutacji, którego wynik zostaje dołączony do zbioru $noweOsobniki$ (linie 5 i 6).
+Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutację". Krok rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii \ref{line:mut_init}), który w linii \ref{line:mut_merge} zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia \ref{line:mut_each}) sprawdzane jest, czy należy wykonać na nim mutację (linia \ref{line:mut_check}), a jeśli tak, to stosowany jest do niego operator mutacji (linia \ref{line:mut_apply}), którego wynik zostaje dołączony do zbioru $noweOsobniki$ (linia \ref{line:mut_add}).
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Dokonaj selekcji naturalnej"	\label{algorithm:natSel_std}}
 	\begin{algorithmic}[1]
 		\Params{
@@ -705,11 +728,12 @@ Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutacj�
 		}
 		\Procedure{naturalSelection}{}
 		\State $populacja \gets \param{operatorSelekcji}_{\param{rozmiarPopulacji}}(populacja)$
+		\label{line:sel_apply}
 		\EndProcedure
 	\end{algorithmic}
 \end{algorithm}
 
-Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji naturalnej", który \defacto sprowadza się do zastąpienia dotychczasowej populacji wynikiem zastosowania operatora selekcji na niej (linia 1).
+Algorytm \ref{algorithm:natSel_std} opisuje szczegóły kroku "Dokonaj selekcji naturalnej", który \defacto sprowadza się do zastąpienia dotychczasowej populacji wynikiem zastosowania operatora selekcji na niej (linia \ref{line:sel_apply}).
 
 \section{Analiza jakości działania}
 
