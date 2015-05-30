@@ -66,10 +66,19 @@
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
 
-\algnewcommand{\Params}[1]{%
-	\Statex \textbf{Potrzebne zmienne, parametry i operatory:}
-	\Statex \hspace*{\algorithmicindent}\parbox[t]{.8\linewidth}{\raggedright #1}
+\algnewcommand{\Description}[2]{%
+	\Statex \textbf{#1:}
+	\Statex \hspace*{\algorithmicindent}\parbox[t]{.8\linewidth}{\raggedright #2}
 }
+\algdef{SE}[OPERATOR]{Operator}{EndOperator}%
+[2]{\textbf{operator}\ \textproc{#1}\ifthenelse{\equal{#2}{}}{}{(#2)}}%
+{\algorithmicend\ \textbf{operator}}
+
+\algnewcommand{\Input}[1]{\Description{Wejście}{#1}}
+\algnewcommand{\Output}[1]{\Description{Wyjście}{#1}}
+\algnewcommand{\Params}[1]{\Description{Parametry}{#1}}
+\algnewcommand{\Context}[1]{\Description{Dostępne zmienne}{#1}}
+
 
 %\algnewcommand{\MyComment}[1]{\Comment{\parbox[t]{.5\linewidth}{#1}}}
 %\algnewcommand{\MyComment}[1]{\Comment{\begin{flushright}#1\end{flushright}}}
@@ -303,7 +312,7 @@ Wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots 
 	
 	%operator arrow
 	\draw [->, thick] (4.5, -2.5)  -- (4.5, -4.5); 
-	\node[right] at (4.5, -3.5) {$\param{operatorKrzyzowania}$};
+	\node[right] at (4.5, -3.5) {$\param{opKrzyzowania}$};
 	
 	%first output
 	\foreach \x in {0,1,...,3}
@@ -352,7 +361,7 @@ Jedną z popularnych realizacji operatora mutacji dla osobnika reprezentowanego 
 	
 	%operator arrow
 	\draw [->, thick] (4.5, -1)  -- (4.5, -3); 
-	\node[right] at (4.5, -2) {$\param{operatorMutacji}$};
+	\node[right] at (4.5, -2) {$\param{opMutacji}$};
 	
 	%mutated
 	\node[cellStyle] at(0, -4) {$1$};
@@ -572,8 +581,8 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature:mutation}}
 	\begin{align}
-	\param{operatorMutacji}: & \important{S} \rightarrow \withSize{\important{S}}{\variable{m}} \\
-	\param{prawdopodobienstwoMutacji} \in & \range{0}{1}
+	\param{opMutacji}: & \important{S} \rightarrow \withSize{\important{S}}{\variable{m}} \\
+	\param{prawdMutacji} \in & \range{0}{1}
 	\end{align}
 	$\variable{m}$ to liczba zwracanych wyników mutacji.
 \end{signature}	
@@ -587,8 +596,8 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 \begin{signature}
 	\caption{Operator krzyżowania \label{signature:crossover}}
 	\begin{align}
-	\param{operatorKrzyzowania}: & \withSize{\important{S}}{\inputVar{c}} \rightarrow \withSize{\important{S}}{\outputVar{c}} \\
-	\param{prawdopodobienstwoKrzyzowania} \in & \range{0}{1}
+	\param{opKrzyzowania}: & \withSize{\important{S}}{\inputVar{c}} \rightarrow \withSize{\important{S}}{\outputVar{c}} \\
+	\param{prawdKrzyzowania} \in & \range{0}{1}
 	\end{align}
 	$\inputVar{c}$ to liczba rodziców, a $\outputVar{c}$ to liczba potomków.
 \end{signature}	
@@ -606,17 +615,17 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 \begin{signature}
 	\caption{Operator selekcji \label{signature:selection}}
 	\begin{align}
-	\param{operatorSelekcji}: &\withSize{\important{S}}{p} \rightarrow \withSize{\important{S}}{\param{rozmiarPopulacji}} \\
+	\param{opSelekcji}: &\withSize{\important{S}}{p} \rightarrow \withSize{\important{S}}{\param{rozmiarPopulacji}} \\
 	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
 	\label{line:p_start} 
-	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times \variable{m} \\
-	          &+ \param{prawdopodobienstwoKrzyzowania} \times \outputVar{c}) \\
+	p \approx &(1 + \param{prawdMutacji} \times \variable{m} \\
+	          &+ \param{prawdKrzyzowania} \times \outputVar{c}) \\
 	\label{line:p_stop} 
 	&\times \param{rozmiarPopulacji} \\
 	\label{line:constraint_sel_start}          
 	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t = s \\
-	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
+	s \in \param{opSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t = s \\
+	P(i) \gets &P(t_i \in \param{opSelekcji}(T)) \\
 	\label{line:constraint_sel_stop} 
 	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel
 	\end{align}
@@ -652,12 +661,14 @@ Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych oso
 \begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj krzyżowanie"	\label{algorithm:crossOver_std}}
 	\begin{algorithmic}[1]
-		\Params{
+		\Context{
 			$populacja$ 
-				\Comment{Obecna populacja, tj. zbiór osobników}\\ 
-			$\param{prawdopodobienstwoKrzyzowania}$
+			\Comment{Obecna populacja, tj. zbiór osobników}
+			}
+		\Params{
+			$\param{prawdKrzyzowania}$
 				\Comment{Prawd. krzyżowania}\\ 
-			$\param{operatorKrzyzowania}$  
+			$\param{opKrzyzowania}$  
 				\Comment{Operator krzyżowania}
 			}
 		\Procedure{crossingOver}{}
@@ -665,11 +676,11 @@ Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych oso
 			\label{line:cross_init} 
 			\ForAll {$osobnik \in populacja$}
 			\label{line:cross_each} 
-				\If {$random([0,1]) \leq \nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$}
+				\If {$random([0,1]) \leq \nicefrac{\param{prawdKrzyzowania}}{2}$}
 				\label{line:cross_check} 
 					\Var $partner \gets random(populacja \setminus \left\{ osobnik \right\})$ 
 					\label{line:cross_choose}
-					\Var $potomek \gets \param{operatorKrzyzowania}(osobnik, partner)$
+					\Var $potomek \gets \param{opKrzyzowania}(osobnik, partner)$
 					\label{line:cross_apply} 
 					\State $noweOsobniki \gets noweOsobniki \cup \left\{ potomek \right\}$
 					\label{line:cross_add}
@@ -681,17 +692,19 @@ Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych oso
 	\end{algorithmic}
 \end{algorithm}
 
-Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii \ref{line:cross_init}), który w linii \ref{line:cross_merge}. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia \ref{line:cross_each}) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia \ref{line:cross_check}). Jeżeli tak, to losowo dobierany jest jego partner (linia \ref{line:cross_choose}), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania (linia \ref{line:cross_apply}), którego wynik jest dołączany do zbioru $noweOsobniki$ (linia \ref{line:cross_add}). Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $\inputVar{c} = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $\range{0}{1}$ to $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{2}$. W ogólności, dla dowolnego $\inputVar{c}$ wartość ta wynosi $\nicefrac{\param{prawdopodobienstwoKrzyzowania}}{\inputVar{c}}$, a zamiast jednego partnera należy wybrać ich $\inputVar{c}-1$.
+Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyżowanie". Krok ten rozpoczyna się od inicjalizacji zmiennej $noweOsobniki$ na pusty zbiór (w linii \ref{line:cross_init}), który w linii \ref{line:cross_merge}. zostanie dołączony do ogólnej populacji. Dla każdego osobnika w populacji (linia \ref{line:cross_each}) sprawdzane jest, czy należy wykonać krzyżowanie z jego udziałem (linia \ref{line:cross_check}). Jeżeli tak, to losowo dobierany jest jego partner (linia \ref{line:cross_choose}), a następnie na tak określonej parze osobników stosowany jest operator krzyżowania (linia \ref{line:cross_apply}), którego wynik jest dołączany do zbioru $noweOsobniki$ (linia \ref{line:cross_add}). Schemat ten przewiduje, że operator krzyżowania przyjmuje 2 osobniki jako argument (tzn. $\inputVar{c} = 2$, patrz: rozdział \ref{subsection:crossover}), przez co wartość, z którą porównujemy losowo wybraną liczbę z przedziału $\range{0}{1}$ to $\nicefrac{\param{prawdKrzyzowania}}{2}$. W ogólności, dla dowolnego $\inputVar{c}$ wartość ta wynosi $\nicefrac{\param{prawdKrzyzowania}}{\inputVar{c}}$, a zamiast jednego partnera należy wybrać ich $\inputVar{c}-1$.
 
 \begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Wykonaj mutację"	\label{algorithm:mutation_std}}
 	\begin{algorithmic}[1]
-		\Params{
+		\Context{
 			$populacja$ 
-			\Comment{Obecna populacja, tj. zbiór osobników}\\ 
-			$\param{prawdopodobienstwoMutacji}$
+			\Comment{Obecna populacja, tj. zbiór osobników}
+		}
+		\Params{
+			$\param{prawdMutacji}$
 			\Comment{Prawd. mutacji}\\ 
-			$\param{operatorMutacji}$  
+			$\param{opMutacji}$  
 			\Comment{Operator mutacji}
 		}
 		\Procedure{mutation}{}
@@ -699,9 +712,9 @@ Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyż
 		\label{line:mut_init}
 		\ForAll {$osobnik \in populacja$}
 		\label{line:mut_each}
-			\If {$random([0,1]) \leq \param{prawdopodobienstwoMutacji}$}
+			\If {$random([0,1]) \leq \param{prawdMutacji}$}
 			\label{line:mut_check}
-				\Var $mutant \gets \param{operatorMutacji}(osobnik)$
+				\Var $mutant \gets \param{opMutacji}(osobnik)$
 				\label{line:mut_apply}
 				\State $noweOsobniki \gets noweOsobniki \cup \left\{ mutant \right\}$
 				\label{line:mut_add}
@@ -718,16 +731,18 @@ Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutacj�
 \begin{algorithm}[h]
 	\caption{Szczegółowy schemat działania kroku "Dokonaj selekcji naturalnej"	\label{algorithm:natSel_std}}
 	\begin{algorithmic}[1]
-		\Params{
+		\Context{
 			$populacja$ 
-			\Comment{Obecna populacja, tj. zbiór osobników}\\ 
+			\Comment{Obecna populacja, tj. zbiór osobników}
+		}
+		\Params{
 			$\param{rozmiarPopulacji}$
 			\Comment{Rozmiar populacji}\\ 
-			$\param{operatorSelekcji}$  
+			$\param{opSelekcji}$  
 			\Comment{Operator selekcji}
 		}
 		\Procedure{naturalSelection}{}
-		\State $populacja \gets \param{operatorSelekcji}_{\param{rozmiarPopulacji}}(populacja)$
+		\State $populacja \gets \param{opSelekcji}_{\param{rozmiarPopulacji}}(populacja)$
 		\label{line:sel_apply}
 		\EndProcedure
 	\end{algorithmic}
@@ -790,7 +805,10 @@ Jak zostało wspomniane na początku tego rozdziału, algorytmy ewolucyjne to he
 
 \chapter{Proponowane rozwiązania} \label{chapter:proposed}
 
-Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
+Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. 
+W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. 
+Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. 
+Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
 
 Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć. 
 
@@ -806,7 +824,9 @@ Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funk
 
 \section{Heurystyka DSEA} \label{section:dsea}
 
-Jak zostało pokazane w rozdziale \ref{chapter:literature}, istnieją rozwiązania które nie ignorują podziału populacji na płcie. Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania heurystki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on wyżej opisany aspekt biologii organizmów w ramach nowego operatora genetycznego. W dalszej części pracy tak zdefiniowaną heurystykę nazywać będziemy \textbf{algorytmem ewolucyjnym o podwójnej selekcji} (ang. \emph{double selection evolutionary algorithm}) i odnosić się do niej przy pomocy skrótu \textbf{DSEA}, będącego akronimem nazwy angielskiej.
+Jak zostało pokazane w rozdziale \ref{chapter:literature}, istnieją rozwiązania które nie ignorują podziału populacji na płcie. 
+Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania heurystki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on wyżej opisany aspekt biologii organizmów w ramach nowego operatora selekcji. 
+W dalszej części pracy tak zdefiniowaną heurystykę nazywać będziemy \textbf{algorytmem ewolucyjnym o podwójnej selekcji} (ang. \emph{double selection evolutionary algorithm}) i odnosić się do niej przy pomocy skrótu \textbf{DSEA}, będącego akronimem nazwy angielskiej.
 
 \subsection{Działanie} \label{subsection:dsea_scheme}
 
@@ -817,12 +837,20 @@ Na rysunku \ref{figure:dsea} przedstawiono schemat działania heurystyki DSEA w 
 	\img{dsea.png}
 \end{figure}
 
-W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w rozdziale \ref{section:general_idea}. Istotne różnice między diagramami to zmiana działania kroku "Wykonaj krzyżowanie oraz dodanie nowego kroku "Zadbaj o różnorodność populacji" zaraz przed nim. Zostały one zdefiniowane w rozdziałach kolejno \ref{subsubsection:my_crossover} i  i \ref{figure:fixing}. Ponadto, zmieniła się nazwa operatora używanego w kroku "Dokonaj selekcji naturalnej", co zostanie opisane w rozdziale \ref{subsection:new_natSel}.
+W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w sekcji \ref{section:general_idea}. 
+Istotne różnice między diagramami to zmiana działania kroku "Wykonaj krzyżowanie oraz dodanie nowego kroku "Zadbaj o różnorodność populacji" zaraz przed nim. 
+Zostały one zdefiniowane w paragrafach kolejno \ref{subsubsection:my_crossover} i  i \ref{figure:fixing}. 
+Ponadto, zmieniła się nazwa operatora używanego w kroku "Dokonaj selekcji naturalnej", co zostanie opisane w podsekcji \ref{subsection:new_natSel}.
 
 \subsubsection{Krok ,,Wykonaj krzyżowanie''} \label{subsubsection:my_crossover}
 
 
-Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok "Wykonaj krzyżowanie" jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{W rozdziale \ref{subsection:new_genSel} opisane zostanie znaczenie i sygnatura tego operatora, wyjaśnione jest uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdopodobienstwoKrzyzowania}$. } generowana jest lista par rodziców. Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. W przeciwieństwie do realizacji opisanej w rozdziale \ref{subsection:general_ea_scheme} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. Jest tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
+Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok "Wykonaj krzyżowanie" jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{
+	W podsekcji \ref{subsection:new_genSel} opisane zostanie znaczenie i sygnatura tego operatora, wyjaśnione jest uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdKrzyzowania}$. 
+} generowana jest lista par rodziców. 
+Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. 
+W przeciwieństwie do realizacji opisanej w sekcji \ref{section:ea_details} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. 
+Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
 \begin{figure}[H]
 	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
@@ -831,7 +859,13 @@ Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok
 
 \subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
 
-Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. Co za tym idzie, obie podgrupy powinny różnić się tym bardziej, im więcej generacji zostało przeprowadzonych. Efekt taki ma zarówno wady, jak i zalety. Dzięki niemu potomstwo (czyli wynik operatora krzyżowania) w danej populacji powinno również zachować większą różnorodność. Negatywną stroną tego zjawiska jest fakt, że operator selekcji naturalnej, który nie powinien brać pod uwagę płci, może zaburzyć stosunek liczności osobników danych płci względem siebie. W skrajnych sytuacjach może dojść do tego, że w całej populacji zabraknie osobników którejś z płci, co uniemożliwi dalsze działanie heurystyki (ponieważ niemożliwe byłoby zastosowanie operatora krzyżowania). Ponadto, im dysproporcje między różnymi płciami będą większe, tym mniejsza będzie różnorodność całej populacji, co szybko prowadzi do stagnacji.
+Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. 
+Co za tym idzie, obie podgrupy powinny różnić się tym bardziej, im więcej generacji zostało przeprowadzonych.
+Efekt taki ma zarówno wady, jak i zalety. 
+Dzięki niemu potomstwo (czyli wynik operatora krzyżowania) w danej populacji powinno również zachować większą różnorodność. 
+Negatywną stroną tego zjawiska jest fakt, że operator selekcji naturalnej, który nie powinien brać pod uwagę płci, może zaburzyć stosunek liczności osobników danych płci względem siebie. 
+W skrajnych sytuacjach może dojść do tego, że w całej populacji zabraknie osobników którejś z płci, co uniemożliwi dalsze działanie heurystyki (ponieważ niemożliwe byłoby zastosowanie operatora krzyżowania). 
+Ponadto, im dysproporcje między różnymi płciami będą większe, tym mniejsza będzie różnorodność całej populacji, co szybko prowadzi do stagnacji.
 
 \begin{figure}[H]
 	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
@@ -840,40 +874,91 @@ Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowa
 
 Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej. 
 
-W pierwszej jego części do populacji dodajemy tzw. ,,domieszki'' (ang. \emph{mixins}), czyli losowe osobniki (tworzone w ten sam sposób co populacja początkowa). Ma to na celu regularne uzupełnianie puli genów obecnych w populacji, na wypadek gdyby geny odpowiedzialne za pozytywną cechę zanikły z powodu losowości operatora selekcji naturalnej lub płciowej. Ilość domieszek jest kontrolowana przez współczynnik domieszek ($\param{wspDomieszek}$), będący stosunkiem pożądanej ilości nowych osobników do wartości $\param{rozmiarPopulacji}$.
+W pierwszej jego części do populacji dodajemy tzw. ,,domieszki'' (ang. \emph{mixins}), czyli losowe osobniki (tworzone w ten sam sposób co populacja początkowa). 
+Ma to na celu regularne uzupełnianie puli genów obecnych w populacji, na wypadek gdyby geny odpowiedzialne za pozytywną cechę zanikły z powodu losowości operatora selekcji naturalnej lub płciowej. 
+Ilość domieszek jest kontrolowana przez współczynnik domieszek ($\param{wspDomieszek}$), będący stosunkiem pożądanej ilości nowych osobników do wartości $\param{rozmiarPopulacji}$.
 
-Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie występuje w populacji, lub jest zbyt słabo reprezentowana. Jeśli liczność którejś z płci w populacji spadnie poniżej arbitralnie dobranej liczby $\param{d}$, to do populacji dołączane jest co najmniej $\param{d}$, a co najwyżej $\lceil \param{wspSamorodków} \times \param{rozmiarPopulacji} \rceil$ losowych osobników tej płci\footnote{Alternatywnym rozwiązaniem mogłaby być zmiana płci losowych osobników pozostałych płci.}. W praktyce, w ramach tej pracy użyto arbitralnie dobranych wartości $\param{d} = 5$ i $\param{wspSamorodków} = 0.05$.
+Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie występuje w populacji, lub jest zbyt słabo reprezentowana. 
+Jeśli liczność którejś z płci w populacji spadnie poniżej arbitralnie dobranej liczby $\param{d}$, to do populacji dołączane jest $\lceil \param{wspSamorodków} \times \param{rozmiarPopulacji} \rceil$ (lub $d$, jeśli $d$ jest większe) losowych osobników tej płci\footnote{
+	Alternatywnym rozwiązaniem mogłaby być zmiana płci losowych osobników pozostałych płci.
+}. 
+W praktyce, w ramach tej pracy użyto arbitralnie dobranych wartości $\param{d} = 5$ i $\param{wspSamorodków} = 0.05$.
 
 \subsection{Operator selekcji naturalnej} \label{subsection:new_natSel}
 
-Heurystyka DSEA, jak nazwa wskazuje, korzysta z dwóch operatorów selekcji, które należy rózróżnić. Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operator selekcji naturalnej}. Zachowuje on to samo znaczenie i zastosowanie, opisane w rozdziale \ref{subsection:natSel}. 
+Heurystyka DSEA, jak nazwa wskazuje, korzysta z dwóch operatorów selekcji, które należy rózróżnić. 
+Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operator selekcji naturalnej}. 
+Zachowuje on to samo znaczenie i zastosowanie, opisane w rozdziale \ref{subsection:natSel}. 
 
-Dodatkowo, wymaga się, aby prawdopodobieństwo znalezienia się osobnika w zbiorze zwracanym przez ten operator było niezależne od płci osobnika. Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signature:natSel}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
+Dodatkowo, wymaga się, aby prawdopodobieństwo znalezienia się osobnika w zbiorze zwracanym przez ten operator było niezależne od płci osobnika. 
+Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signature:natSel}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
 
 \begin{signature}
 	\caption{Operator selekcji naturalnej \label{signature:natSel}}
 	\begin{align}
-	\param{operatorSelekcji}: &\important{S}^p \rightarrow \important{S}^{\param{rozmiarPopulacji}} \\
+	\param{opSelNat}: &\withSize{\important{S}}{p} \rightarrow \withSize{\important{S}}{\param{rozmiarPopulacji}} \\
 	\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
-	p \approx &(1 + \param{prawdopodobienstwoMutacji} \times \variable{m} \\
-	&+ \param{prawdopodobienstwoKrzyzowania} \times \outputVar{c}) \\
+	p \approx &(1 + \param{prawdMutacji} \times \variable{m} \\
+	&+ \param{prawdKrzyzowania} \times \outputVar{c}) \\
 	&\times \param{rozmiarPopulacji} \\
 	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	s \in \param{operatorSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
-	P(i) \gets &P(t_i \in \param{operatorSelekcji}(T)) \\
+	s \in \param{opSelNat}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
+	P(i) \gets &P(t_i \in \param{opSelNat}(T)) \\
 	\forall_{i, j = 0, 1, \ldots, \param{rozmiarPopulacji}-1}P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel \\
 	\label{line:gender_resistant}
 	\forall_{i= 0, 1, \ldots, \param{rozmiarPopulacji}-1, g \in \important{G}}P(i \wedge & plec(t) = g) = P(i) \times P(plec(t_i) = g)
 	\end{align}
 \end{signature}
 
-Standardowo korzysta się z operatorów selekcji naturalnej które w konkretny dla siebie sposób wybierają odpowiednią ilość osobników z populacji wejściowej. O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączające do populacji wyjściowej są zazwyczaj wybierane w ten sam sposób. Pozwala to na zapisanie 
+Standardowo korzysta się z operatorów selekcji naturalnej które odpowiednią ilość razy powtarzają wybór pojedynczego osobnika (bez powtórzeń) z populacji wejściowej, zbierając w ten sposób populację wyjściową. 
+O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączane do populacji wyjściowej są zazwyczaj wybierane przy pomocy tego samego podejścia, które dalej będzie nazywane operatorem wyboru.
+Został on zdefiniowany w sygnaturze \ref{signature:chooseOp}.
+Rzecz jasna istnieją realizacje, które korzystają z wielu operatorów wyboru, ale nie są one tematem tej pracy i nie będą w niej poruszane.
 
-\todo{ta sama semantyka, ściślejsza nazwa, powtórzyć sygnature, opisać realizację opartą o op. wyboru}
+\begin{signature}
+	\caption{Operator wyboru \label{signature:chooseOp}}
+	\begin{align}
+		\param{opWyboru}: &\withSize{\important{S}}{p} \rightarrow \important{S}
+	\end{align}
+\end{signature}
 
-\subsubsection{Operator wyboru}
+Realizacje operatorów wyboru nazywamy zgodnie z nazwami operatorów selekcji które z nich korzystają.
+Przykładowo, turniejowy operator selekcji korzysta z turniejowego operatora wyboru.
+Operatory wykorzystane w tej pracy zostały opisane w \todo{odnieść się do eksperymentów}.
 
-\todo{Wyjaśnić sens, przedstawić sygnaturę, opisać przykładowe, powiedzieć, że ich realizacja jest w eksperymentach}
+Wydzielenie abstrakcji wyboru jednego rozwiązania pozwala na zapisanie uogólnionego schematu działania większości popularnie stosowanych operatorów selekcji.
+Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
+
+\begin{algorithm}[h]
+	\caption{Schemat działania operatora selekcji naturalnej korzystającego z operatora wyboru \label{algorithm:natSel_choose}}
+	\begin{algorithmic}[1]
+		\Input{
+			populacja \Comment{Populacja wyjściowa}
+			}
+		\Output{
+			wynik \Comment{Populacja wyjściowa}
+			}
+		\Params{
+			$\param{rozmiarPopulacji}$ \Comment{Rozmiar populacji} \\
+			$\param{opWyboru}$ \Comment{Operator wyboru}\\
+			}
+		\Operator{$\param{opSelNat}$}{$populacja$}
+			\Var $wynik \gets \emptyset$ 
+			\label{line:natSelChoose_init}
+			\While{$|wynik| < \param{rozmiarPopulacji}$}
+			\label{line:natSelChoose_while}
+				\State $wynik \gets wynik \cup \{ \param{opWyboru}(populacja \setminus wynik) \}$
+				\label{line:natSelChoose_choose}
+			\EndWhile
+			\State \Return{$wynik$}
+			\label{line:natSelChoose_return}
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+Działanie takiego operatora zaczyna się od inicjalizacji zmiennej $wynik$, zwracanej jako rezultat (linia \ref{line:natSelChoose_return}). 
+Początkowa jej wartość to zbiór pusty (linia \ref{line:natSelChoose_init}), jednak w kolejnym kroku rozpoczyna się pętla, powtarzana tak długo, aż zbiór ten będzie miał odpowiedni rozmiar (linia \ref{line:natSelChoose_while}).
+W ciele tej pętli za pomocą operatora wyboru $\param{opWyboru}$ dokonuje się selekcji jednego nie wybranego jeszcze rozwiązania i dołącza sie je do zbioru $wynik$ (linia \ref{line:natSelChoose_choose}).
 
 \subsection{Operator selekcji płciowej} \label{subsection:new_genSel}
 
