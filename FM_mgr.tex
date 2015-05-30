@@ -63,6 +63,8 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 
+\usepackage{wasysym}
+
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
 
@@ -624,7 +626,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 	&\times \param{rozmiarPopulacji} \\
 	\label{line:constraint_sel_start}          
 	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	s \in \param{opSelekcji}(T) &\Leftrightarrow \exists_{t \in T}  t = s \\
+	s \in \param{opSelekcji}(T) &\Rightarrow s \in T\\
 	P(i) \gets &P(t_i \in \param{opSelekcji}(T)) \\
 	\label{line:constraint_sel_stop} 
 	P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel
@@ -818,7 +820,8 @@ Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funk
 	plec: & \important{S} \rightarrow \important{G} \\
 	\important{G} \neq & \emptyset
 	\end{align}
-	$\important{G}$ to zbiór możliwych płci.
+	$\important{G}$ to zbiór możliwych płci.\\
+	W niniejszej pracy przyjęto co najwyżej 2 płcie, ze zbiorem $\important{G}$ określonym jako $\important{G} = \{ \female, \male \}$
 \end{signature}
 
 
@@ -933,10 +936,10 @@ Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
 	\caption{Schemat działania operatora selekcji naturalnej korzystającego z operatora wyboru \label{algorithm:natSel_choose}}
 	\begin{algorithmic}[1]
 		\Input{
-			populacja \Comment{Populacja wyjściowa}
+			$populacja$ \Comment{Populacja wyjściowa}
 			}
 		\Output{
-			wynik \Comment{Populacja wyjściowa}
+			$wynik$ \Comment{Populacja wyjściowa}
 			}
 		\Params{
 			$\param{rozmiarPopulacji}$ \Comment{Rozmiar populacji} \\
@@ -962,11 +965,92 @@ W ciele tej pętli za pomocą operatora wyboru $\param{opWyboru}$ dokonuje się 
 
 \subsection{Operator selekcji płciowej} \label{subsection:new_genSel}
 
-\todo{nowe toto, wyjaśnić po co, sygnatura}
+W przeciwieństwie do tego jak działają klasyczne algorytmy ewolucyjne, w przyrodzie fakt dobierania się osobników w pary w celu wydania potomstwa nie jest losowy.
+W zależności od gatunku i sytuacji środowiskowej przedstawiciele jednej lub obu płci muszą przekonać swoich przyszłych partnerów o tym, że mają cechy, które przekazane potomstwu dałyby mu większą szansę na przetrwanie.
+Sposoby na to są różne - samce różnych gatunków rywalizują o samice poprzez walkę, okrzyki i śpiew, taniec, itd. 
+U innych gatunków to samice zabiegają o względy partnerów.
+Ponadto, różne gatunki stosują różne strategie wiązania się w pary.
+Niektóre z nich starają się krzyżować tak często jak to możliwe z możliwie dużą liczbą partnerów, co powoduje dużą liczbę potomstwa, z których ,,odsiewana'' jest słabo przystosowana do środowiska większość.
+Inne wiążą się w pary na całe życie (jak np. niektóre gatunki ptaków), albo przynajmniej na jakiś czas, dłuższy niż jedno pokolenie.
+
+Operator selekcji płciowej to nowy element schematu heurystyki, który ma symulować te zjawiska i strategie.
+W ogólności osobniki lepiej dopasowane do środowiska powinny mieć większą szansę na zostanie rodzicami niż te dopasowane gorzej.
+Zastosowanie tego operatora do populacji z poprzedniego pokolenia powinno zwrócić zestaw par osobników-rodziców, z których każda para zostanie dalej przekazana do operatora krzyżowania.
+
+W naturze, podobnie jak w podejściach porównywanych w tej pracy, rodziców jest dwoje. 
+W sztucznym środowisku symulacyjnym liczba ta może być w gruncie rzeczy dowolna. 
+Oznacza to, że wspomniane wyżej pary rodziców mogą być zbiorami o dowolnym rozmiarze.
+
+Dotychczasowe algorytmy ewolucyjne można traktować jako DSEA z losowym operatorem selekcji płciowej.
+
+Zmienia się znaczenie prawdopodobieństwa krzyżowania. 
+Nazwa tego parametru zostaje bez zmian, aby nie komplikować nazewnictwa, jednak sama wartość nie przekłada się na matematyczne prawdopodobieństwo tego, że losowy osobnik zostanie rodzicem. 
+Zamiast tego może być rozumiana jako stosunek liczby zdarzeń krzyżowania w każdym pokoleniu do rozmiaru populacji. 
+Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, jednak przez to, że krzyżowanie może skutkować utworzeniem więcej niż jednego potomka, nie należy rozumieć tego parametru jako stosunku liczby krzyżówek do rozmiaru populacji.
+
+\begin{signature}
+	\caption{Operator selekcji płciowej \label{signature:genSel}}
+	\begin{align}
+		\param{opSelPlciowej}: &\withSize{ \important{S}}{\param{rozmiarPopulacji} } \rightarrow \withSize{ ( \withSize{\important{S}  }{\inputVar{c}} ) }{q} \\
+		q = & \param{prawdKrzyzowania} \times \param{rozmiarPopulacji}\\
+		T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
+		\exists_{P \in \param{opSelekcji}(T)} t \in P &\Rightarrow t \in T
+	\end{align}	
+	$\inputVar{c}$ to ilość osobników potrzebna do wykonania krzyżowania (patrz: sygnatura \ref{signature:crossover}, rozdział \ref{subsection:crossover}). \\
+	Operator zwraca zbiór $q$ zbiorów, z których każdy zawiera $\inputVar{c}$ osobników.
+\end{signature}
 
 \subsection{Realizacja wybranych \todo{rozwiązań literaturowych (?)} w modelu DSEA}
 
 \todo{troche prozy, wspólna realizacja}
+W rozdziale \ref{chapter:literature} przedstawiono przegląd prac naukowych o tematyce zgodnej z tematem tej pracy, tj. z uwzględnianiem zjawiska płci w algorytmach ewolucyjnych.
+Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały nieco odmienne podejścia do zagadnienia: GGA \cite{GGA}, które opierało się o wymuszenie różnych płci rodziców, wybierając ich losowo, oraz SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
+
+Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmiennie parametryzowanego dla każdej z tych metod. Algorytm \ref{algorithm:common_genSel} opisuje jego działanie.
+
+\begin{algorithm}
+	\caption{Schemat działania wybranych \todo{rozwiązań literaturowych} \label{algorithm:common_genSel} }
+	\begin{algorithmic}[1]
+		\Input{
+			$populacja$ \Comment{Populacja wyjściowa}
+		}
+		\Output{
+			$rodzice$ \Comment{Zbiór par rodziców}
+		}
+		\Params{
+			$\param{opWyboru1}$ \Comment{Operator wyboru pierwszego z rodziców} \\
+			$\param{opWyboru2}$ \Comment{Operator wyboru drugiego z rodziców}
+			$\param{plecMaZnaczenie}$ \Comment{\raggedleft Zmienna logiczna określająca, czy rodzice muszą różnić się płcią}\\
+			$\param{prawdKrzyzowania}$ \Comment{Prawdopodobieństwo krzyżowania}
+		}
+		\Operator{$\param{opSelPlciowej}$}{$populacja$}
+		\Var $rodzice \gets \emptyset$
+		\label{line:stdGenSelChoose_init_parent}
+		\Var $kandydaci1 \gets \begin{cases} 
+			\left\{ s: plec(s)=\female, s \in populacja \right\} &: \param{plecMaZnaczenie}=\top\\ 
+			populacja &: \param{plecMaZnaczenie}=\bot
+		\end{cases} $
+		\label{line:stdGenSelChoose_init_candidates_begin}
+		\Var $kandydaci2 \gets \begin{cases} 
+			\left\{ s: plec(s)=\male, s \in populacja \right\} &: \param{plecMaZnaczenie}=\top\\ 
+			populacja &: \param{plecMaZnaczenie}=\bot
+		\end{cases} $
+		\label{line:stdGenSelChoose_init_candidates_end}
+		\While{$|rodzice| < \param{rozmiarPopulacji}\times\param{prawdKrzyzowania}]$}
+		\label{line:stdGenSelChoose_while}
+			\Var $rodzic1 \gets opWyboru1(kandydaci1) $
+			\label{line:stdGenSelChoose_choose_begin}
+			\Var $rodzic2 \gets opWyboru1(kandydaci1 \setminus \left\{ rodzic1 \right\}) $
+			\label{line:stdGenSelChoose_choose_end}
+			\State $rodzice \gets rodzice \cup \{  \{ rodzic1, rodzic2 \} \}$
+			\label{line:stdGenSelChoose_parents_merge}
+		\EndWhile
+		\State \Return{$rodzice$}
+		\label{line:stdGenSelChoose_return}
+		\EndOperator
+	\end{algorithmic}
+	Symbole $\top$ i $\bot$ oznaczają kolejno prawdę i fałsz.
+\end{algorithm}
 
 \subsubsection{GGA}
 
