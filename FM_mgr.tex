@@ -81,6 +81,8 @@
 \algnewcommand{\Params}[1]{\Description{Parametry}{#1}}
 \algnewcommand{\Context}[1]{\Description{Dostępne zmienne}{#1}}
 
+\algnewcommand{\Start}{\setcounter{ALG@line}{-1}}
+
 
 %\algnewcommand{\MyComment}[1]{\Comment{\parbox[t]{.5\linewidth}{#1}}}
 %\algnewcommand{\MyComment}[1]{\Comment{\begin{flushright}#1\end{flushright}}}
@@ -669,11 +671,12 @@ Cały proces rozpoczyna się od inicjalizacji populacji przy pomocy losowych oso
 			}
 		\Params{
 			$\param{prawdKrzyzowania}$
-				\Comment{Prawd. krzyżowania}\\ 
+				\Comment{\raggedleft Prawdopodobieństwo krzyżowania}\\ 
 			$\param{opKrzyzowania}$  
 				\Comment{Operator krzyżowania}
 			}
-		\Procedure{crossingOver}{}
+		\Start
+		\Procedure{wykonajKrzyzowanie}{}
 			\Var $noweOsobniki \gets \emptyset$
 			\label{line:cross_init} 
 			\ForAll {$osobnik \in populacja$}
@@ -705,11 +708,12 @@ Algorytm \ref{algorithm:crossOver_std} opisuje szczegóły kroku "Wykonaj krzyż
 		}
 		\Params{
 			$\param{prawdMutacji}$
-			\Comment{Prawd. mutacji}\\ 
+			\Comment{\raggedleft Prawdopodobieństwo mutacji}\\ 
 			$\param{opMutacji}$  
 			\Comment{Operator mutacji}
 		}
-		\Procedure{mutation}{}
+		\Start
+		\Procedure{wykonajMutacje}{}
 		\Var $noweOsobniki \gets \emptyset$
 		\label{line:mut_init}
 		\ForAll {$osobnik \in populacja$}
@@ -743,7 +747,8 @@ Algorytm \ref{algorithm:mutation_std} opisuje szczegóły kroku "Wykonaj mutacj�
 			$\param{opSelekcji}$  
 			\Comment{Operator selekcji}
 		}
-		\Procedure{naturalSelection}{}
+		\Start
+		\Procedure{dokonajSelekcjiNaturalnej}{}
 		\State $populacja \gets \param{opSelekcji}_{\param{rozmiarPopulacji}}(populacja)$
 		\label{line:sel_apply}
 		\EndProcedure
@@ -812,7 +817,8 @@ W rzeczywistości większa część istniejących gatunków, zaczynając od doś
 Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. 
 Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
 
-Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć. 
+Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć.
+\todo{osobnik musi zawierać ceche plci, dodać do sygnatury S-DSEA = S-EA x G}
 
 \begin{signature}
 	\caption{Funkcja $plec(osobnik)$ \label{signature:genderFoo}}
@@ -907,9 +913,9 @@ Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signatur
 	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
 	s \in \param{opSelNat}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
 	P(i) \gets &P(t_i \in \param{opSelNat}(T)) \\
-	\forall_{i, j = 0, 1, \ldots, \param{rozmiarPopulacji}-1}P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel \\
+	\forall_{i \in \range{0}{\param{rozmiarPopulacji}-1}}P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel \\
 	\label{line:gender_resistant}
-	\forall_{i= 0, 1, \ldots, \param{rozmiarPopulacji}-1, g \in \important{G}}P(i \wedge & plec(t) = g) = P(i) \times P(plec(t_i) = g)
+	\forall_{i \in \range{0}{\param{rozmiarPopulacji}-1}, g \in \important{G}}P(i \wedge & plec(t) = g) = P(i) \times P(plec(t_i) = g)
 	\end{align}
 \end{signature}
 
@@ -929,6 +935,9 @@ Realizacje operatorów wyboru nazywamy zgodnie z nazwami operatorów selekcji kt
 Przykładowo, turniejowy operator selekcji korzysta z turniejowego operatora wyboru.
 Operatory wykorzystane w tej pracy zostały opisane w \todo{odnieść się do eksperymentów}.
 
+Warto zauważyć, że wcześniej zdefiniowany (sygnatura \ref{signature:random} w rozdziale \ref{chapter:eaDesc}) operator $random(X)$ może być traktowany jako operator wyboru.
+Nie nadaje się on do zastosowań mających na celu poprawę wyników heurystyki, jednak korzystając z niego możemy opisać istniejące podejścia w modelu DSEA (patrz: podsekcja \ref{subsection:literatureRealization}).
+
 Wydzielenie abstrakcji wyboru jednego rozwiązania pozwala na zapisanie uogólnionego schematu działania większości popularnie stosowanych operatorów selekcji.
 Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
 
@@ -941,6 +950,7 @@ Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
 		\Output{
 			$wynik$ \Comment{Populacja wyjściowa}
 			}
+		\Start
 		\Params{
 			$\param{rozmiarPopulacji}$ \Comment{Rozmiar populacji} \\
 			$\param{opWyboru}$ \Comment{Operator wyboru}\\
@@ -992,7 +1002,7 @@ Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, je
 	\caption{Operator selekcji płciowej \label{signature:genSel}}
 	\begin{align}
 		\param{opSelPlciowej}: &\withSize{ \important{S}}{\param{rozmiarPopulacji} } \rightarrow \withSize{ ( \withSize{\important{S}  }{\inputVar{c}} ) }{q} \\
-		q = & \param{prawdKrzyzowania} \times \param{rozmiarPopulacji}\\
+		q = & \lceil \param{prawdKrzyzowania} \times \param{rozmiarPopulacji} \rceil \\
 		T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
 		\exists_{P \in \param{opSelekcji}(T)} t \in P &\Rightarrow t \in T
 	\end{align}	
@@ -1000,16 +1010,15 @@ Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, je
 	Operator zwraca zbiór $q$ zbiorów, z których każdy zawiera $\inputVar{c}$ osobników.
 \end{signature}
 
-\subsection{Realizacja wybranych \todo{rozwiązań literaturowych (?)} w modelu DSEA}
+\subsection{Realizacja wybranych operatorów selekcji płciowej} \label{subsection:literatureRealization}
 
-\todo{troche prozy, wspólna realizacja}
 W rozdziale \ref{chapter:literature} przedstawiono przegląd prac naukowych o tematyce zgodnej z tematem tej pracy, tj. z uwzględnianiem zjawiska płci w algorytmach ewolucyjnych.
 Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały nieco odmienne podejścia do zagadnienia: GGA \cite{GGA}, które opierało się o wymuszenie różnych płci rodziców, wybierając ich losowo, oraz SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
 
 Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmiennie parametryzowanego dla każdej z tych metod. Algorytm \ref{algorithm:common_genSel} opisuje jego działanie.
 
 \begin{algorithm}
-	\caption{Schemat działania wybranych \todo{rozwiązań literaturowych} \label{algorithm:common_genSel} }
+	\caption{Schemat działania wybranych operatorów selekcji płciowej \label{algorithm:common_genSel} }
 	\begin{algorithmic}[1]
 		\Input{
 			$populacja$ \Comment{Populacja wyjściowa}
@@ -1020,9 +1029,10 @@ Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmien
 		\Params{
 			$\param{opWyboru1}$ \Comment{Operator wyboru pierwszego z rodziców} \\
 			$\param{opWyboru2}$ \Comment{Operator wyboru drugiego z rodziców}
-			$\param{plecMaZnaczenie}$ \Comment{\raggedleft Zmienna logiczna określająca, czy rodzice muszą różnić się płcią}\\
+			$\param{plecMaZnaczenie}$ \Comment{\raggedleft Wartość logiczna określająca, czy rodzice muszą różnić się płcią}\\
 			$\param{prawdKrzyzowania}$ \Comment{Prawdopodobieństwo krzyżowania}
 		}
+		\Start
 		\Operator{$\param{opSelPlciowej}$}{$populacja$}
 		\Var $rodzice \gets \emptyset$
 		\label{line:stdGenSelChoose_init_parent}
@@ -1036,11 +1046,11 @@ Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmien
 			populacja &: \param{plecMaZnaczenie}=\bot
 		\end{cases} $
 		\label{line:stdGenSelChoose_init_candidates_end}
-		\While{$|rodzice| < \param{rozmiarPopulacji}\times\param{prawdKrzyzowania}]$}
+		\While{$|rodzice| < \param{rozmiarPopulacji}\times\param{prawdKrzyzowania}$}
 		\label{line:stdGenSelChoose_while}
 			\Var $rodzic1 \gets opWyboru1(kandydaci1) $
 			\label{line:stdGenSelChoose_choose_begin}
-			\Var $rodzic2 \gets opWyboru1(kandydaci1 \setminus \left\{ rodzic1 \right\}) $
+			\Var $rodzic2 \gets opWyboru2(kandydaci1 \setminus \left\{ rodzic1 \right\}) $
 			\label{line:stdGenSelChoose_choose_end}
 			\State $rodzice \gets rodzice \cup \{  \{ rodzic1, rodzic2 \} \}$
 			\label{line:stdGenSelChoose_parents_merge}
@@ -1051,6 +1061,38 @@ Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmien
 	\end{algorithmic}
 	Symbole $\top$ i $\bot$ oznaczają kolejno prawdę i fałsz.
 \end{algorithm}
+
+\fixme{zmienna, zmienne, zmiennej, etc}
+
+Działanie operatora rozpoczyna się od deklaracji i inicjalizacji zmiennych pomocniczych.
+Zmienna $rodzice$ przyjmuje jako wartość pusty zbiór (linia \ref{line:stdGenSelChoose_init_parent}).
+Dodatkowo, deklarujemy 2 zmienne przechowujące kandydatów na każdego z rodziców (linie \ref{line:stdGenSelChoose_init_candidates_begin}-\ref{line:stdGenSelChoose_init_candidates_end}).
+W zależności od parametru $\param{plecMaZnaczenie}$ przechowują one albo całą populację (jeżeli $\param{plecMaZnaczenie} = \bot$, czyli rodzice mogą być tej samej płci), albo odflitrowane osobniki odpowiedniej płci (jeżeli $\param{plecMaZnaczenie} = \top$, czyli wymagane jest, aby rodzice byli różnych płci).
+
+Następnie, póki nie zostanie wybrana odpowiednia liczba par rodziców (linia \ref{line:stdGenSelChoose_while}) powtarzany jest zestaw operacji określający kolejną z nich.
+Za pomocą operatora $\param{opWyboru1}$ ze zbioru $\param{kandydaci1}$ wybierany jest pierwszy rodzic (linia \ref{line:stdGenSelChoose_choose_begin}).
+Drugi z rodziców jest wybierany ze zbioru $\param{kandydaci2}$ za pomocą operatora $\param{opWyboru2}$  (linia \ref{line:stdGenSelChoose_choose_end}), \fixme{unikając sytuacji} w której oboje rodziców byłoby tym samym osobnikiem (mogłoby się tak zdarzyć, jeżeli $\param{plecMaZnaczenie} = \bot$, więc oboje z nich byłoby wybieranych z całej populacji).
+Dwuelementowy zbiór tak wybranych rodziców jest dołączany do zbioru $rodzice$.
+
+Kiedy określimy odpowiednio dużo par, zmienna $rodzice$ jest zwracana jako wynik operatora (linia \ref{line:stdGenSelChoose_return}).
+
+Tak określona realizacja powiela założenie tej pracy, zgodnie z którym płci jest co najwyżej 2 ($|\important{G}| \in \{ 1, 2 \}$; jeżeli $\param{plecMaZnaczenie} = \bot$ to liczność tego zbioru nie ma znaczenia, ponieważ funkcja $plec(s)$ nie jest używana, w jednak w przeciwnej sytuacji musi ona wynosić 2), dodatkowo zakładając liczbę rodziców wymaganą przez operator krzyżowania $\inputVar{c}=2$.
+Algorytm można dość łatwo uogólnić do postaci, w której liczby te są większe, pamiętając, że jeżeli $\param{plecMaZnaczenie} = \top$, to rodzice muszą być różnych płci, więc rozmiar argumentu operatora krzyżowania musi być równy ich liczbie ($\inputVar{c} = |\important{G}|$).
+
+\subsubsection{Standardowe algorytmy ewolucyjne}
+
+Jeżeli:
+\begin{itemize}
+	\item użyto operatora selekcji płciowej opisanego powyżej sparametryzowanego przy pomocy:
+	\begin{itemize}
+		\item $\param{plecMaZnaczenie} = \bot$,
+		\item $\param{opWyboru1} = random$,
+		\item $\param{opWyboru2} = random$,
+	\end{itemize}
+	\item użyto wybranego operatora selekcji naturalnej,
+	\item zignorowano liczbę płci ($|\important{G}| \in \numberSet{N}_{+}$) , ponieważ $\param{plecMaZnaczenie} = \bot$,
+\end{itemize}
+to DSEA sprowadza się do standardowego algorytmu ewolucyjnego, w którym na prawdopodobieństwo wydania potomstwa ma wpływ jedynie operator selekcji naturalnej.
 
 \subsubsection{GGA}
 
@@ -1115,6 +1157,7 @@ Kolejno znajdowane konfiguracje
 \listoffigures
 \listoftables
 \listof{signature}{Spis sygnatur}
+\listof{algorithm}{Spis algorytmów}
 
 \bibliographystyle{iisthesis}
 \bibliography{bibliografia}
