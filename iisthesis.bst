@@ -98,7 +98,7 @@ FUNCTION {output}
 FUNCTION {output.check}
 { 't :=
   duplicate$ empty$
-    { pop$ "empty " t * " in " * cite$ * warning$ }
+    { pop$ "empty " t * " w " * cite$ * warning$ }
     'output.nonnull
   if$
 }
@@ -346,7 +346,7 @@ FUNCTION {format.number.series}
    number tie.or.space.connect
    series empty$
      { "there's a number but no series in " cite$ * warning$ }
-     { " in " * series * }
+     { " w " * series * }
    if$
  }
       if$
@@ -392,8 +392,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
- { "pages" pages n.dashify tie.or.space.connect }
- { "page" pages tie.or.space.connect }
+ { "s." pages n.dashify tie.or.space.connect }
+ { "s." pages tie.or.space.connect }
       if$
     }
   if$
@@ -440,8 +440,8 @@ FUNCTION {format.in.ed.booktitle}
 { booktitle empty$
     { "" }
     { editor empty$
- { "In " booktitle emphasize * }
- { "In " format.editors * ", " * booktitle emphasize * }
+ { "W: " booktitle emphasize * }
+ { "W: " format.editors * ", " * booktitle emphasize * }
       if$
     }
   if$
@@ -485,10 +485,10 @@ FUNCTION {format.article.crossref}
    warning$
    ""
  }
- { "In {\em " journal * "\/}" * }
+ { "W: {\em " journal * "\/}" * }
       if$
     }
-    { "In " key * }
+    { "W: " key * }
   if$
   " \cite{" * crossref * "}" *
 }
@@ -513,10 +513,10 @@ FUNCTION {format.crossref.editor}
 FUNCTION {format.book.crossref}
 { volume empty$
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
-      "In "
+      "W: "
     }
     { "Volume" volume tie.or.space.connect
-      " of " *
+      " z " *
     }
   if$
   editor empty$
@@ -549,13 +549,13 @@ FUNCTION {format.incoll.inproc.crossref}
        crossref * warning$
        ""
      }
-     { "In {\em " booktitle * "\/}" * }
+     { "W: {\em " booktitle * "\/}" * }
    if$
  }
- { "In " key * }
+ { "W: " key * }
       if$
     }
-    { "In " format.crossref.editor * }
+    { "W: " format.crossref.editor * }
   if$
   " \cite{" * crossref * "}" *
 }
