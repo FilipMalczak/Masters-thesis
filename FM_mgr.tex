@@ -789,8 +789,6 @@ W tej pracy do analizy wykorzystano tylko 4 z wyżej wymienionych statystyk: śr
 
 Na rysunku \ref{plot:random_example} przedstawiony jest przykładowy wykres statystyk populacji na przestrzeni wielu pokoleń. Wykresy takie, nazywane w skrócie \emph{wykresami przebiegów}, będą wykorzystywane w tej pracy do analizy pojedynczych uruchomień heurystyki. 
 
-\newpage
-
 \begin{figure}[H]
 	\caption{Wykres przebiegu, w którym globalne optimum nie znajduje się w ostatniej populacji \label{plot:mid_opt}}
 	\centering
@@ -821,18 +819,26 @@ Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają pod
 Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
 
 Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć.
-\todo{osobnik musi zawierać ceche plci, dodać do sygnatury S-DSEA = S-EA x G}
+Oznacza to, że przestrzeń rozwiązań musi zostać poszerzona o dodatkowy wymiar, jakim jest właśnie ta cecha.
+Jedyne wymaganie nałożone na jej dziedzinę to to, żeby była skończonym, niepustym zbiorem.
 
 \begin{signature}
 	\caption{Funkcja $plec(osobnik)$ \label{signature:genderFoo}}
 	\begin{align}
-	plec: & \important{S} \rightarrow \important{G} \\
-	\important{G} \neq & \emptyset
+	plec: & \important{S} \rightarrow \important{G}
 	\end{align}
-	$\important{G}$ to zbiór możliwych płci.\\
-	W niniejszej pracy przyjęto co najwyżej 2 płcie, ze zbiorem $\important{G}$ określonym jako $\important{G} = \{ \female, \male \}$
 \end{signature}
 
+\begin{signature}
+	\caption{Osobnik w kontekście DSEA \label{signature:specimen_dsea}}
+	\begin{align}
+	\important{S}_{DSEA} = &\important{S}_{EA} \times \important{G} \\
+	\important{G} \neq & \emptyset \\
+	|\important{G}| < &\infty
+	\end{align}	
+	$\important{G}$ to zbiór możliwych płci.\\
+	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem $\important{G}$ określonym jako $\important{G} = \{ \female, \male \}$
+\end{signature}
 
 \section{Heurystyka DSEA} \label{section:dsea}
 
@@ -864,7 +870,7 @@ Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobni
 W przeciwieństwie do realizacji opisanej w sekcji \ref{section:ea_details} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. 
 Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
-\begin{figure}[H]
+\begin{figure}[h]
 	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
 	\img{my_crossover.png}
 \end{figure}
@@ -1066,16 +1072,14 @@ Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmien
 	Symbole $\top$ i $\bot$ oznaczają kolejno prawdę i fałsz.
 \end{algorithm}
 
-\fixme{zmienna, zmienne, zmiennej, etc}
-
 Działanie operatora rozpoczyna się od deklaracji i inicjalizacji zmiennych pomocniczych.
-Zmienna $rodzice$ przyjmuje jako wartość pusty zbiór (linia \ref{line:stdGenSelChoose_init_parent}).
-Dodatkowo, deklarujemy 2 zmienne przechowujące kandydatów na każdego z rodziców (linie \ref{line:stdGenSelChoose_init_candidates_begin}-\ref{line:stdGenSelChoose_init_candidates_end}).
+Zbiór $rodzice$ początkowo jest pusty (linia \ref{line:stdGenSelChoose_init_parent}).
+Dodatkowo, deklarujemy dwa zbiory przechowujące kandydatów na każdego z rodziców (linie \ref{line:stdGenSelChoose_init_candidates_begin}-\ref{line:stdGenSelChoose_init_candidates_end}).
 W zależności od parametru $\param{plecMaZnaczenie}$ przechowują one albo całą populację (jeżeli $\param{plecMaZnaczenie} = \bot$, czyli rodzice mogą być tej samej płci), albo odflitrowane osobniki odpowiedniej płci (jeżeli $\param{plecMaZnaczenie} = \top$, czyli wymagane jest, aby rodzice byli różnych płci).
 
 Następnie, póki nie zostanie wybrana odpowiednia liczba par rodziców (linia \ref{line:stdGenSelChoose_while}) powtarzany jest zestaw operacji określający kolejną z nich.
 Za pomocą operatora $\param{opWyboru1}$ ze zbioru $\param{kandydaci1}$ wybierany jest pierwszy rodzic (linia \ref{line:stdGenSelChoose_choose_begin}).
-Drugi z rodziców jest wybierany ze zbioru $\param{kandydaci2}$ za pomocą operatora $\param{opWyboru2}$  (linia \ref{line:stdGenSelChoose_choose_end}), \fixme{unikając sytuacji} w której oboje rodziców byłoby tym samym osobnikiem (mogłoby się tak zdarzyć, jeżeli $\param{plecMaZnaczenie} = \bot$, więc oboje z nich byłoby wybieranych z całej populacji).
+Drugi z rodziców jest wybierany ze zbioru $\param{kandydaci2}$ za pomocą operatora $\param{opWyboru2}$  (linia \ref{line:stdGenSelChoose_choose_end}), nie dopuszczając do sytuacji w której oboje rodziców byłoby tym samym osobnikiem (mogłoby się tak zdarzyć, jeżeli $\param{plecMaZnaczenie} = \bot$, więc oboje z nich byłoby wybieranych z całej populacji).
 Dwuelementowy zbiór tak wybranych rodziców jest dołączany do zbioru $rodzice$.
 
 Kiedy określimy odpowiednio dużo par, zmienna $rodzice$ jest zwracana jako wynik operatora (linia \ref{line:stdGenSelChoose_return}).
@@ -1130,7 +1134,7 @@ Jeżeli poniższe warunki będą spełnione, to DSEA sprowadza się do SexualGA:
 \end{itemize}
 
 Podany wyżej warunek, mówiący o tym, że co najmniej jeden operator wyboru musi być różny od losowego ($random$) wynika z tego, że gdyby oba operatory działały losowo, to heurystyka polegałaby na kompletnie losowym przeszukiwaniu przestrzeni rozwiązań.
-W praktyce lepsze wyniki \todo{na pewno?} osiągano używając dwóch różnych operatorów wyboru, jednak sytuacje w której użyto tego samego operatora dla obu płci, lub któryś z nich był operatorem losowym są warte zbadania.
+Według autorów najlepsze wyniki osiągano używając operatora losowego w połączeniu z jakimś nie będącym losowym, jednak sytuacja w której użyto tego samego operatora dla obu płci jest warta zbadania.
 
 \section{Proponowany operator selekcji płciowej}
 
@@ -1146,11 +1150,10 @@ Osobniki którym się to uda nazywane są \emph{osobnikami beta}.
 
 Mimo, że takie zjawisko w dużym stopniu ogranicza różnorodność genetyczną, to w naturze wydaje się przynosić pozytywne rezultaty.
 Z tego powodu zdecydowano się zbadać haremowe podejście do dobierania się w pary w celu rozmnażania.
-Zrealizowano to definiując realizację operatora selekcji płciowej, nazywaną operatorem haremowym, opisaną w algorytmie \ref{algorithm:harem}.
+Zrealizowano to definiując realizację operatora selekcji płciowej, nazywaną operatorem haremowym, opisaną w algorytmie \ref{algorithm:harem}. Wymaga ona, aby w populacji występowały dokładnie 2 płcie ($|\important{G}| = 2$).
 
 \begin{algorithm}
 	\caption{Schemat działania operatora haremowego \label{algorithm:harem}}
-	\label{algorithm_proposedGenSel}
 	\begin{algorithmic}[1]
 		\Input{
 			$populacja$ \Comment{Populacja wyjściowa}
@@ -1226,7 +1229,35 @@ W dalszej kolejności wybierane jest $liczbaBeta$ osobników beta (linie \ref{li
 
 Operator zwraca zmienną $rodzice$ (w linii \ref{line:harem_return}).
 
-\todo{komentarz o rozmiarze wyjścia}
+Przedstawiony schemat nie zgadza się z sygnaturą operatora selekcji płciowej (sygnaturą \ref{signature:genSel}) przedstawioną w podsekcji \ref{subsection:new_genSel}, ponieważ w niektórych sytuacjach zwraca więcej par rodziców niż powinien. 
+
+Oczekiwany rozmiar zbioru zwracanego przez operator to $liczbaZbiorowRodzicow$, czyli $\lceil \param{prawdKrzyzowania} \times \param{rozmiarPopulacji} \rceil$, jednak ponieważ zaokrąglamy wartość $perAlfa$ w górę, to często generowane jest $\param{liczbaAlfa}$ nadmiarowych par.
+Można temu zaradzić modyfikując ostatnią pętlę, generującą pary z osobnikami beta, w sposób opisany algorytmem \ref{algorithm:harem_fix}.
+
+\begin{algorithm}
+	\caption{Sposób zaradzenia nadmiarowi zwracanych zbiorór \label{algorithm:harem_fix}}
+	\begin{algorithmic}[1]
+		\Start
+		\Operator{opHaremowy}{$populacja$}
+			\State $(\dots)$
+			\setcounter{ALG@line}{14}
+			\While{$|rodzice| < liczbaZbiorowRodzicow$}
+				\Var $beta \gets \param{opWyboruBeta}(kandydaci1)$
+				\Var $partner \gets \param{opWyboruPartnerow}(kandydaci2)$
+				\State $rodzice \gets rodzice \cup \{ \{ beta, partner \} \}$
+			\EndWhile
+			\State \Return{$rodzice$}
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+Takie podejście powoduje, że parametr $\param{wspBeta}$ traci swoje dosłowne znaczenie i określa przybliżony stosunek liczby par rodziców zawierających osobniki beta do liczby wszystkich zwracanych par.
+
+W implementacji wykonanej w niniejszej pracy nie zastosowano tej modyfikacji.
+Umotywowane było to małą różnicą między zakładanym i rzeczywistym rozmiarem zbioru par rodziców, oraz faktem, że \defacto generowanie nadmiarowych par powoduje minimalnie lepszą eksploatację przestrzeni rozwiązań (ponieważ jest ona gęściej próbkowana).
+
+Jeżeli w populacji występuje więcej niż 2 płcie ($|\important{G}| > 2$), to jedną z nich należy wyszczególnić jako tą, z której pochodzą osobniki alfa i beta. 
+Ponadto, operator ma wtedy więcej parametrów (tyle operatorów wyboru partnerów ile jest niewyróznionych płci), a zamiast jednego partnera (linie \ref{line:harem_alfa_partner_choose} i \ref{line:harem_beta_partner}) wybiera się ich odpowiednio więcej, każdego z wykorzystaniem przeznaczonego do tego operatora wyboru.
 
 \chapter{Eksperymenty} \label{chapter:experiments}
 \section{Implementacja}
