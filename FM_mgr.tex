@@ -54,7 +54,7 @@
 \usepackage{mathtools}
 \usepackage{float}
 \usepackage{tocloft}
-\usepackage{tocbibind}
+%\usepackage{tocbibind}
 \usepackage{amsfonts}
 \usepackage{nicefrac}
 
@@ -220,7 +220,7 @@ Spełnienie tego celu powinno doprowadzić do określenia konkretnego schematu, 
 Kolejnym celem jest opis i implementacja wybranych istniejących rozwiązań wykorzystujących płeć w ramach wcześniej opisanego schematu.
 Poza implementacją tych metod, powinno powstać narzędzie badawcze, które pozwoli na klarowne porównanie ich działania.
 
-Cel trzeci to opracowanie nowego podejścia uwzględniającego płeć.
+Cel trzeci to opracowanie i implementacja nowego podejścia uwzględniającego płeć.
 Jest to główny cel tej pracy, mający wnieść coś nowego do dziedziny algorytmów ewolucyjnych.
 
 Ostatnim celem jest zbadanie wcześniej opisanych i zbadanych podejść.
@@ -1260,13 +1260,88 @@ Jeżeli w populacji występuje więcej niż 2 płcie ($|\important{G}| > 2$), to
 Ponadto, operator ma wtedy więcej parametrów (tyle operatorów wyboru partnerów ile jest niewyróznionych płci), a zamiast jednego partnera (linie \ref{line:harem_alfa_partner_choose} i \ref{line:harem_beta_partner}) wybiera się ich odpowiednio więcej, każdego z wykorzystaniem przeznaczonego do tego operatora wyboru.
 
 \chapter{Eksperymenty} \label{chapter:experiments}
+
+Niniejsza praca ma na celu zbadanie i porównanie różnych podejść do zagadnienia płci wykorzystywanych w algorytmach ewolucyjnych.
+Aby to osiągnąć zaimplementowano metody opisane w poprzednim rozdziale i przeprowadzono zestaw eksperymentów, których wyniki zostały porównane.
+
+Ten rozdział zaczyna się od opisu wybranych problemów optymalizacji, na których przeprowadzone zostały badania. Kolejna sekcja zawiera opis implementacji badanych metod. Następnie opisane są procedury wykorzystywane przy eksperymentach. Całość zamknięta jest opisem ich przebiegu i przedstawieniem wyników.
+
+\section{Wybrane problemy optymalizacji}
+
+\todo{NP pełność? knapsack to optymalizacja z ograniczeniami}
+
+Aby zbadać jakość działania wybranych metod zaimplementowano i \fixme{spróbowano rozwiązać} dwa problemy optymalizacji. 
+Są to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
+
+Problem komiwojażera to zadanie znalezienia minimalnego cyklu Hamiltona w pełnym grafie ważonym. 
+Cykl Hamiltona to taki, w którym każdy wierzchołek jest odwiedzany tylko raz (z pominięciem pierwszego wierzchołka, który jest taki sam jak ostatni). 
+Graf pełny, to taki, w którym między dowolnymi dwoma wierzchołkami istnieje krawędź, a graf ważony to taki, w którym krawędzie opisane są pewnymi wartościami, nazywanymi wagami. 
+Minimalny cykl to taki, dla którego suma wag krawędzi jest najmniejsza.
+
+Problem ten można przełożyć na rzeczywistą sytuację, w której mamy zbiór punktów na mapie (np. miast, reprezentowanych przez wierzchołki grafu) leżących w pewnych odległościach od siebie\footnote{
+	Geograficzne odległości między punktami to tylko jedna z możliwych interpretacji.
+	Zamiast tego między punktami może być określony czas przejazdu, jego koszt, itd.
+	W ogólności, znane są pewne wartości związane z każdymi dwoma punktami, które oznaczają tym gorszą sytuację z punktu widzenia osoby rozwiązującej problem, im są wyższe.
+} (które są reprezentowane przez wagi krawędzi). 
+Rozwiązanie problemu komiwojażera sprowadza się do minimalizacji długości drogi przechodzącej przez wszystkie punkty. 
+Wynik optymalizacji jest cenny w rzeczywistych zastosowaniach, ponieważ pozwala zaoszczędzić zasoby w firmach zajmujących się transportem.
+
+Binarny problem plecakowy (nazywany czasem dyskretnym problemem plecakowym) to zadanie optymalizacji, w którym ze zbioru $n$ par $\{ (k_1, w_1),  (k_2, w_2), \ldots, (k_n, w_n)\}$ należy wybrać taki pozdbiór, dla którego suma pierwszych elementów z pary będzie jak największa, a suma drugich elementów nie przekroczy zadanej wartości $W$.
+Problem taki przekłada się na sytuację, w której mamy pewien pojemnik (popularnie nazywany plecakiem, skąd bierze się nazwa problemu) o określonej pojemności $W$ i zestaw przedmiotów, które możemy do niego włożyć. 
+Każdy przedmiot jest opisamy parą $(k, w)$, gdzie $k$ reprezetnuje jego wartość, a $w$ jego rozmiar, czy też objętość. 
+Rozwiązaniem problemu jest taki zestaw przedmiotów jaki zmieści się w plecaku i będzie miał jak największą wartość. 
+
+Ogólna wersja problemu plecakowego polega na przypisaniu każdemu z przedmiotów (par) liczby naturalnej, określającej ile jego egzemplarzy wkładamy do plecaka, jednak w ramach niniejszej pracy zdecydowano się na binarną wariację tego problemu, która dopuszcza wykorzystanie co najwyżej jednego egzemplarza każdego obiektu.
+
+\todo{może warto opisać zastosowania w real world?}
+\fixme{ten akapit jest be}
+Opisane problemy zostały wybrane, ponieważ reprezentują dwie klasy zadań powszechnie rozwiązywane przy pomocy algorytmów ewolucyjnych. 
+Binarny problem plecakowy to popularne zagadnienie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie w którym osobnika przedstawia się jako wektor elementów z danego zbioru (większego niż zbiór wartości binarnych). 
+
+\todo{opisywać rastrigina?}
+
 \section{Implementacja}
+
+W tej sekcji opisane są operatory i \fixme{realizacje} wykorzystywane podczas przeprowadzania eksperymentów. 
+Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zarzymania, a kolejne dwie na reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
+
 \subsection{Komponenty niezależne od problemu}
+
+Niezależnie od tego jaki problem jest rozwiązywany przy pomocy algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
+Mowa tutaj głównie o operatorach wyboru, jako, że są one podstawą do realizacji operatorów selekcji (naturalnej, lub płciowej).
+Ponadto, opisane zostanie kryterium zatrzymania wykorzystywane w tej pracy.
+
+Jak zostało zdefiniowane w podsekcji \ref{subsection:new_natSel}, zadaniem operatora wyboru jest zwrócenie pojedynczego elementu ze zbioru osobników.
+W standardowych algorytmach ewolucyjnych powszechnie używane były operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}.
+\todo{troche konferansjerki}
+
+Jedną z popularnych implementacji operatora wyboru jest operator ruletkowy, wykorzystujący pewną dodatnią funkcję przypisującą każdemu osobnikowi tzw. ,,wagę'', zwracający rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
+Działanie tego operatora standardowo tłumaczy się w następujący sposób:
+Wyobraźmy sobie koło ruletki. 
+Na całym tym kole zaznaczmy obszary przypisane do osobników, w taki sposób, że odpowiedni obszar ma rozmiar wprost proporcjonalny do wagi rozwiązania. 
+Następnie zakręćmy tym kołem, a osobnika, do którego obszar będzie tym, na którym zatrzyma się kulka ruletki, zwróćmy.
+
+Istnieją co najmniej dwie standardowe wersje tego operatora, różniące się funkcją przypisującą wagę osobnikom. 
+Jedną z nich jest ważenie osobników ich oceną.
+W przypadku problemu maksymalizacji przekłada się to bezpośrednio na wymóg nałożony na standardowy operator selekcji, mówiący o tym, że osobniki ,,lepsze'' mają większą szanse na zostanie wylosowanymi.
+Odmiana ta jest jednak problematyczna w przypadku problemów minimalizacji, ponieważ ,,lepsze'' osobniki mają wtedy niższą ocenę, a co za tym idzie - zajmują mniej miejsca na wirtualnym kole ruletki, co przekłada się na mniejszą szansę wylosowania.
+Jeżeli dla danego problemu znana jest górne ograniczenie funkcji oceny (czyli największa wartość pochodząca z jej przeciwdziedziny), to problem minimalizacji możemy przekształcić do problemu maksymalizacji, poprzez zdefiniowanie nowej funkcji oceny, zwracającą wartość oryginalnego kryterium odjętą od jego górnego ograniczenia\footnote{
+	Prosta zmiana znaku kryterium również sprowadza problem minimalizacji do problemu maksymalizacji, jednak nie pozwala na zastosowanie operatora ruletkowego, ponieważ waga osobnika musi być dodatnia. 
+	Alternatywne podejście, polegające na użyciu odwrotności wartości kryterium również nie zawsze jest możliwe do użycia, ponieważ wartość oceny może wynosić 0.
+}.
+W takiej sytuacji, osobniki możemy ważyć przy pomocy ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
+Dzięki temu najgorszy osobnik zajmuje jedną jednostke obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
+Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczeny zarówno w problemach minimalizacji, jak i maksymalizacji.
+
+\todo{pseudokod ruletki}
+
+\todo{fragment o turnieju}
+
+W niniejszej pracy wykorzystano operator ruletkowy ważony rangą, oraz operatory turniejowe o rozmiarze 2 i 3.
+
 \subsection{TSP}
 działanie operatorów, etc
 \subsection{Knapsack}
-...
-\subsection{(?)}
 ...
 \section{Procedury eksperymentów}
 eksploracja z nawrotami/czysty przegląd/inne procedury z etapu 2
@@ -1291,8 +1366,7 @@ Kolejno znajdowane konfiguracje
 ... - jw?
 \subsection{Knapsack}
 ...
-\subsection{(?)}
-...
+
 
 \chapter{Wnioski i spostrzeżenia}
 \chapter{Dalsze drogi rozwoju}
@@ -1310,6 +1384,8 @@ Kolejno znajdowane konfiguracje
 
 \bibliographystyle{iisthesis}
 \bibliography{bibliografia}
+
+\appendix \chapter{Pełne wyniki badań}
 
 \end{document}
 
