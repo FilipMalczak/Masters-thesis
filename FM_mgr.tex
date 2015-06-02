@@ -1141,7 +1141,7 @@ Polega ono na tym, że tylko mała liczba osobników jednej z płci (zazwyczaj s
 Oznacza to, że dostęp do grupy samic (nazywanej \emph{haremem}) ma bardzo ograniczona grupa jednostek.
 Dzieje się tak, ponieważ osobniki alfa są w ogólności silniejsze od pozostałych i bronią dostępu do samic przed resztą samców.
 Zakaz ten nie zawsze jest przestrzegany.
-W momencie, w którym osobniki alfa są czymś zajęte, pewien odsetek osobników tej samej płci ma szansę na rozmnożenie się doprowadzić do wydania potomstwa.
+W momencie, w którym osobniki alfa są czymś zajęte, pewien odsetek osobników tej samej płci ma szansę na rozmnożenie się.
 Osobniki którym się to uda nazywane są \emph{osobnikami beta}.
 
 Mimo, że takie zjawisko w dużym stopniu ogranicza różnorodność genetyczną, to w naturze wydaje się przynosić pozytywne rezultaty.
@@ -1170,45 +1170,63 @@ Zrealizowano to definiując realizację operatora selekcji płciowej, nazywaną 
 		\Start
 		\Operator{opHaremowy}{$populacja$}
 		\Var $rodzice \gets \emptyset$
-		\Var $kandydaci1 \gets \left\{ s: plec(s)=\male, s \in populacja \right\} $
+		\label{line:harem_init_parents}
+		\Var $kandydaci1 \gets \left\{ s: plec(s)=\male, s \in populacja \right\} $ 	
+		\label{line:harem_init_candidates_begin}
 		\Var $kandydaci2 \gets \left\{ s: plec(s)=\female, s \in populacja \right\} $
+		\label{line:harem_init_candidates_end}
 		\Var $liczbaZbiorowRodzicow \gets \lceil \param{prawdKrzyzowania} \times \param{rozmiarPopulacji} \rceil$
+		\label{line:harem_init_out_size}
 		\Var $liczbaBeta \gets \lceil \param{wspBeta} \times liczbaZbiorowRodzicow \rceil$
+		\label{line:harem_init_beta_count}
 		\Var $perAlfa \gets \lceil (liczbaZbiorowRodzicow-liczbaBeta)/\param{liczbaAlfa } \rceil$
+		\label{line:harem_init_per_alfa}
 		\For {$i \gets 1 \To \param{liczbaAfa}$}
+		\label{line:harem_alfa_main_loop}
 			\Var $alfa \gets \param{opWyboruAlfa}(kandydaci1)$
+			\label{line:harem_choose_alfa}
 			\State $kandydaci1 \gets kandydaci1 \setminus \left\{ alfa \right\}$
+			\label{line:harem_alfa_remove_alfa}
 			\For {$j \gets 1 \To perAlfa$}
+			\label{line:harem_alfa_partner_loop}
 				\Var $partner \gets \param{opWyboruPartnerów}(kandydaci2)$
+				\label{line:harem_alfa_partner_choose}
 				\State $zbioryRodzicow \gets zbioryRodzicow \cup \{ \{ alfa, partner \} \}$
+				\label{line:harem_alfa_add}
 			\EndFor
 		\EndFor
 		\For {$i \gets 1 \To liczbaBeta$}
+		\label{line:harem_beta_loop}
 			\Var $beta \gets \param{opWyboruBeta}(kandydaci1)$
+			\label{line:harem_beta_choose}
 			\Var $partner \gets \param{opWyboruPartnerow}(kandydaci2)$
+			\label{line:harem_beta_partner}
 			\State $rodzice \gets rodzice \cup \{ \{ beta, partner \} \}$
+			\label{line:harem_beta_add}
 		\EndFor
 		\State \Return $rodzice$
+		\label{line:harem_return}
 		\EndOperator
 	\end{algorithmic}
 \end{algorithm}
 
-Operator taki jest parametryzowany przy pomocy 3 operatorów wyboru: $\param{opWyboruAlfa}$ służącego do wyboru osobników alfa, $\param{opWyboruBeta}$ służącego do wyboru osobników beta oraz $\param{opWyboruPartnerów}$ wykorzystywanego do wybory partnerów dla osobników alfa i beta.
-Ponadto, operator haremowy ma 2 parametry liczbowe: $\param{liczbaAlfa}$ określający liczbę osobników alfa wybieranych w pojedynczym pokoleniu i $\param{wspBeta}$, czyli współczynnik określający stosunek liczby par rodziców z których jeden jest osobnikiem alfa do liczby wszystkich par rodziców 
+Działanie takiego operatora zależy od pięciu parametrów, poza parametrami samej heurystyki.
+Są to trzy operatory wyboru: $\param{opWyboruAlfa}$ służącego do wyboru osobników alfa, $\param{opWyboruBeta}$ służącego do wyboru osobników beta oraz $\param{opWyboruPartnerów}$ wykorzystywanego do wyboru partnerów dla osobników alfa i beta.
+Ponadto, wykorzystywane są dwa parametry liczbowe: $\param{liczbaAlfa}$ określający liczbę osobników alfa wybieranych w pojedynczym pokoleniu i $\param{wspBeta}$, czyli współczynnik określający stosunek liczby par rodziców z których jeden jest osobnikiem alfa do liczby wszystkich par rodziców 
 
-Działanie operatora zaczyna się od inicjalizacji zmiennej $rodzice$ na pusty zbiór oraz rozdzielenia populacji na zbiory $kandydaci1$ i $kandydaci2$, zawierające osobniki różnych płci X.
-Następnie obliczane są wartości $liczbaZbiorowRodzicow$, czyli całkowita liczba par rodziców zwracanych przez operator  X, $liczbaBeta$, czyli liczba osobników beta biorących udział w rozmnażaniu  X, oraz $perAlfa$, czyli liczba par rodziców przypadających na jednego osobnika alfa X.
+Działanie operatora zaczyna się od inicjalizacji zmiennej $rodzice$ na pusty zbiór (linia \ref{line:harem_init_parents}) oraz rozdzielenia populacji na zbiory $kandydaci1$ i $kandydaci2$, zawierające osobniki różnych płci (linie \ref{line:harem_init_candidates_begin} - \ref{line:harem_init_candidates_end}).
+Następnie obliczane są wartości $liczbaZbiorowRodzicow$, czyli całkowita liczba par rodziców zwracanych przez operator  (linia \ref{line:harem_init_out_size}), $liczbaBeta$, czyli liczba osobników beta biorących udział w rozmnażaniu  (linia \ref{line:harem_init_beta_count}), oraz $perAlfa$, czyli liczba par rodziców przypadających na jednego osobnika alfa (linia \ref{line:harem_init_per_alfa}).
 
 Kolejnym krokiem jest wygenerowanie par rodziców zawierających osobnika alfa.
-$\param{liczbaAfa}$ razy powtarzane jest X wybranie kolejnego takiego osobnika $alfa$ X i usunięcie go ze zbioru kandydatów danej płci X.
+$\param{liczbaAfa}$ razy powtarzane jest (w pętli w linii \ref{line:harem_alfa_main_loop}) wybranie kolejnego takiego osobnika $alfa$ (w linii \ref{line:harem_choose_alfa}) i usunięcie go ze zbioru kandydatów danej płci (w linii \ref{line:harem_remove_alfa}).
 Dzięki temu żaden osobnik alfa nie zostanie wybrany dwukrotnie, ani nie pokryje się z którymś z osobników beta.
-Dla danego osobnika alfa wybierany jest $perAlfa$ X partnerów $partner$, a tak określone pary rodziców są dołączane do zbioru $rodzice$ X
+Dla danego osobnika alfa wybierany jest $perAlfa$ (w pętli w linii \ref{line:harem_alfa_partner_loop}) partnerów $partner$ (linia \ref{line:harem_alfa_partner_choose}), a tak określone pary rodziców są dołączane do zbioru $rodzice$ (w linii \ref{line:harem_alfa_add}).
 
-W dalszej kolejności wybierane jest $liczbaBeta$ osobników beta X, dla których dobierani są partnerzy $partner$ X. Tak wybrane pary również dołączane są do zbioru $rodzice$.
+W dalszej kolejności wybierane jest $liczbaBeta$ osobników beta (linie \ref{line:harem_beta_loop}-\ref{line:harem_beta_choose}), dla których dobierani są partnerzy $partner$ (w linii \ref{line:harem_beta_partner}). Tak wybrane pary również dołączane są do zbioru $rodzice$ (linia \ref{line:harem_beta_add}).
 
-Operator zwraca zmienną $rodzice$.
+Operator zwraca zmienną $rodzice$ (w linii \ref{line:harem_return}).
 
-\todo{dodać labele, X zamienić na ref do nich}
+\todo{komentarz o rozmiarze wyjścia}
 
 \chapter{Eksperymenty} \label{chapter:experiments}
 \section{Implementacja}
