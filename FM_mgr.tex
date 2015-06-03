@@ -1315,10 +1315,11 @@ Jak zostało zdefiniowane w podsekcji \ref{subsection:new_natSel}, zadaniem oper
 W standardowych algorytmach ewolucyjnych powszechnie używane były operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}.
 \todo{troche konferansjerki}
 
-Jedną z popularnych implementacji operatora wyboru jest operator ruletkowy, wykorzystujący pewną dodatnią funkcję przypisującą każdemu osobnikowi tzw. ,,wagę'', zwracający rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
+Jedną z popularnych implementacji operatora wyboru jest operator ruletkowy, wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
+Zwraca on rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
 Działanie tego operatora standardowo tłumaczy się w następujący sposób:
 Wyobraźmy sobie koło ruletki. 
-Na całym tym kole zaznaczmy obszary przypisane do osobników, w taki sposób, że odpowiedni obszar ma rozmiar wprost proporcjonalny do wagi rozwiązania. 
+Na całym tym kole zaznaczmy obszary (wycinki koła) przypisane do osobników, w taki sposób, że odpowiedni obszar ma rozmiar wprost proporcjonalny do wagi rozwiązania. 
 Następnie zakręćmy tym kołem, a osobnika, do którego obszar będzie tym, na którym zatrzyma się kulka ruletki, zwróćmy.
 
 Istnieją co najmniej dwie standardowe wersje tego operatora, różniące się funkcją przypisującą wagę osobnikom. 
@@ -1331,9 +1332,40 @@ Jeżeli dla danego problemu znana jest górne ograniczenie funkcji oceny (czyli 
 }.
 W takiej sytuacji, osobniki możemy ważyć przy pomocy ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
 Dzięki temu najgorszy osobnik zajmuje jedną jednostke obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
-Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczeny zarówno w problemach minimalizacji, jak i maksymalizacji.
+Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczny zarówno w problemach minimalizacji, jak i maksymalizacji.
 
-\todo{pseudokod ruletki}
+\begin{algorithm}
+	\caption{Schemat działania ruletkowego operatora wyboru \label{algorithm:roulette}}
+	\begin{algorithmic}[1]
+		\Input{
+			$populacja$ \Comment{Populacja z której wybierany jest osobnik}
+		}
+		\Output{
+			wybrany osobnik
+		}
+		\Params{
+			$\param{waga}$ \Comment{Funkcja wagi, np. funkcja oceny lub ranga}
+		}
+		\Start
+		\Operator{opRuletkowy}{$populacja$}
+			\Var \label{line:roulette_sort} $posortowane \gets$ $populacja$ posortowana malejąco po wartości funkcji $\param{waga}$
+			\Var $sumaWag \gets \sum_{s \in populacja} \param{waga}(s)$
+			\Var $k \gets 0$
+			\Var $wybrane \gets random(\range{0}{sumaWag})$
+			\For{$s \in posortowane$} 
+			\Comment{w kolejności określonej w linii \ref{line:roulette_sort}}
+				\If{$wybrane \geq k \wedge wybrane < k + \param{waga}(s)$}
+					\State \Return $s$
+				\Else
+					\State $k \gets k + \param{waga}(s)$
+				\EndIf
+			\EndFor
+			\State \Return ostatni element $posortowane$
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+\todo{opisać ruletke}
 
 \todo{fragment o turnieju}
 
