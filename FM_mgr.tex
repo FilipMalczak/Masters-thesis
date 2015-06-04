@@ -65,6 +65,7 @@
 \usetikzlibrary{decorations.pathreplacing}
 
 \usepackage{wasysym}
+\usepackage{multirow}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -812,6 +813,8 @@ Na rysunku \ref{plot:stagnation} przedstawiono sytuację, w której obserwujemy 
 Jak zostało wspomniane na początku tej sekcji, algorytmy ewolucyjne to heurystyki losowe, przez co za każdym uruchomieniem zwracają różne wartości. Aby ocenić wyniki procesu optymalizacji dla różnych zestawów parametrów należy kilkukrotnie powtórzyć proces i porównywać statystyki wyników. Jeśli jesteśmy w trakcie dostrajania heurystyki (czyli dobierania najlepszych parametrów), to taką statystyką może być najlepszy wynik z kilku powtórzeń, jednak jeśli chcemy przeprowadzić miarodajne badania, to najprostszym podejściem dającym wgląd w jakość działania jest obliczenie średniej i wariancji (lub odchylenia standardowego, patrz: przypis \ref{footer:variance}) wyników wielu przebiegów dla różnych konfiguracji i porównanie ich testem statystycznym, takim jak np. test t-studenta.
 
 \chapter{Przegląd literatury} \label{chapter:literature}
+
+%mój workflow wyglądał tak, że szukałem z 2-3 prac przeglądowych na temat (słowo kluczowe survey), czytałem i wypisywałem nazwy rozwiązań/algorytmów/whatever wraz z tym, w której pracy wystąpiły i jaki miały numerek referencji. potej je sortuję po tym, jak mi się podobają i czy mają źródła, czytam właściwe źródła już na bieżąco pisząc w pracy co uznam za stosowne
 
 \chapter{Proponowane rozwiązania} \label{chapter:proposed}
 
@@ -1588,7 +1591,7 @@ Punkty te dołączane są najpierw z podwektora drugiego rodzica za punktem prze
 Zostało to zobrazowane na rysunku \ref{figure:tsp_crossover}, gdzie na górze pokazano wektory wejściowe (rodziców), grubą linią zaznaczono punkt przecięcia, a na dole przedstawiono wynik krzyżowania (potomków).
 
 \begin{figure}
-	\caption{Przykład działania operatora krzyżowania \label{figure:tsp_crossover}}
+	\caption{Przykład działania operatora krzyżowania dla problemu komiwojażera\label{figure:tsp_crossover}}
 	\centering
 	\begin{tikzpicture}[>=triangle 60]
 	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
@@ -1640,7 +1643,7 @@ Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
 
 
 \begin{figure}
-	\caption{Przykład działania operatora mutacji \label{figure:tsp_mutation}}
+	\caption{Przykład działania operatora mutacji dla problemu komiwojażera\label{figure:tsp_mutation}}
 	\centering
 	\begin{tikzpicture}[>=triangle 60]
 	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
@@ -1710,6 +1713,62 @@ Zostało to zapisane przy pomocy równań \ref{line:knapsack_eval_start}-\ref{li
 	\label{line:knapsack_eval_stop}
 \end{align}
 
+W tej pracy wykorzystano zbiór \emph{medium} \cite{knapsack_data}, opisujący 100 przedmiotów i maksymalny rozmiar plecaka wynoszący 27.
+Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1137, co oznacza wybrane przedmioty mają łączny koszt 1137 i ograniczenie na rozmiar nie jest przekroczone.
+
+Zastosowano standardowy operator krzyżowania dla wektorów binarnych, opisany w rozdziale \ref{section:general_idea}, zobrazowany rysunkiem \ref{vector:example_crossover}.
+Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamianie ich drugich części w celu uzyskania potomków.
+
+Wykorzystany operator mutacji to adaptacyjna\footnote{
+	Określenie ,,adaptacyjny'' oznacza w tym kontekście, że szczegóły działania operatora zmieniają się w zależności od sytuacji, w której jest wykorzystywany, dopasowując się do napotkanych warunków.
+} wariacja na temat operatora przedstawionego w rozdziale \ref{section:general_idea} na rysunku \ref{vector:example_mutation}.
+W zależności od tego, czy łączna objętość wybranych przedmiotów była większa, czy mniejsza, niż rozmiar plecaka, prawdopodobieństwa tego, że bit zostanie odwrócony (tzn. 0 zostanie zamienione na 1 lub na odwrót) było różne.
+
+Zanim działanie tego operatora zostanie zdefiniowane formalnie, należy opisać pomocniczą funkcję $wybierz(\range{a}{b}, x)$, zwracającą punkt leżący w przedziale $\range{a}{b}$ w odległości od obu punktów określonej przez argument $x$.
+Jej definicja jest zapisana w sygnaturze \ref{signature:wybierz}.
+
+\begin{signature}
+	\caption{Funkcja $wybierz(\range{a}{b}, x)$ \label{signature:wybierz}}
+	\begin{align}
+		wybierz: &\numberSet{R}^2 \times \range{0}{1} \rightarrow \numberSet{R} \\
+		wybierz(\range{a}{b}, x) =& a + (b-a) \times x
+	\end{align}
+\end{signature}
+
+Działanie operatora jest zasadniczo podobne do tego opisanego we wcześniejszym rozdziale - każdy z bitów wektora wejściowego może zostać odwrócony.
+Prawdopodobieństwo odwrócenia bitu jest zależne od tego, czy jest on równy 0, czy 1, oraz od tego, czy ograniczenie zostało przekroczone, czy też łączny rozmiar wybranych przedmiotów jest mniejszy niż rozmiar plecaka.
+Pierwsza z tych sytuacji jest umownie nazywana nadmiarem, a druga - niedomiarem.
+
+W ogólności prawdopodbieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref{line:inverse}.
+
+\begin{align}
+	\label{line:inverse}
+	P = wybierz(przedzial, czynnik)
+\end{align}
+
+Sposób obliczania wartości $czynnik$ jest zależny od sytuacji. 
+Jeżeli obserwowany jest niedomiar, to jego wartość jest różnicą rozmiaru plecaka i sumy rozmiarów wybranych przedmiotów podzieloną przez rozmiar plecaka ($\frac{W - \sum_{i=1}^p (x_i \times w_i)}{W}$).
+Jeżeli natomiast występuje nadmiar, to jest on tożsamy z wartością funkcji $nadmiar(x)$ (patrz: linia \ref{line:knapsack_eval_stop}) podzieloną przez sumę różnicę sumy wszystkich wag i rozmiaru plecaka ($\frac{nadmiar(x)}{(\sum_{i=1}^p w_i) - W}$).
+
+Sposób określania wartości $przedzial$ również jest zależny od sytuacji. 
+W tabeli \ref{table:range_choose} przedstawiony jest sposób wyboru odpowiedniego przedziału. 
+Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmiaru z większym prawdopodbieństwem odrzucać wybrane przedmioty, a w sytuacji niedomiaru - częściej dobierać nowe.
+
+\begin{table}
+	\caption{Tablica wyboru wartości $przedzial$ \label{table:range_choose}}
+	\centering
+	\begin{tabular}{cc|c|c|}
+		\cline{3-4}
+		\multicolumn{2}{c|}{\multirow{2}{*}{}}                   & \multicolumn{2}{c|}{Sytuacja}              \\ \cline{3-4} 
+		\multicolumn{2}{c|}{}                                    & Niedomiar           & Nadmiar              \\ \hline
+		\multicolumn{1}{|c|}{\multirow{2}{*}{Wartość bitu}} & 0 & $\range{0.06}{0.1}$ & $\range{0.05}{0.15}$ \\ \cline{2-4} 
+		\multicolumn{1}{|c|}{}                              & 1 & $\range{0.05}{0.2}$ & $\range{0.2}{0.7}$   \\ \hline
+	\end{tabular}
+\end{table}
+%maxOverflow = 1333
+
+Intuicyjnie, tak zdefiniowany operator powinien z dużym prawdopodobieństwem zamieniać sytuacje nadmiaru na takie, które spełniają ograniczenia, a przynajmniej powodują znacznie mniejszy nadmiar, a w sytuacji niedomiaru powinien ,,dopełniać'' plecak losowymi przedmiotami, aby uzyskać jak największy zysk (tzn. sumę kosztów przedmiotów).
+
 \section{Procedury eksperymentów}
 eksploracja z nawrotami/czysty przegląd/inne procedury z etapu 2
 \section{Przeprowadzone eksperymenty}
@@ -1745,6 +1804,8 @@ Kolejno znajdowane konfiguracje
 \todo{wywalić listy (?)}
 
 \todo{zmienić styl bibliografii, URL z online resource, uzupełnić linki}
+
+\todo{znormalizować referencje figure: i vector:}
 
 \listoffigures
 \listoftables
