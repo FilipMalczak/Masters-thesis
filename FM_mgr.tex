@@ -1262,7 +1262,7 @@ Jeżeli w populacji występuje więcej niż 2 płcie ($|\important{G}| > 2$), to
 Ponadto, operator ma wtedy więcej parametrów (tyle operatorów wyboru partnerów ile jest niewyróznionych płci), a zamiast jednego partnera (linie \ref{line:harem_alfa_partner_choose} i \ref{line:harem_beta_partner}) wybiera się ich odpowiednio więcej, każdego z wykorzystaniem przeznaczonego do tego operatora wyboru.
 
 \chapter{Eksperymenty} \label{chapter:experiments}
-
+\fixme{za dużo opis}
 Niniejsza praca ma na celu zbadanie i porównanie różnych podejść do zagadnienia płci wykorzystywanych w algorytmach ewolucyjnych.
 Aby to osiągnąć zaimplementowano metody opisane w poprzednim rozdziale i przeprowadzono zestaw eksperymentów, których wyniki zostały porównane.
 
@@ -1272,13 +1272,13 @@ Ten rozdział zaczyna się od opisu wybranych problemów optymalizacji, na któr
 
 \todo{NP pełność? knapsack to optymalizacja z ograniczeniami}
 
-Aby zbadać jakość działania wybranych metod zaimplementowano i \fixme{spróbowano rozwiązać} dwa problemy optymalizacji. 
-Są to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
+Aby zbadać jakość działania wybranych metod zaimplementowano i podjęto próbę rozwiązania dwóch problemów optymalizacji. 
+Były to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
 
 Problem komiwojażera to zadanie znalezienia minimalnego cyklu Hamiltona w pełnym grafie ważonym. 
-Cykl Hamiltona to taki, w którym każdy wierzchołek jest odwiedzany tylko raz (z pominięciem pierwszego wierzchołka, który jest taki sam jak ostatni). 
+Cykl Hamiltona to cykl, w którym każdy wierzchołek jest odwiedzany tylko raz (z pominięciem pierwszego wierzchołka, który jest taki sam jak ostatni). 
 Graf pełny, to taki, w którym między dowolnymi dwoma wierzchołkami istnieje krawędź, a graf ważony to taki, w którym krawędzie opisane są pewnymi wartościami, nazywanymi wagami. 
-Minimalny cykl to taki, dla którego suma wag krawędzi jest najmniejsza.
+Minimalnym cyklem nazywamy taki, dla którego suma wag krawędzi jest najmniejsza.
 
 Problem ten można przełożyć na rzeczywistą sytuację, w której mamy zbiór punktów na mapie (np. miast, reprezentowanych przez wierzchołki grafu) leżących w pewnych odległościach od siebie\footnote{
 	Geograficzne odległości między punktami to tylko jedna z możliwych interpretacji.
@@ -1286,21 +1286,17 @@ Problem ten można przełożyć na rzeczywistą sytuację, w której mamy zbiór
 	W ogólności, znane są pewne wartości związane z każdymi dwoma punktami, które oznaczają tym gorszą sytuację z punktu widzenia osoby rozwiązującej problem, im są wyższe.
 } (które są reprezentowane przez wagi krawędzi). 
 Rozwiązanie problemu komiwojażera sprowadza się do minimalizacji długości drogi przechodzącej przez wszystkie punkty. 
-Wynik optymalizacji jest cenny w rzeczywistych zastosowaniach, ponieważ pozwala zaoszczędzić zasoby w firmach zajmujących się transportem.
+Wynik optymalizacji jest cenny w rzeczywistych zastosowaniach, ponieważ pozwala m.in. zaoszczędzić zasoby w firmach zajmujących się transportem.
 
-Binarny problem plecakowy (nazywany czasem dyskretnym problemem plecakowym) to zadanie optymalizacji, w którym ze zbioru $n$ par $\{ (k_1, w_1),  (k_2, w_2), \ldots, (k_n, w_n)\}$ należy wybrać taki pozdbiór, dla którego suma pierwszych elementów z pary będzie jak największa, a suma drugich elementów nie przekroczy zadanej wartości $W$.
-Problem taki przekłada się na sytuację, w której mamy pewien pojemnik (popularnie nazywany plecakiem, skąd bierze się nazwa problemu) o określonej pojemności $W$ i zestaw przedmiotów, które możemy do niego włożyć. 
-Każdy przedmiot jest opisamy parą $(k, w)$, gdzie $k$ reprezetnuje jego wartość, a $w$ jego rozmiar, czy też objętość. 
+Binarny problem plecakowy (nazywany czasem dyskretnym problemem plecakowym) to zadanie optymalizacji, w którym ze zbioru $n$ par $\{ (k_1, w_1),  (k_2, w_2), \ldots, (k_n, w_n)\}$ należy wybrać pozdbiór, dla którego suma pierwszych elementów z pary będzie jak największa, a suma drugich elementów nie przekroczy zadanej wartości $W$.
+Problem ten przekłada się na sytuację, w której mamy pewien pojemnik (popularnie nazywany plecakiem, skąd bierze się nazwa problemu) o określonej pojemności $W$ i zestaw przedmiotów, które możemy do niego włożyć. 
+Każdy przedmiot jest opisamy parą $(k, w)$, gdzie $k$ reprezentuje jego wartość, a $w$ jego rozmiar, czy też objętość. 
 Rozwiązaniem problemu jest taki zestaw przedmiotów jaki zmieści się w plecaku i będzie miał jak największą wartość. 
 
 Ogólna wersja problemu plecakowego polega na przypisaniu każdemu z przedmiotów (par) liczby naturalnej, określającej ile jego egzemplarzy wkładamy do plecaka, jednak w ramach niniejszej pracy zdecydowano się na binarną wariację tego problemu, która dopuszcza wykorzystanie co najwyżej jednego egzemplarza każdego obiektu.
 
-\todo{może warto opisać zastosowania w real world?}
-\fixme{ten akapit jest be}
 Opisane problemy zostały wybrane, ponieważ reprezentują dwie klasy zadań powszechnie rozwiązywane przy pomocy algorytmów ewolucyjnych. 
-Binarny problem plecakowy to popularne zagadnienie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie w którym osobnika przedstawia się jako wektor elementów z danego zbioru (większego niż zbiór wartości binarnych). 
-
-\todo{opisywać rastrigina?}
+Binarny problem plecakowy to popularne zadanie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie z ograniczeniami, których nie można przekroczyć. 
 
 \section{Implementacja}
 
@@ -1318,9 +1314,7 @@ Jak zostało zdefiniowane w podsekcji \ref{subsection:new_natSel}, zadaniem oper
 W standardowych algorytmach ewolucyjnych powszechnie używane są operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}, korzystające z tego operatora w celu wybrania każdego ze zwracanych osobników.
 Ponadto, operatory wykorzystywane w heurystyce DSEA również korzystają z tej abstrakcji.
 
-\paragraph{Operator ruletkowy}
-
-Jedną z popularnych implementacji operatora wyboru jest operator ruletkowy, wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
+Jedną z popularnych implementacji operatora wyboru jest \textbf{operator ruletkowy} (\emph{ang. roulette select}), wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
 Zwraca on rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
 Działanie tego operatora standardowo tłumaczy się w następujący sposób:
 Wyobraźmy sobie koło ruletki. 
@@ -1430,9 +1424,7 @@ Wtedy, jeżeli $wybrane=c$ lub $wybrane=d$, to zwrócony zostanie osobnik $s_1$,
 Jeżeli jednak $wybrane=e$, to $k$ przyjmie kolejno wartości $\param{waga}(s_0) + \param{waga}(s_1)$ i $\param{waga}(s_0) + \param{waga}(s_1) + \param{waga}(s_2)$.
 W takiej sytuacji warunek sprawdzany w pętli nie zostanie spełniony, więc zwrócony zostanie osobnik $s_2$.
 
-\paragraph{Operator turniejowy}
-
-Drugą powszechnie stosowaną metodą selekcji jest operator turniejowy (\emph{ang. tourney select}).
+Drugą powszechnie stosowaną metodą selekcji jest \textbf{operator turniejowy} (\emph{ang. tourney select}).
 Jego działąnie polega na wylosowaniu z równym pradopodobieństwem pewnej ilości osobników i zwróceniu najlepszego spośród nich.
 Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (czyli ilość rozwiązań które są między sobą porównywane) nazywany jest \emph{rozmiarem turnieju} i jest parametrem operatora.
 
@@ -1494,7 +1486,7 @@ Działanie takiego operatora opisane jest przy pomocy algorytmu \ref{algorithm:s
 			$\param{max}$ \Comment{Liczba pokoleń które należy przetworzyć}
 		}
 		\Output{
-			1 - oznaczające, że należy przerwać działanie heurystyki, lub 0 w przeciwnym wypadku
+			1 oznaczające, że należy przerwać działanie heurystyki, lub 0 w przeciwnym wypadku
 		}
 		\Start
 		\Operator{krytStopu}{}
@@ -1543,10 +1535,181 @@ Przykładowo, zapis \opName{stdGenSel}($\top$, \opName{R}, \opName{TS}(2)) oznac
 
 W pracy przyjęto co najwyżej 2 płcie osobników. Jeżeli płec była tylko jedna, to $\important{G} = \{ \odot \}$, w przeciwnym wypadku $\important{G} = \{ \male, \female \}$.
 
-\subsection{TSP}
-działanie operatorów, etc
-\subsection{Knapsack}
-...
+\subsection{Implementacja problemu komiwojażera}
+
+Model problemu komiwojażera może zostać przedstawiony w postaci macierzy incydencji grafu reprezentującego rozkład punktów na mapie. Macierz ta (oznaczana jako $\important{M}_{TSP}$) ma wymiary $p \times p$ gdzie $p$ to liczba punktów.
+
+\begin{displaymath}
+	\important{M}_{TSP} = \begin{pmatrix}
+		m_{1,1} & m_{1,2} & \cdots & m_{1,p} \\
+		m_{2,1} & m_{2,2} & \cdots & m_{2,p} \\
+		\vdots  & \vdots  & \ddots & \vdots  \\
+		m_{p,1} & m_{p,2} & \cdots & m_{p,p}
+	\end{pmatrix}
+\end{displaymath}
+
+Wartość $m_{x, y}$ oznacza wagę krawędzi łączącej $x$ty i $y$ty wierzchołek grafu, czyli odległość między punktami o numerach $x$ i $y$.
+
+Wykorzystano reprezentację osobnika przez $p$elementowy wektor wartości ze zbioru $\{ 1, 2, \ldots, p \}$.
+Interpretacja tego, że na $i$tej pozycji w wektorze znajduje się wartość $j$ jest taka, że jako numer $i$tego odwiedzanego punktu wynosi $j$.
+
+Przykładowo, dla punktów rozmieszczonych w sposób przedstawiony na rysunku \ref{figure:tsp_example}, osobnik reprezentowany przez wektor $[1, 6, 4, 5, 3, 2]$ oznacza ścieżkę zaznaczoną na tym samym rysunku przerywaną linią, rozpoczynającą i kończącą się w punkcie 1.
+
+\begin{figure} [H]
+	\caption{Przykładowe rozwiązanie problemu komiwojażera \label{figure:tsp_example}}
+	\centering
+	\begin{tikzpicture}
+		\node (1) at (2, 2) {1};
+		\node (2) at (2, 5) {2};
+		\node (3) at (4, 6) {3};
+		\node (4) at (4, 3) {4};
+		\node (5) at (7, 4) {5};
+		\node (6) at (5, 1) {6};
+		\draw[dashed] (1) -- (6) -- (4) -- (5) -- (3) -- (2) -- (1) ;
+	\end{tikzpicture}
+\end{figure}
+
+Funkcją oceny w tym problemie jest długość ścieżki. 
+Formalnie, $\param{funkcjaOceny}_{TSP}$ jest wyrażona jako suma wag krawędzi łączących punkty w kolejności określonej wektorem, co można zapisać w postaci równania \ref{line:tsp_eval}. 
+Pierwsza część równania, występująca przed sumowaniem po odpowiednich indeksach oznacza długość krawędzi między ostatnim, a pierwszym punktem zapisanym w wektorze, dzięki czemu rozwiązania opisujące ścieżki z tą samą kolejnością, ale rozpoczynające się w różnych punktach, np. $[1, 6, 4, 5, 3, 2]$ i $[5, 3, 2, 1, 6, 4]$ mają tą samą ocenę.
+
+\begin{align}
+	\param{funkcjaOceny}_{TSP}([x_1, x_2, \ldots, x_p]) = p_{x_p, x_1} + \sum_{i=1}^{p-1} m_{x_i, x_{i+1}} \label{line:tsp_eval}
+\end{align}
+
+W niniejszej pracy wykorzystano zbiór punktów \emph{sahara} \cite{sahara_points} opisujących położenie 29 miast leżących na zachodniej Saharze. 
+Znane jest globalne optimum dla tego zadania, wynoszące 27603.
+
+Wykorzystany operator krzyżowania jest zbliżony do tego opisanego w sekcji \ref{section:general_idea}. 
+Polega na wybraniu losowego punktu przecięcia wektorów i wymianie ich podwektorów. 
+Różni się on podanego przykładu tym, że elementy wektorów nie powinny się w nich powtarzać.
+Aby spełnić to ograniczenie operator tworzy potomków poprzez wykorzystanie pierwszych części wektorów-rodziców i dołączenie do nich niewykorzystanych punktów.
+Punkty te dołączane są najpierw z podwektora drugiego rodzica za punktem przecięcia, a jeżeli po tym dalej brakuje niektórych z nich, są wybierane od jego początku.
+Zostało to zobrazowane na rysunku \ref{figure:tsp_crossover}, gdzie na górze pokazano wektory wejściowe (rodziców), grubą linią zaznaczono punkt przecięcia, a na dole przedstawiono wynik krzyżowania (potomków).
+
+\begin{figure}
+	\caption{Przykład działania operatora krzyżowania \label{figure:tsp_crossover}}
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
+	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
+	
+	%first input
+	\node[cellStyle, fill=gray!00] at (0, 0) {1};
+	\node[cellStyle, fill=gray!10] at (1, 0) {4};
+	\node[cellStyle, fill=gray!20] at (2, 0) {2};
+	\node[cellStyle, fill=gray!30] at (3, 0) {3};
+	\node[cellStyle, fill=gray!40] at (4, 0) {5};
+	
+	%second input
+	\node[cellStyle, fill=gray!50] at (0, -1) {2};
+	\node[cellStyle, fill=gray!60] at (1, -1) {4};
+	\node[cellStyle, fill=gray!70] at (2, -1) {5};
+	\node[cellStyle, fill=gray!80] at (3, -1) {3};
+	\node[cellStyle, fill=gray!90] at (4, -1) {1};
+	
+	%input cutpoint
+	\draw[ultra thick] (1.5, 1) -- (1.5, -2);
+	
+	%first output
+	\node[cellStyle, fill=gray!0] at (0, -5) {1};
+	\node[cellStyle, fill=gray!10] at (1, -5) {4};
+	\node[cellStyle, fill=gray!70] at (2, -5) {5};
+	\node[cellStyle, fill=gray!80] at (3, -5) {3};
+	\node[cellStyle, fill=gray!50] at (4, -5) {2};
+	
+	%second input
+	\node[cellStyle, fill=gray!50] at (0, -6) {2};
+	\node[cellStyle, fill=gray!60] at (1, -6) {4};
+	\node[cellStyle, fill=gray!30] at (2, -6) {3};
+	\node[cellStyle, fill=gray!40] at (3, -6) {5};
+	\node[cellStyle, fill=gray!00] at (4, -6) {1};
+	
+	%input cutpoint
+	\draw[ultra thick] (1.5, -4) -- (1.5, -7);
+	
+	% operator arrow
+	\draw [->, thick] (2, -2)  -- (2, -4) node[right, midway]{$\param{opKrzyzowania}_{TSP}$};
+	
+	\end{tikzpicture}
+\end{figure}
+
+Operator mutacji wykorzystany w tej pracy nosi angielską nazwę \emph{Reverse Sequence Mutation} \cite{tsp_mutations}, co można przetłumaczyć na \emph{mutację przez zamianę podciągów}.
+Jego działanie polega na wybraniu dwóch losowych punktów przecięcia, przez co dzielimy cały wektor na 3 części.
+Osobnik zmutowany powstaje poprzez zachowanie kolejności elementów w pierwszej i trzeciej części oraz odwrócenie kolejności elementów w drugiej części.
+Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
+
+
+\begin{figure}
+	\caption{Przykład działania operatora mutacji \label{figure:tsp_mutation}}
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
+	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
+	
+	%input
+	\foreach \x in {1, ..., 8} {
+		\node[cellStyle, fill=gray!\x0] at (\x, 0) {\x};
+	}
+	
+	%input cupoints
+	\draw[ultra thick] (2.5, 1) -- (2.5, -1);
+	\draw[ultra thick] (6.5, 1) -- (6.5, -1);
+	
+	%output
+	\foreach \x in {1, ..., 2} {
+		\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+	}
+	
+	\node[cellStyle, fill=gray!60] at (3, -4) {6};
+	\node[cellStyle, fill=gray!50] at (4, -4) {5};
+	\node[cellStyle, fill=gray!40] at (5, -4) {4};
+	\node[cellStyle, fill=gray!30] at (6, -4) {3};
+	
+	\foreach \x in {7, ..., 8} {
+		\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+	}
+
+	%output cupoints
+	\draw[ultra thick] (2.5, -3) -- (2.5, -5);
+	\draw[ultra thick] (6.5, -3) -- (6.5, -5);
+	
+	% operator arrow
+	\draw [->, thick] (4.5, -1)  -- (4.5, -3) node[right, midway]{$\param{opMutacji}_{TSP}$};
+	
+	\end{tikzpicture}
+\end{figure}
+
+\subsection{Implementacja problemu plecakowego}
+
+Model binarnego problemu plecakowego można przedstawić w postaci ciągu $\important{M}_{PLECAK}$ $p$ par $(k, w)$ oraz wartości $W$ określającej maksymalny rozmiar plecaka.
+
+\begin{displaymath}
+	\important{M}_{PLECAK} = ( ((k_1, w_1), (k_2, w_2), \ldots, (k_p, w_p)), W)
+\end{displaymath}
+
+Wartość $k_i$ oznacza koszt $i$tego przedmiotu, a $w_i$ - jego wagę.
+
+Wykorzystano reprezentację osobnika przez $p$elementowy wektor binarny (czyli taki, którego wartości to elementy zbioru $\{0, 1\}$).
+Interpretacja tego, że na $i$tej pozycji w wektorze występuje 1 jest taka, że $i$ty przedmiot zostaje zapakowany do plecaka, podczas gdy wartość 0 wskazuje na sytuację przeciwną.
+
+Funkcja oceny dla tego problemu jest bardziej skomplikowana niż dla problemu komiwojażera. Główną jej składową jest łączy koszt wszystkich wybranych przedmiotów.
+Aby sprowadzić problem do problemu minimalizacji\footnote{
+	Zdecydowany się na problem minimalizacji, aby uprościć implementację.
+} jest ona mnożona przez -1.
+Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich obiętości, a maksymalnym rozmiarem plecaka.
+W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
+Zostało to zapisane przy pomocy równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
+
+\begin{align}
+	\label{line:knapsack_eval_start}
+	x = &[x_1, x_2, \ldots, x_p] \\
+	\param{funkcjaOceny}_{PLECAK}(x) = &(nadmiar(x)-1) \times \sum_{i=1}^{p} (x_i \times k_i) \\
+	nadmiar(x) = &\begin{cases}
+		0 &: \sum_{i=1}^{p} (x_i \times w_i) \leq W \\
+		(\sum_{i=1}^{p} (x_i \times w_i)) - W &: \sum_{i=1}^{p} (x_i \times w_i) > W
+	\end{cases}
+	\label{line:knapsack_eval_stop}
+\end{align}
+
 \section{Procedury eksperymentów}
 eksploracja z nawrotami/czysty przegląd/inne procedury z etapu 2
 \section{Przeprowadzone eksperymenty}
@@ -1579,7 +1742,9 @@ Kolejno znajdowane konfiguracje
 
 \pagestyle{plain}
 
-\todo{wywalić listy (?), poradzić sobie z podwójną bibliografią (patrz: spis treści)}
+\todo{wywalić listy (?)}
+
+\todo{zmienić styl bibliografii, URL z online resource, uzupełnić linki}
 
 \listoffigures
 \listoftables
