@@ -66,6 +66,7 @@
 
 \usepackage{wasysym}
 \usepackage{multirow}
+\usepackage{hhline}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -128,8 +129,8 @@
 \newcommand{\circled}[1]{ \textcircled{\scriptsize{#1}} } 
 
 
-\newcommand{\img}[1]{\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{pictures/#1}}
-\newcommand{\graph}[1]{\input{graphs/#1}}
+\newcommand{\img}[1]{\centering \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{pictures/#1}}
+\newcommand{\graph}[1]{\centering \input{graphs/#1}}
 %\newcommand{\vectorGraphics}[1]{\input{vector/#1}}
 
 \newcolumntype{s}{>{\hsize=.5\hsize}c}
@@ -139,6 +140,8 @@
 %uncomment for double spacing 
 %\usepackage{setspace}
 %\doublespacing
+
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
 
@@ -1538,7 +1541,7 @@ Przykładowo, zapis \opName{stdGenSel}($\top$, \opName{R}, \opName{TS}(2)) oznac
 
 W pracy przyjęto co najwyżej 2 płcie osobników. Jeżeli płec była tylko jedna, to $\important{G} = \{ \odot \}$, w przeciwnym wypadku $\important{G} = \{ \male, \female \}$.
 
-\subsection{Implementacja problemu komiwojażera}
+\subsection{Implementacja problemu komiwojażera} \label{subsection:tsp_impl}
 
 Model problemu komiwojażera może zostać przedstawiony w postaci macierzy incydencji grafu reprezentującego rozkład punktów na mapie. Macierz ta (oznaczana jako $\important{M}_{TSP}$) ma wymiary $p \times p$ gdzie $p$ to liczba punktów.
 
@@ -1698,7 +1701,7 @@ Funkcja oceny dla tego problemu jest bardziej skomplikowana niż dla problemu ko
 Aby sprowadzić problem do problemu minimalizacji\footnote{
 	Zdecydowany się na problem minimalizacji, aby uprościć implementację.
 } jest ona mnożona przez -1.
-Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich obiętości, a maksymalnym rozmiarem plecaka.
+Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich obiętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
 W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
 Zostało to zapisane przy pomocy równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
 
@@ -1714,7 +1717,7 @@ Zostało to zapisane przy pomocy równań \ref{line:knapsack_eval_start}-\ref{li
 \end{align}
 
 W tej pracy wykorzystano zbiór \emph{medium} \cite{knapsack_data}, opisujący 100 przedmiotów i maksymalny rozmiar plecaka wynoszący 27.
-Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1137, co oznacza wybrane przedmioty mają łączny koszt 1137 i ograniczenie na rozmiar nie jest przekroczone.
+Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1137, co oznacza, że wybrane przedmioty mają łączny koszt 1137 i ograniczenie na rozmiar nie jest przekroczone.
 
 Zastosowano standardowy operator krzyżowania dla wektorów binarnych, opisany w rozdziale \ref{section:general_idea}, zobrazowany rysunkiem \ref{vector:example_crossover}.
 Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamianie ich drugich części w celu uzyskania potomków.
@@ -1722,16 +1725,16 @@ Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamiani
 Wykorzystany operator mutacji to adaptacyjna\footnote{
 	Określenie ,,adaptacyjny'' oznacza w tym kontekście, że szczegóły działania operatora zmieniają się w zależności od sytuacji, w której jest wykorzystywany, dopasowując się do napotkanych warunków.
 } wariacja na temat operatora przedstawionego w rozdziale \ref{section:general_idea} na rysunku \ref{vector:example_mutation}.
-W zależności od tego, czy łączna objętość wybranych przedmiotów była większa, czy mniejsza, niż rozmiar plecaka, prawdopodobieństwa tego, że bit zostanie odwrócony (tzn. 0 zostanie zamienione na 1 lub na odwrót) było różne.
+W zależności od tego, czy łączna objętość wybranych przedmiotów była większa, czy mniejsza, niż rozmiar plecaka, prawdopodobieństwa tego, że bit zostanie odwrócony (tzn. 0 zostanie zamienione na 1 lub na odwrót) były różne.
 
-Zanim działanie tego operatora zostanie zdefiniowane formalnie, należy opisać pomocniczą funkcję $wybierz(\range{a}{b}, x)$, zwracającą punkt leżący w przedziale $\range{a}{b}$ w odległości od obu punktów określonej przez argument $x$.
-Jej definicja jest zapisana w sygnaturze \ref{signature:wybierz}.
+Zanim działanie tego operatora zostanie zdefiniowane formalnie, należy opisać pomocniczą funkcję $rzutuj(x, \range{a}{b})$, zwracającą punkt leżący w przedziale $\range{a}{b}$ w odległości od obu punktów określonej przez argument $x$.
+Jej definicja jest zapisana w sygnaturze \ref{signature:rzutuj}.
 
 \begin{signature}
-	\caption{Funkcja $wybierz(\range{a}{b}, x)$ \label{signature:wybierz}}
+	\caption{Funkcja $rzutuj(\range{a}{b}, x)$ \label{signature:rzutuj}}
 	\begin{align}
-		wybierz: &\numberSet{R}^2 \times \range{0}{1} \rightarrow \numberSet{R} \\
-		wybierz(\range{a}{b}, x) =& a + (b-a) \times x
+		rzutuj: &\range{0}{1} \times \numberSet{R}^2 \rightarrow \numberSet{R} \\
+		rzutuj(x, \range{a}{b}) =& a + (b-a) \times x
 	\end{align}
 \end{signature}
 
@@ -1743,12 +1746,13 @@ W ogólności prawdopodbieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref
 
 \begin{align}
 	\label{line:inverse}
-	P = wybierz(przedzial, czynnik)
+	P = rzutuj(czynnik, przedzial)
 \end{align}
 
 Sposób obliczania wartości $czynnik$ jest zależny od sytuacji. 
-Jeżeli obserwowany jest niedomiar, to jego wartość jest różnicą rozmiaru plecaka i sumy rozmiarów wybranych przedmiotów podzieloną przez rozmiar plecaka ($\frac{W - \sum_{i=1}^p (x_i \times w_i)}{W}$).
-Jeżeli natomiast występuje nadmiar, to jest on tożsamy z wartością funkcji $nadmiar(x)$ (patrz: linia \ref{line:knapsack_eval_stop}) podzieloną przez sumę różnicę sumy wszystkich wag i rozmiaru plecaka ($\frac{nadmiar(x)}{(\sum_{i=1}^p w_i) - W}$).
+Jeżeli obserwowany jest niedomiar, to jego wartość jest różnicą rozmiaru plecaka i sumy rozmiarów wybranych przedmiotów podzieloną przez rozmiar plecaka ($\frac{W - \sum_{i=1}^p (x_i \times w_i)}{W}$), czyli relatywną ilością niewykorzystanego miejsca. Wartość mianownika dla zbadanego problemu to 27 (ponieważ tyle wynosi rozmiar plecaka dla wykorzystanego zbioru danych).
+Jeżeli natomiast występuje nadmiar, to jest on tożsamy z wartością funkcji $nadmiar(x)$ (patrz: linia \ref{line:knapsack_eval_stop}) podzieloną przez sumę różnicę sumy wszystkich wag i rozmiaru plecaka ($\frac{nadmiar(x)}{(\sum_{i=1}^p w_i) - W}$), czyli wartością nadmiaru znormalizowaną do przedziału $\range{0}{1}$.
+W tym przypadku wartość pod kreską ułamkową wynosi 1333, ponieważ suma wag przedmiotów w wybranym zbiorze danych wynosi 1360.
 
 Sposób określania wartości $przedzial$ również jest zależny od sytuacji. 
 W tabeli \ref{table:range_choose} przedstawiony jest sposób wyboru odpowiedniego przedziału. 
@@ -1769,19 +1773,214 @@ Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmia
 
 Intuicyjnie, tak zdefiniowany operator powinien z dużym prawdopodobieństwem zamieniać sytuacje nadmiaru na takie, które spełniają ograniczenia, a przynajmniej powodują znacznie mniejszy nadmiar, a w sytuacji niedomiaru powinien ,,dopełniać'' plecak losowymi przedmiotami, aby uzyskać jak największy zysk (tzn. sumę kosztów przedmiotów).
 
+
 \section{Procedury eksperymentów}
-eksploracja z nawrotami/czysty przegląd/inne procedury z etapu 2
+
+W dalszej części pracy konkretny zestaw parametrów będzie nazywany konfiguracją.
+Wyrażenie ,,wynik eksperymentu dla konfiguracji wyniósł \emph{X}'' oznacza, że heurystyka została uruchomiona z parametrami (rozmiarem populacji, prawdopodobieństwami, itd.) określonymi przez konfigurację, a jej wynikiem było \emph{X}.
+Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dla danej konfiguracji za każdym uruchomieniem może być inny.
+
+W ramach badań wykorzystano dwie procedury eksperymentalne, nazywane kolejno procedurą eksploracji (lub krócej, eksploracją) i procedurą przeglądu (odpowiednio, przeglądem).
+
+Pierwsza z nich jest wykorzystywana w sytuacji, w której pojawia się potrzeba przeszukania dużej przestrzeni parametrów.
+Jest to często niemożliwe, ponieważ pojedyncza ewaluacja zestawu parametrów trwa relatywnie długo, a ilość kombinacji wartości parametrów jest zbyt duża.
+
+Aby obejść ten problem, w tej pracy zdecydowano się na iteracyjne podejście przeszukujące przestrzeń konfiguracji wzdłuż wymiarów.
+Zostało ono wyjaśnione przy pomocy algorytmu \ref{algorithm:explore}.
+
+\fixme{that fucking footnote}
+
+\begin{algorithm}
+	\caption{Procedura eksploracji \label{algorithm:explore}}
+		\begin{algorithmic}[1]
+			\Params{
+				$X_1$, $X_2$, $\ldots$, $X_{p}$ \Comment{\raggedleft Zestaw $p$ zbiorów wartości parametrów ($X_i = \{ x_{i, 1}, x_{i, 2}, \ldots, x_{i, |X_i|} \}$, gdzie $x_{i, j}$ to $j$ta wartość $i$tego parametru)} \\
+				$R$ \Comment{Ilość nawrotów procedury} \\
+				$I$ \Comment{Ilość powtórzeń eksperymentu dla każdej konfiguracji} \\
+				$statystyka$ \Comment{Operator, przyjmujący zbiór wyników, a zwracający jakąś ich statystykę, np. średnią, medianę lub wartość maksymalną}
+			}
+			\Input{
+				$cialo$ \Comment{\raggedleft Ciało eksperymentu, tj. operator wykonania pojedynczego eksperymentu, przyjmujący zestaw parametrów $(P_1, P_2, \ldots)$ ($P_i \in X_i$), a zwracający jakąś miarę jakości działania\footnote{
+					Dla uproszczenia w algorytmie przyjęto, że zwracaną miarę należy zmaksymalizować.
+				}}
+			}
+			\Output{
+				$konfiguracja$ \Comment{\raggedleft Najlepsza konfiguracja znaleziona w procesie eksploracji, tj. $p$ wartości $x_{i, j}$ o różnych indeksach $i$}
+			}
+			\Start
+			\Procedure{eksploruj}{cialo}
+				\Var $konfiguracja = [x_{1, 1}, x_{2, 1}, \ldots, x_{p, 1})]$
+				\Var $nawrot \gets 0$
+				\While{$nawrot < R$}
+					\Var $parametr \gets 1$
+					\While{$parametr \leq p$}
+						\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{parametr}|$}
+						\Var $i \gets 1$
+						\State $konfiguracja[parametr] \gets x_{parametr, i}$ 
+						\raggedright
+						\While{$i \leq |X_{parametr}|$}
+							\Var $powtorzenie = 1$
+							\Var $wyniki \gets \emptyset$
+							\While{$powtorzenie \leq I$}
+								\State $wyniki \gets wyniki \cup \{ cialo(konfiguracja) \}$
+								\State $powtorzenie \gets powtorzenie + 1$
+							\EndWhile
+							\State $statystyki[i] \gets statystyka(wyniki)$
+							\State $i \gets i+1$
+						\EndWhile
+					\State $konfiguracja[parametr] \gets \argmax_{i} statystyki[i]$
+					\State $parametr \gets parametr + 1$
+					\EndWhile
+					\State $nawrot \gets nawrot + 1$
+				\EndWhile
+			\EndProcedure
+		\end{algorithmic}
+		Zapis $a[b]$ oznacza element tablicy $a$ o indeksie $b$
+\end{algorithm}
+
+\todo{Opisać eksplorację}
+
+Druga metoda, czyli metoda przeglądu polega na przeszukanie całego iloczynu kartezjańskiego zbiorów wartości parametrów.
+Jest ona wykorzystywana, kiedy to jakość i miarodajność wyników, a nie czas ich uzyskania ma znaczenie.
+
+\todo{przegląd zupełny - formalnie}
+
 \section{Przeprowadzone eksperymenty}
-Wyjaśnić strukture
-\subsection{TSP}
-\subsubsection{Initial}
+
+Badania były przeprowadzane oddzielnie dla każdego problemu.
+Ich pierwszą częścią było znalezienie początkowej konfiguracji, wykorzystywanej w dalszych etapach.
+Odbywało się to w dwóch krokach.
+Pierwszy z nich polegał na znalezieniu parametrów dla standardowego algoryytmu ewolucyjnego przy dużej ziarnistości przeszukiwanych wartości, a drugi - na przeszukaniu lokalnego sąsiedztwa konfiguracji znalezionej w kroku pierwszym.
+W tej części zdarzały się sytuacje w których znaleziono globalne optimum dla problemu, jednak takie zestawy parametrów zostawały odrzucone.
+Miało to na celu uzyskanie wyników dobrych, ale nie najlepszych, aby sprawdzić, czy w dalszych eksperymentach uda się osiągnąć lepsze rezultaty.
+Gdyby już na tym etapie znajdowano optimum globalne, nie dałoby się określić, czy nowe rozwiązania poprawiają wyniki.
+
+Drugą częścią badań było zebranie wyników dla DSEA z wykorzystaniem parametrów znalezionych w poprzednim kroku, ale z różnymi implementacjami operatorów selekcji płciowej.
+Ostatnią ich częścią było odtworzenie wyników dla metod znanych z prac naukowych.
+
+Każdy z tych kroków zostanie opisany oddzielnie, z określeniem rozwiązywanego problemu, zakresem zmienianych parametrów, opisem przebiegu eksperymentu \todo{or will it?} oraz jego najważniejszymi wynikami.
+
+Pełne wyniki eksperymentów są zamieszczone w dodatkach do niniejszego dokumentu.
+
+Kolejne podsekcje opisują przebieg eksperymentów dla problemu komiwojażera i problemu plecakowego, w tej kolejności.
+
+Dla każdego z eksperymentów należało określić (poza rozwiązywanym problemem, a więc reprezentacją osobnika, operatorami genetycznymi i funkcją oceny):
+
+\begin{itemize}
+	\item rozmiar populacji ($\param{rozmiarPopulacji}$),
+	\item współczynnik domieszek ($\param{wspDomieszek}$),
+	\item liczbę pokoleń (parametr kryterium stopu, $\param{max}$),
+	\item prawdopodobieństwa mutacji i krzyżowania ($\param{prawdMutacji}$, $\param{prawdKrzyzowania}$),
+	\item operator selekcji naturalnej ($\param{opSelNat}$), definiowany przez wykorzystany operator wyboru,
+	\item operator selekcji płciowej ($\param{opSelPlciowej}$), wraz z jego parametrami (zależnymi od implementacji).
+\end{itemize}
+
+Ponadto, korzystając z procedury eksploracji poza powyższymi zbiorami wartości parametrów trzeba było wskazać wartości:
+
+\begin{itemize}
+	\item ilości nawrotów ($R$),
+	\item ilości powtórzeń eksperymentu ($I$), oraz
+	\item statystyki używanej do wyboru dalszej ścieżki eksploracji ($statystyka$).
+\end{itemize}
+
+\subsection{Badania problemu komiwojażera}
+
+W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA dla problemu komiwojażera, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:tsp_impl}.
+
+\subsubsection{Poszukiwanie parametrów początkowych}
+
 \paragraph{Konfiguracja}
-zakresy parametrów, parametry początkowe, ilość nawrotów i powtórzeń
+
+W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji wyjściowej. W tabeli \ref{table:tsp_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
+
+\begin{table}[h]
+	\caption{Parametry wykorzystane podczas poszukiwania parametrów początkowych \label{table:tsp_init_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zestaw wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [10, 20, 50] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,1, 0,25, 0,5]\\
+		\hline
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,6, 0,7, 0,8] $\times$ [0,1, 0,2, 0,3]  \\
+		\hline
+		$\param{max}$ & [25, 50, 100] \\
+		\hline		
+		$\param{opSelNat}$ & [\opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))]\\
+		\hline
+		$\param{opSelPlciowej}$ & [\opName{stdGenSel}($\bot$, R, R)]\\
+		\hline
+		$R$ & 3\\
+		\hline
+		$I$ & 5\\
+		\hline
+		$statystyka$ & najlepszy wynik \\
+		\hline
+	\end{tabular}
+\end{table}
+
 \paragraph{Przebieg}
-Kolejno znajdowane konfiguracje
+
+Tabela \ref{table:tsp_init_flow} przedstawia przebieg wykorzystanej procedury. 
+Lewa kolumna grupuje znalezione parametry w ramach jednego nawrotu eksploracji. 
+Kolejne dwie, czytane od góry, określają jakie wartości zostały kolejno znalezione.
+
+Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację. 
+W drugim, udało się odnaleźć prawdopodobieństwa mutacji i krzyżowania które dawały lepsze wyniki.
+Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przeszukiwanych.
+
+\begin{table}[h]
+	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_init_flow}}
+	\centering
+	\begin{tabular}{c|c|c|}
+		\cline{2-3}
+		\multicolumn{1}{l|}{}                                 & {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,3)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+		\hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+		\hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+	\end{tabular}
+\end{table}
+
 \paragraph{Wyniki}
-10 najlepszych max, 10 najlepszych avg, zestawić w tabelki, opisać
-1 najlepszy pokazać i opisać przebieg
+
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{tsp_init_results}}
+	\begin{tabular}{|l|r|r}
+		\hline
+		\multicolumn{1}{|c|}{{\bf Numer powtórzenia}} & \multicolumn{1}{c|}{{\bf Wynik}} & \multicolumn{1}{c|}{{\bf Różnica względem optimum}} \\ \hline \hline
+		1                                             & 42129,167                        & \multicolumn{1}{r|}{14526,167}                      \\ \hline
+		2                                             & 42808,0792                       & \multicolumn{1}{r|}{15205,0792}                     \\ \hline
+		3                                             & 36656,3316                       & \multicolumn{1}{r|}{9053,3316}                      \\ \hline
+		4                                             & 42174,1093                       & \multicolumn{1}{r|}{14571,1093}                     \\ \hline
+		5                                             & 41143,6598                       & \multicolumn{1}{r|}{13540,6598}                     \\ \hline \hline
+		{\bf Średnia}                                 & 40982,26938                      & \multicolumn{1}{r|}{13379,26938}                    \\ \hline
+		{\bf Odchylenie standardowe}                  & 2227,5198                        &                       \\  \hhline{==~}
+		{\bf Optimum}                                 & \multicolumn{1}{r|}{{\bf 27603}} & \multicolumn{1}{l}{}                                \\ \cline{1-2}
+	\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+	\caption{Wykres przebiegu trzeciego powtórzenia znalezionej konfiguracji \label{figure:tsp_init_example}}
+	\graph{tsp_init_example.tex}
+\end{figure}
+
 \subsubsection{Tweak}
 ...
 \subsubsection{Compare}
