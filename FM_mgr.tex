@@ -45,7 +45,6 @@
 % MY CONTENT
 % % % % % % % % % % % % % % % %
 
-
 \usepackage{tabularx}
 \usepackage{tabulary}
 \usepackage{placeins}
@@ -68,6 +67,7 @@
 \usepackage{multirow}
 \usepackage{hhline}
 \usepackage{longtable}
+\usepackage{morefloats}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -2300,8 +2300,420 @@ Pełne wyniki dla konfiguracji D przedstawione są w załaczniku w tabeli \ref{t
 
 \todo{proza, co wyszło, a co nie}
 
-\subsection{Knapsack}
-...
+\subsection{Badania problemu plecakowego}
+W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA dla problemu komiwojażera, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:tsp_impl}.
+
+\subsubsection{Poszukiwanie parametrów początkowych}
+
+\paragraph{Konfiguracja}
+
+W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji wyjściowej. W tabeli \ref{table:knapsack_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
+
+\begin{table}[h]
+	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{table:knapsack_init_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [10, 20, 50] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,1, 0,25, 0,5]\\
+		\hline
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,6, 0,7, 0,8] $\times$ [0,1, 0,2, 0,3]  \\
+		\hline
+		$\param{max}$ & [25, 50, 100] \\
+		\hline		
+		$\param{opSelNat}$ & [\opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))]\\
+		\hline
+		\multicolumn{2}{c}{}\\
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
+		\hline
+		\hline
+		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
+		\hline
+		$R$ & 3\\
+		\hline
+		$I$ & 5\\
+		\hline
+		$statystyka$ & najlepszy wynik \\
+		\hline
+		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\paragraph{Przebieg}
+
+Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury. 
+Lewa kolumna grupuje znalezione parametry w ramach jednego nawrotu eksploracji. 
+Kolejne dwie, czytane od góry, określają jakie wartości zostały kolejno znalezione.
+
+Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację. 
+W drugim, udało się odnaleźć prawdopodobieństwa mutacji i krzyżowania które dawały lepsze wyniki.
+Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przeszukiwanych.
+
+\begin{table}[h]
+	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_init_flow}}
+	\centering
+	\begin{tabular}{c|c|c|}
+		\cline{2-3}
+		\multicolumn{1}{l|}{}                                 & {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,25                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,6, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		\hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,8, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		\hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,8, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		
+	\end{tabular}
+\end{table}
+%
+\paragraph{Wyniki}
+
+\todo{Blah, blah, here go results}
+
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{knapsack_init_results}}
+	\begin{tabular}{|l|r|r}
+		\hline
+		\multicolumn{1}{|c|}{{\bf Numer powtórzenia}} & \multicolumn{1}{c|}{{\bf Wynik}} & \multicolumn{1}{c|}{{\bf Różnica względem optimum}} \\ \hline \hline
+		1                                             & -1107                            & \multicolumn{1}{r|}{66}                             \\ \hline
+		2                                             & -1156                            & \multicolumn{1}{r|}{17}                             \\ \hline
+		3                                             & -1115                            & \multicolumn{1}{r|}{58}                             \\ \hline
+		4                                             & -1120                            & \multicolumn{1}{r|}{53}                             \\ \hline
+		5                                             & -1173                            & \multicolumn{1}{r|}{0}                              \\ \hline \hline
+		{\bf Średnia}                                 & -1134,2000                          & \multicolumn{1}{r|}{38,8000}                           \\ \hline
+		{\bf Odchylenie standardowe}                  & 28,6827                          & \multicolumn{1}{l}{}                                \\ \hhline{==~}
+		{\bf Optimum}                                 & {\bf -1173}                      & \multicolumn{1}{l}{}                                \\ \cline{1-2}
+	\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+	\caption{Wykres przebiegu piątego powtórzenia znalezionej konfiguracji \label{figure:knapsack_init_example}}
+	\graph{knapsack_init_example.tex}
+\end{figure}
+
+\subsubsection{Poprawa konfiguracji początkowej}
+
+\paragraph{Konfiguracja}
+
+\todo{opisać skąd sie wzięły wartości}
+
+\begin{table}[h]
+	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{table:knapsack_tweak_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,05, 0,1, 0,15, 0,2]\\
+		\hline
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,75, 0,78, 0,8, 0,82, 0,85] $\times$ [0,05, 0,08, 0,1 0,12, 0,15]  \\
+		\hline
+		$\param{max}$ & [40, 45, 50, 55, 60] \\
+		\hline		
+		\multicolumn{2}{c}{}\\
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
+		\hline
+		\hline
+		$\param{opSelNat}$ & \opName{natSel}(RS)\\
+		\hline
+		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
+		\hline
+		$R$ & 2\\
+		\hline
+		$I$ & 3\\
+		\hline
+		$statystyka$ & najlepsza średnia wyników $I$ powtórzeń \\
+		\hline
+		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\paragraph{Przebieg}
+
+\todo{skomentuj}
+
+\begin{table}[h]
+	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_tweak_flow}}
+	\centering
+	\begin{tabular}{c|c|c|}
+		\cline{2-3}
+		& {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
+		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 60                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,75, 0,1)             \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \hline \hline
+		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 60                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,75, 0,15)             \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 60                     \\ \hline
+	\end{tabular}
+\end{table}	
+
+\paragraph{Wyniki}
+\todo{Blah, blah, here go results}
+
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{knapsack_tweak_results}}
+	\begin{tabular}{|l|r|r}
+		\hline
+		\multicolumn{1}{|c|}{{\bf Numer powtórzenia}} & \multicolumn{1}{c|}{{\bf Wynik}} & \multicolumn{1}{c|}{{\bf Różnica względem optimum}} \\ \hline  \hline
+		0                                             & -1127                            & \multicolumn{1}{r|}{46}                             \\ \hline
+		1                                             & -1161                            & \multicolumn{1}{r|}{12}                             \\ \hline
+		2                                             & -1131                            & \multicolumn{1}{r|}{42}                             \\ \hline \hline
+		{\bf Średnia}                                 & -1139,6667                       & \multicolumn{1}{r|}{33,3334}                        \\ \hline
+		{\bf Odchylenie standardowe}                  & 18,5831                          &                                                     \\ \hhline{==~}
+		{\bf Optimum}                                 & {\bf -1173}                      &                                                     \\ \cline{1-2}
+	\end{tabular}
+\end{table}
+
+\todo{poszło lepiej niż init}
+
+\subsubsection{Porównanie działania różnych operatorów selekcji płciowej}
+
+\paragraph{Konfiguracja}
+\todo{używamy 4 konfigów, nazywanych ABCD, sens każdego}
+
+\begin{table}[h]
+	\caption{Konfiguracja A \label{table:knapsack_config_compare_a}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $W$, $W$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ \hline
+		\hline
+		&                                                             \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
+		\multicolumn{1}{|l|}{$W$}                   & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]}                 \\ \hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+	\caption{Konfiguracja B \label{table:knapsack_config_compare_b}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
+		&                                                                                             \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                                                   \\ \hline \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru1}$}   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                                                   \\ \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru2}$}   & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+	\caption{Konfiguracja C \label{table:knapsack_config_compare_c}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\  \hline
+		&                                                                                             \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                                                   \\ \hline \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru1}$}   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                                                   \\ \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru2}$}   & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
+		\hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+	\caption{Konfiguracja D \label{table:knapsack_config_compare_d}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                  \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
+		&                                                         \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}               \\ \hline \hline
+		\multicolumn{1}{|l|}{a}                     & \multicolumn{1}{l|}{{[}1, 3, 5{]}}                      \\ \hline
+		\multicolumn{1}{|l|}{b}                     & \multicolumn{1}{l|}{}                                   \\ \hline
+		\multicolumn{1}{|l|}{WA}                    & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]}          \\ \hline
+		\multicolumn{1}{|l|}{WB}                    & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]}          \\ \hline
+		&                                                         \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Wartość}}                      \\ \hline \hline
+		\multicolumn{1}{|l|}{WP}                    & \multicolumn{1}{l|}{R}                                  \\ \hline
+	\end{tabularx}
+\end{table}
+
+%\paragraph{Wyniki}
+%\todo{omówić każdą tabele i wykres}
+%
+%
+%\begin{table}[h]
+%	\caption{Wyniki dla konfiguracji A \label{table:knapsack_results_compare_a}}
+%	\centering
+%	\begin{tabular}{|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf W}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		R                             & 37830,7834      & 1865,7587      \\ \hline
+%		RS                            & 34842,6067      & 1284,0574      \\ \hline
+%		TS(2)                         & 70304,4904      & 1770,7225      \\ \hline
+%		TS(3)                         & 80423,9968      & 1781,7952      \\ \hline
+%	\end{tabular}
+%\end{table}
+%
+%\begin{table}[h]
+%	\caption{Wyniki dla konfiguracji B \label{table:knapsack_results_compare_b}}
+%	\centering
+%	\begin{tabular}{|l|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & \multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		RS                             & R                             & 45328,6013      & 967,5844       \\ \hline
+%		RS                             & RS                            & 40199,6226      & 3708,8267      \\ \hline
+%		RS                             & TS(2)                         & 50300,0517      & 3010,3629      \\ \hline
+%		RS                             & TS(3)                         & 58433,2242      & 2810,0883      \\ \hline
+%		TS(2)                          & R                             & 74439,4152      & 1775,5433      \\ \hline
+%		TS(2)                          & RS                            & 69344,7388      & 7985,2835      \\ \hline
+%		TS(2)                          & TS(2)                         & 74102,5322      & 3456,4116      \\ \hline
+%		TS(2)                          & TS(3)                         & 75613,0044      & 1278,5291      \\ \hline
+%		TS(3)                          & R                             & 75138,9453      & 2567,8802      \\ \hline
+%		TS(3)                          & RS                            & 73942,4747      & 2489,2511      \\ \hline
+%		TS(3)                          & TS(2)                         & 76817,7884      & 4239,8301      \\ \hline
+%		TS(3)                          & TS(3)                         & 78242,0359      & 3940,9643      \\ \hline
+%	\end{tabular}
+%\end{table}
+%
+%\begin{table}[h]
+%	\caption{Wyniki dla konfiguracji C \label{table:knapsack_results_compare_c}}
+%	\centering
+%	\begin{tabular}{|l|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & \multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		RS & RS & 41555,6377 & 3146,2442 \\ \hline
+%		RS & R & 46760,4675 & 4193,2035 \\ \hline
+%		RS & TS(2) & 58959,3026 & 2904,8175 \\ \hline
+%		RS & TS(3) & 60034,4256 & 2037,1204 \\ \hline
+%		TS(2) & RS & 71987,6709 & 2285,8795 \\ \hline
+%		TS(2) & TS(3) & 74517,5027 & 1587,0526 \\ \hline
+%		TS(3) & R & 74713,9409 & 3220,7059 \\ \hline
+%		TS(2) & R & 76055,7806 & 2368,6103 \\ \hline
+%		TS(2) & TS(2) & 76926,4793 & 5098,4827 \\ \hline
+%		TS(3) & RS & 77571,6168 & 2876,1054 \\ \hline
+%		TS(3) & TS(2) & 78467,4306 & 1643,5278 \\ \hline
+%		TS(3) & TS(3) & 78500,7347 & 2992,6209 \\ \hline
+%	\end{tabular}
+%\end{table}
+%
+%\begin{table}[h]
+%	\caption{Wyniki dla konfiguracji D \label{table:knapsack_results_compare_d}}
+%	\centering
+%	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{|c|}{{\bf b}} & \multicolumn{1}{|c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		1 & 0,0 & R & R & 63148,9662 & 2991,8179 \\ \hline
+%		1 & 0,0 & R & RS & 66670,9717 & 1262,9803 \\ \hline
+%		1 & 0,0 & R & TS(2) & 66796,5075 & 6059,7659 \\ \hline
+%		1 & 0,0 & R & TS(3) & 68187,0807 & 2149,1036 \\ \hline
+%		1 & 0,0 & RS & R & 57076,8068 & 4343,3643 \\ \hline
+%		1 & 0,0 & RS & RS & 54775,3531 & 5638,5163 \\ \hline
+%		1 & 0,0 & RS & TS(2) & 56340,1414 & 6044,4863 \\ \hline
+%		1 & 0,0 & RS & TS(3) & 54006,4018 & 4598,4399 \\ \hline
+%		1 & 0,0 & TS(2) & R & 75308,797 & 3633,9511 \\ \hline
+%		1 & 0,0 & TS(2) & RS & 74997,8832 & 2935,57 \\ \hline
+%		1 & 0,0 & TS(2) & TS(2) & 76741,2555 & 2242,8727 \\ \hline
+%		1 & 0,0 & TS(2) & TS(3) & 77503,6281 & 1581,0616 \\ \hline
+%	\end{tabular}
+%	
+%\end{table}
+%
+%Pełne wyniki dla konfiguracji D przedstawione są w załaczniku w tabeli \ref{table:tsp_results_compare_d_full}.
+%
+%\subsubsection{Porównanie działania wybranych metod}
+%
+%\paragraph{Konfiguracja}
+%
+%\todo{GGA i SexualGA}
+%
+%\begin{table}[h]
+%	\caption{Konfiguracja GGA \label{table:knapsack_config_gga}}
+%	\begin{tabularx}{\linewidth}{lX}
+%		\hline
+%		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}}        & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
+%		&                                                             \\ \hline
+%		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
+%		\multicolumn{1}{|l|}{$W$}                   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                 \\ \hline
+%	\end{tabularx}
+%\end{table}
+%
+%\begin{table}[h]
+%	\caption{Konfiguracja SexualGA \label{table:knapsack_config_sexual_ga}}
+%	\begin{tabularx}{\linewidth}{lX}
+%		\hline
+%		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}}        & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+%		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ \hline
+%		&                                                             \\ \hline
+%		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
+%		\multicolumn{1}{|l|}{$\param{opWyboru1}$}                   & \multicolumn{1}{l|}{[TS(2), TS(3)]}                 \\ \hline
+%		\multicolumn{1}{|l|}{$\param{opWyboru2}$}                   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                 \\ \hline
+%	\end{tabularx}
+%\end{table}
+%
+%\paragraph{Wyniki} \todo{lorem ipsum i dalej nie pamiętam}
+%
+%\begin{table}[h]
+%	\caption{Wyniki GGA \label{table:knapsack_results_gga}}
+%	\centering
+%	\begin{tabular}{|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf W}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		RS & 68582,5919 & 2240,5888 \\ \hline
+%		TS(3) & 82490,0706 & 2235,4966 \\ \hline
+%		TS(2) & 83291,0773 & 1668,8401 \\ \hline
+%	\end{tabular}
+%\end{table}
+%
+%\begin{table}[h]
+%	\caption{Wyniki SexualGA \label{table:knapsack_results_sexual_ga}}
+%	\centering
+%	\begin{tabular}{|l|l|r@{$\pm$}l|}
+%		\hline
+%		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & \multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+%		RS & RS & 65454,5598 & 4541,7191 \\ \hline
+%		RS & R & 72023,5817 & 5135,7596 \\ \hline
+%		RS & TS(2) & 77048,2426 & 1514,5144 \\ \hline
+%		RS & TS(3) & 77573,0411 & 4230,4398 \\ \hline
+%		TS(2) & RS & 78327,2913 & 1763,5454 \\ \hline
+%		TS(2) & TS(3) & 78847,2405 & 3019,21 \\ \hline
+%		TS(3) & RS & 79137,0814 & 2094,9924 \\ \hline
+%		TS(2) & R & 79401,5627 & 3767,4442 \\ \hline
+%		TS(3) & R & 79903,723 & 3679,0453 \\ \hline
+%		TS(3) & TS(2) & 80509,3109 & 743,6402 \\ \hline
+%		TS(3) & TS(3) & 81734,0918 & 3531,3204 \\ \hline
+%		TS(2) & TS(2) & 83400,7749 & 1373,9773 \\ \hline
+%		
+%	\end{tabular}
+%\end{table}
+%
+%\subsubsection{Podsumowanie}
+%
+%\todo{proza, co wyszło, a co nie}
 
 
 \chapter{Wnioski i spostrzeżenia}
