@@ -1858,7 +1858,7 @@ Gdyby już na tym etapie znajdowano optimum globalne, nie dałoby się określi�
 Drugą częścią badań było zebranie wyników dla DSEA z wykorzystaniem parametrów znalezionych w poprzednim kroku, ale z różnymi implementacjami operatorów selekcji płciowej.
 Ostatnią ich częścią było odtworzenie wyników dla metod znanych z prac naukowych.
 
-Każdy z tych kroków zostanie opisany oddzielnie, z określeniem rozwiązywanego problemu, zakresem zmienianych parametrów, opisem przebiegu eksperymentu \todo{or will it?} oraz jego najważniejszymi wynikami.
+Każdy z tych kroków zostanie opisany oddzielnie, z określeniem rozwiązywanego problemu, zakresem zmienianych parametrów, opisem przebiegu eksperymentu oraz jego najważniejszymi wynikami.
 
 Pełne wyniki eksperymentów są zamieszczone w dodatkach do niniejszego dokumentu.
 
@@ -1894,11 +1894,11 @@ W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA 
 W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji wyjściowej. W tabeli \ref{table:tsp_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
 
 \begin{table}[h]
-	\caption{Parametry wykorzystane podczas poszukiwania parametrów początkowych \label{table:tsp_init_params}}
+	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{table:tsp_init_params}}
 	\centering
 	\begin{tabular}{|c|l|}
 		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zestaw wartości}} \\
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
 		\hline
 		\hline
 		$\param{rozmiarPopulacji}$ & [10, 20, 50] \\
@@ -1911,7 +1911,12 @@ W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji 
 		\hline		
 		$\param{opSelNat}$ & [\opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))]\\
 		\hline
-		$\param{opSelPlciowej}$ & [\opName{stdGenSel}($\bot$, R, R)]\\
+		\multicolumn{2}{c}{}\\
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
+		\hline
+		\hline
+		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
 		\hline
 		$R$ & 3\\
 		\hline
@@ -1942,23 +1947,25 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,3)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
 		\hline
 		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
 		\hline
 		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & roulette                \\ \hline
+		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
 	\end{tabular}
 \end{table}
 
 \paragraph{Wyniki}
+
+\todo{Blah, blah, here go results}
 
 \begin{table}[h]
 	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{tsp_init_results}}
@@ -1970,7 +1977,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		3                                             & 36656,3316                       & \multicolumn{1}{r|}{9053,3316}                      \\ \hline
 		4                                             & 42174,1093                       & \multicolumn{1}{r|}{14571,1093}                     \\ \hline
 		5                                             & 41143,6598                       & \multicolumn{1}{r|}{13540,6598}                     \\ \hline \hline
-		{\bf Średnia}                                 & 40982,26938                      & \multicolumn{1}{r|}{13379,26938}                    \\ \hline
+		{\bf Średnia}                                 & 40982,2694                      & \multicolumn{1}{r|}{13379,2694}                    \\ \hline
 		{\bf Odchylenie standardowe}                  & 2227,5198                        &                       \\  \hhline{==~}
 		{\bf Optimum}                                 & \multicolumn{1}{r|}{{\bf 27603}} & \multicolumn{1}{l}{}                                \\ \cline{1-2}
 	\end{tabular}
@@ -1981,8 +1988,86 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\graph{tsp_init_example.tex}
 \end{figure}
 
-\subsubsection{Tweak}
-...
+\subsubsection{Poprawa konfiguracji początkowej}
+
+\paragraph{Konfiguracja}
+
+\todo{opisać skąd sie wzięły wartości}
+
+\begin{table}[h]
+	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{table:tsp_tweak_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,05, 0,1]\\
+		\hline
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,55, 0,58, 0,6, 0,62, 0,65] $\times$ [0,05, 0,08, 0,1 0,12, 0,15]  \\
+		\hline
+		$\param{max}$ & [90, 95, 100, 105, 110] \\
+		\hline		
+\multicolumn{2}{c}{}\\
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
+		\hline
+		\hline
+		$\param{opSelNat}$ & \opName{natSel}(RS)\\
+		\hline
+		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
+		\hline
+		$R$ & 2\\
+		\hline
+		$I$ & 3\\
+		\hline
+		$statystyka$ & najlepsza średnia wyników $I$ powtórzeń \\
+		\hline
+	\end{tabular}
+\end{table}
+
+\paragraph{Przebieg}
+
+\todo{skomentuj}
+
+\begin{table}[h]
+	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_tweak_flow}}
+	\centering
+	\begin{tabular}{c|c|c|}
+		\cline{2-3}
+		& {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
+		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,58, 0,1)             \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 110                     \\ \hline \hline
+		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,6, 0,15)             \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 110                     \\ \hline
+	\end{tabular}
+\end{table}	
+
+\paragraph{Wyniki}
+\todo{Blah, blah, here go results}
+
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{tsp_tweak_results}}
+	\begin{tabular}{|l|r|r}
+		\hline
+		{\bf Numer powtórzenia}      & \multicolumn{1}{l|}{{\bf Wynik}} & \multicolumn{1}{l|}{{\bf Różnica względem optimum}} \\ \hline \hline
+		1                            & 39592,0623                       & \multicolumn{1}{r|}{11989,0623}                     \\ \hline
+		2                            & 34292,9277                       & \multicolumn{1}{r|}{6689,9277}                      \\ \hline
+		3                            & 37904,1809                       & \multicolumn{1}{r|}{10301,1809}                     \\ \hline \hline
+		{\bf Średnia}                & 37263,0570                       & \multicolumn{1}{r|}{9660,0570}                      \\ \hline
+		{\bf Odchylenie standardowe} & 2707,1178                        &                                                     \\ \hhline{==~}
+		{\bf Optimum}                & {\bf 27603}                      &                                                     \\ \cline{1-2}
+	\end{tabular}
+\end{table}
+
+\todo{poszło lepiej niż init}
+
 \subsubsection{Compare}
 ...
 \subsubsection{SexualGA}
