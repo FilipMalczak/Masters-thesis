@@ -67,6 +67,7 @@
 \usepackage{wasysym}
 \usepackage{multirow}
 \usepackage{hhline}
+\usepackage{longtable}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -1924,6 +1925,8 @@ W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji 
 		\hline
 		$statystyka$ & najlepszy wynik \\
 		\hline
+		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -1960,6 +1963,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		
 	\end{tabular}
 \end{table}
 
@@ -2025,6 +2029,8 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		\hline
 		$statystyka$ & najlepsza średnia wyników $I$ powtórzeń \\
 		\hline
+		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
+		\hline
 	\end{tabular}
 \end{table}
 
@@ -2074,11 +2080,13 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \todo{używamy 4 konfigów, nazywanych ABCD, sens każdego}
 
 \begin{table}[h]
-	\caption{Konfiguracja A}
+	\caption{Konfiguracja A \label{table:tsp_config_compare_a}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $W$, $W$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $W$, $W$)} \\ \hline
 		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ \hline
+		\hline
 		&                                                             \\ \hline
 		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
 		\multicolumn{1}{|l|}{$W$}                   & \multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]}                 \\ \hline
@@ -2086,11 +2094,12 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}
 
 \begin{table}[h]
-	\caption{Konfiguracja B}
+	\caption{Konfiguracja B \label{table:tsp_config_compare_b}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
 		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
 		&                                                                                             \\ \hline
 		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                                                   \\ \hline \hline
 		\multicolumn{1}{|l|}{$\param{opWyboru1}$}   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                                                   \\ \hline
@@ -2100,11 +2109,12 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}
 
 \begin{table}[h]
-	\caption{Konfiguracja C}
+	\caption{Konfiguracja C \label{table:tsp_config_compare_c}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
 		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\  \hline
 		&                                                                                             \\ \hline
 		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                                                   \\ \hline \hline
 		\multicolumn{1}{|l|}{$\param{opWyboru1}$}   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                                                   \\ \hline
@@ -2114,11 +2124,12 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}
 
 \begin{table}[h]
-	\caption{Konfiguracja D}
+	\caption{Konfiguracja D \label{table:tsp_config_compare_d}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator}}        & \multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ \hline
 		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                  \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
 		&                                                         \\ \hline
 		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}               \\ \hline \hline
 		\multicolumn{1}{|l|}{a}                     & \multicolumn{1}{l|}{{[}1, 3, 5{]}}                      \\ \hline
@@ -2136,7 +2147,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 
 \begin{table}[h]
-	\caption{Wyniki dla konfiguracji A}
+	\caption{Wyniki dla konfiguracji A \label{table:tsp_results_compare_a}}
 	\centering
 	\begin{tabular}{|l|r@{$\pm$}l|}
 		\hline
@@ -2149,7 +2160,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}
 
 \begin{table}[h]
-	\caption{Wyniki dla konfiguracji B}
+	\caption{Wyniki dla konfiguracji B \label{table:tsp_results_compare_b}}
 	\centering
 	\begin{tabular}{|l|l|r@{$\pm$}l|}
 		\hline
@@ -2170,7 +2181,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}
 
 \begin{table}[h]
-	\caption{Wyniki dla konfiguracji C}
+	\caption{Wyniki dla konfiguracji C \label{table:tsp_results_compare_c}}
 	\centering
 	\begin{tabular}{|l|l|r@{$\pm$}l|}
 		\hline
@@ -2190,10 +2201,104 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\end{tabular}
 \end{table}
 
+\begin{table}[h]
+	\caption{Wyniki dla konfiguracji D \label{table:tsp_results_compare_d}}
+	\centering
+	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{|c|}{{\bf b}} & \multicolumn{1}{|c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+			1 & 0,0 & R & R & 63148,9662 & 2991,8179 \\ \hline
+			1 & 0,0 & R & RS & 66670,9717 & 1262,9803 \\ \hline
+			1 & 0,0 & R & TS(2) & 66796,5075 & 6059,7659 \\ \hline
+			1 & 0,0 & R & TS(3) & 68187,0807 & 2149,1036 \\ \hline
+			1 & 0,0 & RS & R & 57076,8068 & 4343,3643 \\ \hline
+			1 & 0,0 & RS & RS & 54775,3531 & 5638,5163 \\ \hline
+			1 & 0,0 & RS & TS(2) & 56340,1414 & 6044,4863 \\ \hline
+			1 & 0,0 & RS & TS(3) & 54006,4018 & 4598,4399 \\ \hline
+			1 & 0,0 & TS(2) & R & 75308,797 & 3633,9511 \\ \hline
+			1 & 0,0 & TS(2) & RS & 74997,8832 & 2935,57 \\ \hline
+			1 & 0,0 & TS(2) & TS(2) & 76741,2555 & 2242,8727 \\ \hline
+			1 & 0,0 & TS(2) & TS(3) & 77503,6281 & 1581,0616 \\ \hline
+	\end{tabular}
+	
+\end{table}
+
+Pełne wyniki dla konfiguracji D przedstawione są w załaczniku w tabeli \ref{table:tsp_results_compare_d_full}.
+
 \subsubsection{Porównanie działania wybranych metod}
-... - co tu będzie?
+
+\paragraph{Konfiguracja}
+
+\todo{GGA i SexualGA}
+
+\begin{table}[h]
+	\caption{Konfiguracja GGA \label{table:tsp_config_gga}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}}        & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ \hline
+		&                                                             \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
+		\multicolumn{1}{|l|}{$W$}                   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                 \\ \hline
+	\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+	\caption{Konfiguracja SexualGA \label{table:tsp_config_sexual_ga}}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}}        & \multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}}        & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ \hline
+		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5}                                      \\ \hline
+		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & \multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ \hline
+		&                                                             \\ \hline
+		\multicolumn{1}{|c|}{{\bf Parametr}}        & \multicolumn{1}{c|}{{\bf Zbiór wartości}}                   \\ \hline \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru1}$}                   & \multicolumn{1}{l|}{[TS(2), TS(3)]}                 \\ \hline
+		\multicolumn{1}{|l|}{$\param{opWyboru2}$}                   & \multicolumn{1}{l|}{[RS, TS(2), TS(3)]}                 \\ \hline
+	\end{tabularx}
+\end{table}
+
+\paragraph{Wyniki} \todo{lorem ipsum i dalej nie pamiętam}
+
+\begin{table}[h]
+	\caption{Wyniki GGA \label{table:tsp_results_gga}}
+	\centering
+	\begin{tabular}{|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{{\bf W}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+		RS & 68582,5919 & 2240,5888 \\ \hline
+		TS(3) & 82490,0706 & 2235,4966 \\ \hline
+		TS(2) & 83291,0773 & 1668,8401 \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{table}[h]
+	\caption{Wyniki SexualGA \label{table:tsp_results_sexual_ga}}
+	\centering
+	\begin{tabular}{|l|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & \multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+		RS & RS & 65454,5598 & 4541,7191 \\ \hline
+		RS & R & 72023,5817 & 5135,7596 \\ \hline
+		RS & TS(2) & 77048,2426 & 1514,5144 \\ \hline
+		RS & TS(3) & 77573,0411 & 4230,4398 \\ \hline
+		TS(2) & RS & 78327,2913 & 1763,5454 \\ \hline
+		TS(2) & TS(3) & 78847,2405 & 3019,21 \\ \hline
+		TS(3) & RS & 79137,0814 & 2094,9924 \\ \hline
+		TS(2) & R & 79401,5627 & 3767,4442 \\ \hline
+		TS(3) & R & 79903,723 & 3679,0453 \\ \hline
+		TS(3) & TS(2) & 80509,3109 & 743,6402 \\ \hline
+		TS(3) & TS(3) & 81734,0918 & 3531,3204 \\ \hline
+		TS(2) & TS(2) & 83400,7749 & 1373,9773 \\ \hline
+
+	\end{tabular}
+\end{table}
 
 \subsubsection{Podsumowanie}
+
+\todo{proza, co wyszło, a co nie}
 
 \subsection{Knapsack}
 ...
@@ -2221,6 +2326,168 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \bibliography{bibliografia}
 
 \appendix \chapter{Pełne wyniki badań}
+\section{Oceny uruchomień}
+
+\section{Średnia i odchylenie standardowe ocen}
+
+\subsection{Problem komiwojażera}
+
+Pełne wyniki dla konfiguracji A, B i C zostały przedstawione w tabelach (kolejno) \ref{table:tsp_results_compare_a}, \ref{table:tsp_results_compare_b} i \ref{table:tsp_results_compare_c}.
+
+\begin{center}
+	\begin{longtable}{|l|l|l|l|r@{$\pm$}l|}
+		\caption{Pełne wyniki dla konfiguracji D}
+		\label{table:tsp_results_compare_d_full}\\
+		\hline
+		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{c|}{{\bf b}} & \multicolumn{1}{c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hhline{======}
+		\endhead
+		1 & 0.0 & R & R & 63148,9662 & 2991,8179\\ \hline
+		1 & 0.0 & R & RS & 66670,9717 & 1262,9803\\ \hline
+		1 & 0.0 & R & TS(2) & 66796,5075 & 6059,7659\\ \hline
+		1 & 0.0 & R & TS(3) & 68187,0807 & 2149,1036\\ \hline
+		1 & 0.0 & RS & R & 57076,8068 & 4343,3643\\ \hline
+		1 & 0.0 & RS & RS & 54775,3531 & 5638,5163\\ \hline
+		1 & 0.0 & RS & TS(2) & 56340,1414 & 6044,4863\\ \hline
+		1 & 0.0 & RS & TS(3) & 54006,4018 & 4598,4399\\ \hline
+		1 & 0.0 & TS(2) & R & 75308,797 & 3633,9511\\ \hline
+		1 & 0.0 & TS(2) & RS & 74997,8832 & 2935,57\\ \hline
+		1 & 0.0 & TS(2) & TS(2) & 76741,2555 & 2242,8727\\ \hline
+		1 & 0.0 & TS(2) & TS(3) & 77503,6281 & 1581,0616\\ \hline
+		1 & 0.0 & TS(3) & R & 76519,0885 & 2253,6313\\ \hline
+		1 & 0.0 & TS(3) & RS & 72779,5574 & 5353,217\\ \hline
+		1 & 0.0 & TS(3) & TS(2) & 75175,3784 & 3301,5956\\ \hline
+		1 & 0.0 & TS(3) & TS(3) & 78434,3927 & 2954,2537\\ \hline
+		1 & 0.1 & R & R & 64921,6141 & 6697,8244\\ \hline
+		1 & 0.1 & R & RS & 64153,5248 & 5337,5054\\ \hline
+		1 & 0.1 & R & TS(2) & 63998,2593 & 4514,133\\ \hline
+		1 & 0.1 & R & TS(3) & 67860,9913 & 4007,6007\\ \hline
+		1 & 0.1 & RS & R & 58860,1927 & 4668,3636\\ \hline
+		1 & 0.1 & RS & RS & 56876,6204 & 6087,3432\\ \hline
+		1 & 0.1 & RS & TS(2) & 59168,2933 & 6028,8071\\ \hline
+		1 & 0.1 & RS & TS(3) & 58552,7445 & 3943,3595\\ \hline
+		1 & 0.1 & TS(2) & R & 72711,4148 & 2242,7582\\ \hline
+		1 & 0.1 & TS(2) & RS & 72285,5698 & 3099,3636\\ \hline
+		1 & 0.1 & TS(2) & TS(2) & 75258,9438 & 2953,5893\\ \hline
+		1 & 0.1 & TS(2) & TS(3) & 77276,6458 & 2694,4933\\ \hline
+		1 & 0.1 & TS(3) & R & 77111,6797 & 3828,9922\\ \hline
+		1 & 0.1 & TS(3) & RS & 71349,2091 & 4878,2432\\ \hline
+		1 & 0.1 & TS(3) & TS(2) & 77586,938 & 3119,5781\\ \hline
+		1 & 0.1 & TS(3) & TS(3) & 78069,6955 & 3673,5858\\ \hline
+		1 & 0.25 & R & R & 66994,852 & 4023,6182\\ \hline
+		1 & 0.25 & R & RS & 60997,5136 & 6205,8751\\ \hline
+		1 & 0.25 & R & TS(2) & 67909,2289 & 4366,478\\ \hline
+		1 & 0.25 & R & TS(3) & 73214,5627 & 3249,9024\\ \hline
+		1 & 0.25 & RS & R & 53644,9562 & 7782,7804\\ \hline
+		1 & 0.25 & RS & RS & 53808,7353 & 4046,039\\ \hline
+		1 & 0.25 & RS & TS(2) & 62118,562 & 5688,0029\\ \hline
+		1 & 0.25 & RS & TS(3) & 59549,6937 & 2079,0981\\ \hline
+		1 & 0.25 & TS(2) & R & 71167,9756 & 3467,9171\\ \hline
+		1 & 0.25 & TS(2) & RS & 69516,4694 & 3857,5267\\ \hline
+		1 & 0.25 & TS(2) & TS(2) & 75792,7275 & 1612,9532\\ \hline
+		1 & 0.25 & TS(2) & TS(3) & 74832,236 & 3382,2709\\ \hline
+		1 & 0.25 & TS(3) & R & 74964,2607 & 2349,6463\\ \hline
+		1 & 0.25 & TS(3) & RS & 69979,4438 & 3583,5517\\ \hline
+		1 & 0.25 & TS(3) & TS(2) & 76249,693 & 3824,2332\\ \hline
+		1 & 0.25 & TS(3) & TS(3) & 75990,2492 & 2912,9578\\ \hline
+		3 & 0.0 & R & R & 62868,0769 & 7751,6167\\ \hline
+		3 & 0.0 & R & RS & 56121,6305 & 3989,7036\\ \hline
+		3 & 0.0 & R & TS(2) & 59093,8247 & 3117,2364\\ \hline
+		3 & 0.0 & R & TS(3) & 63458,2872 & 7104,675\\ \hline
+		3 & 0.0 & RS & R & 49984,0394 & 3413,586\\ \hline
+		3 & 0.0 & RS & RS & 50296,3335 & 4102,9637\\ \hline
+		3 & 0.0 & RS & TS(2) & 54536,6127 & 2073,5921\\ \hline
+		3 & 0.0 & RS & TS(3) & 52536,3872 & 2990,548\\ \hline
+		3 & 0.0 & TS(2) & R & 73484,4181 & 3885,8193\\ \hline
+		3 & 0.0 & TS(2) & RS & 74478,1926 & 2587,2221\\ \hline
+		3 & 0.0 & TS(2) & TS(2) & 72856,6152 & 3474,1592\\ \hline
+		3 & 0.0 & TS(2) & TS(3) & 73092,2391 & 2272,5163\\ \hline
+		3 & 0.0 & TS(3) & R & 76931,2121 & 1800,5863\\ \hline
+		3 & 0.0 & TS(3) & RS & 75135,6567 & 4431,5355\\ \hline
+		3 & 0.0 & TS(3) & TS(2) & 75682,9234 & 2832,6889\\ \hline
+		3 & 0.0 & TS(3) & TS(3) & 76114,5387 & 1810,1806\\ \hline
+		3 & 0.1 & R & R & 66262,8388 & 5674,1525\\ \hline
+		3 & 0.1 & R & RS & 60593,413 & 5125,6922\\ \hline
+		3 & 0.1 & R & TS(2) & 65170,9779 & 4340,919\\ \hline
+		3 & 0.1 & R & TS(3) & 61336,7695 & 3620,2601\\ \hline
+		3 & 0.1 & RS & R & 51363,5478 & 2794,6387\\ \hline
+		3 & 0.1 & RS & RS & 52016,5879 & 2570,3068\\ \hline
+		3 & 0.1 & RS & TS(2) & 52803,6719 & 6387,921\\ \hline
+		3 & 0.1 & RS & TS(3) & 50425,7944 & 2674,6857\\ \hline
+		3 & 0.1 & TS(2) & R & 76918,4637 & 1665,188\\ \hline
+		3 & 0.1 & TS(2) & RS & 70565,4907 & 2366,5805\\ \hline
+		3 & 0.1 & TS(2) & TS(2) & 77198,5539 & 3053,2183\\ \hline
+		3 & 0.1 & TS(2) & TS(3) & 74259,2851 & 3365,5329\\ \hline
+		3 & 0.1 & TS(3) & R & 74865,9696 & 2581,8355\\ \hline
+		3 & 0.1 & TS(3) & RS & 73903,8469 & 2491,204\\ \hline
+		3 & 0.1 & TS(3) & TS(2) & 76308,3468 & 3078,2639\\ \hline
+		3 & 0.1 & TS(3) & TS(3) & 76997,8103 & 1211,5696\\ \hline
+		3 & 0.25 & R & R & 59556,0633 & 2987,8681\\ \hline
+		3 & 0.25 & R & RS & 58191,3987 & 5601,6655\\ \hline
+		3 & 0.25 & R & TS(2) & 65240,4898 & 3467,4363\\ \hline
+		3 & 0.25 & R & TS(3) & 65138,906 & 4347,0213\\ \hline
+		3 & 0.25 & RS & R & 50011,9993 & 3104,8017\\ \hline
+		3 & 0.25 & RS & RS & 49744,9081 & 2768,5553\\ \hline
+		3 & 0.25 & RS & TS(2) & 53467,0572 & 4345,714\\ \hline
+		3 & 0.25 & RS & TS(3) & 60171,9765 & 5147,0004\\ \hline
+		3 & 0.25 & TS(2) & R & 71438,2157 & 3586,8758\\ \hline
+		3 & 0.25 & TS(2) & RS & 68006,9848 & 4026,1532\\ \hline
+		3 & 0.25 & TS(2) & TS(2) & 74497,947 & 1554,6735\\ \hline
+		3 & 0.25 & TS(2) & TS(3) & 74656,9039 & 2367,0028\\ \hline
+		3 & 0.25 & TS(3) & R & 73530,5451 & 2698,0934\\ \hline
+		3 & 0.25 & TS(3) & RS & 67962,9038 & 7004,1249\\ \hline
+		3 & 0.25 & TS(3) & TS(2) & 76363,984 & 1606,0915\\ \hline
+		3 & 0.25 & TS(3) & TS(3) & 76312,6057 & 3891,0184\\ \hline
+		5 & 0.0 & R & R & 60117,0561 & 4072,2315\\ \hline
+		5 & 0.0 & R & RS & 58179,4247 & 5016,6409\\ \hline
+		5 & 0.0 & R & TS(2) & 61515,5684 & 5409,0071\\ \hline
+		5 & 0.0 & R & TS(3) & 59911,1642 & 5244,0632\\ \hline
+		5 & 0.0 & RS & R & 50317,9438 & 3977,9757\\ \hline
+		5 & 0.0 & RS & RS & 53504,5557 & 3707,6132\\ \hline
+		5 & 0.0 & RS & TS(2) & 51156,4782 & 3617,3294\\ \hline
+		5 & 0.0 & RS & TS(3) & 50788,1319 & 1542,8235\\ \hline
+		5 & 0.0 & TS(2) & R & 74580,7985 & 1077,5927\\ \hline
+		5 & 0.0 & TS(2) & RS & 75713,6243 & 2142,518\\ \hline
+		5 & 0.0 & TS(2) & TS(2) & 75054,2396 & 1911,7425\\ \hline
+		5 & 0.0 & TS(2) & TS(3) & 74089,874 & 1555,1333\\ \hline
+		5 & 0.0 & TS(3) & R & 75462,3438 & 4243,4037\\ \hline
+		5 & 0.0 & TS(3) & RS & 76150,5022 & 3311,8237\\ \hline
+		5 & 0.0 & TS(3) & TS(2) & 76807,2873 & 936,1096\\ \hline
+		5 & 0.0 & TS(3) & TS(3) & 74233,3135 & 2016,9396\\ \hline
+		5 & 0.1 & R & R & 61931,3831 & 2601,7142\\ \hline
+		5 & 0.1 & R & RS & 58728,0221 & 5575,6031\\ \hline
+		5 & 0.1 & R & TS(2) & 61491,138 & 3006,623\\ \hline
+		5 & 0.1 & R & TS(3) & 61139,5114 & 5231,7141\\ \hline
+		5 & 0.1 & RS & R & 48915,0643 & 799,6703\\ \hline
+		5 & 0.1 & RS & RS & 49180,7887 & 4249,2504\\ \hline
+		5 & 0.1 & RS & TS(2) & 52655,6111 & 3701,1865\\ \hline
+		5 & 0.1 & RS & TS(3) & 49985,4366 & 4012,8489\\ \hline
+		5 & 0.1 & TS(2) & R & 75777,1455 & 3011,2519\\ \hline
+		5 & 0.1 & TS(2) & RS & 74311,1839 & 3015,2988\\ \hline
+		5 & 0.1 & TS(2) & TS(2) & 75941,6041 & 1817,582\\ \hline
+		5 & 0.1 & TS(2) & TS(3) & 74369,8617 & 1720,6807\\ \hline
+		5 & 0.1 & TS(3) & R & 75279,7935 & 1623,128\\ \hline
+		5 & 0.1 & TS(3) & RS & 73428,87 & 2606,5743\\ \hline
+		5 & 0.1 & TS(3) & TS(2) & 77422,1984 & 3077,9164\\ \hline
+		5 & 0.1 & TS(3) & TS(3) & 76189,8794 & 1242,9144\\ \hline
+		5 & 0.25 & R & R & 59716,8629 & 3202,3405\\ \hline
+		5 & 0.25 & R & RS & 58548,4801 & 3387,608\\ \hline
+		5 & 0.25 & R & TS(2) & 64768,1599 & 3676,9758\\ \hline
+		5 & 0.25 & R & TS(3) & 65020,3398 & 4697,9745\\ \hline
+		5 & 0.25 & RS & R & 51738,6886 & 4413,3552\\ \hline
+		5 & 0.25 & RS & RS & 50581,0518 & 3533,9353\\ \hline
+		5 & 0.25 & RS & TS(2) & 52485,3787 & 6491,9936\\ \hline
+		5 & 0.25 & RS & TS(3) & 56627,3107 & 2048,8223\\ \hline
+		5 & 0.25 & TS(2) & R & 72289,253 & 3353,1352\\ \hline
+		5 & 0.25 & TS(2) & RS & 69823,4881 & 2625,8599\\ \hline
+		5 & 0.25 & TS(2) & TS(2) & 72289,4172 & 3478,8958\\ \hline
+		5 & 0.25 & TS(2) & TS(3) & 76573,311 & 1902,9758\\ \hline
+		5 & 0.25 & TS(3) & R & 74021,7512 & 3492,0954\\ \hline
+		5 & 0.25 & TS(3) & RS & 72185,1169 & 3426,1645\\ \hline
+		5 & 0.25 & TS(3) & TS(2) & 74201,3036 & 1228,9679\\ \hline
+		5 & 0.25 & TS(3) & TS(3) & 78413,6345 & 1917,3845\\ \hline
+	\end{longtable}
+\end{center}
+
 
 \end{document}
 
