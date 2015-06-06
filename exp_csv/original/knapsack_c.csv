@@ -1,0 +1,12 @@
+(roulette, random, false);-1143,2;12,3839
+(roulette, roulette, false);-1152,8;14,8647
+(roulette, ts2, false);-1113,6;35,9589
+(roulette, ts3, false);-1072;25,776
+(ts2, random, false);-971,8;107,7616
+(ts2, roulette, false);-1099,4;13,7492
+(ts2, ts2, false);-865,4;196,7095
+(ts2, ts3, false);-846;147,8202
+(ts3, random, false);-899,8;190,4063
+(ts3, roulette, false);-1074,8;14,0485
+(ts3, ts2, false);-794;94,2422
+(ts3, ts3, false);-635,6;123,9009

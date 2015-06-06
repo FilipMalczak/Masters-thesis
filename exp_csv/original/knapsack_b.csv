@@ -1,0 +1,12 @@
+(roulette, random, true);-1136,2;20,4783
+(roulette, roulette, true);-1138,6;20,5777
+(roulette, ts2, true);-1105,2;22,9643
+(roulette, ts3, true);-1080,8;42,7383
+(ts2, random, true);-1010,2;118,0905
+(ts2, roulette, true);-1081,4;32,946
+(ts2, ts2, true);-824,6;180,6838
+(ts2, ts3, true);-783;263,5967
+(ts3, random, true);-931,8;158,762
+(ts3, roulette, true);-1083,4;36,9031
+(ts3, ts2, true);-781,4;172,7491
+(ts3, ts3, true);-633;154,6971

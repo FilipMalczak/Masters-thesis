@@ -1,0 +1,12 @@
+roulette; roulette;-1152,8;14,8647
+roulette; random;-1143,2;12,3839
+roulette; ts2;-1113,6;35,9589
+ts2; roulette;-1099,4;13,7492
+ts3; roulette;-1074,8;14,0485
+roulette; ts3;-1072;25,776
+ts2; random;-971,8;107,7616
+ts3; random;-899,8;190,4063
+ts2; ts2;-865,4;196,7095
+ts2; ts3;-846;147,8202
+ts3; ts2;-794;94,2422
+ts3; ts3;-635,6;123,9009
