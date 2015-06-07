@@ -8,9 +8,12 @@ def trail_zeros(number):
             number = number + "0"*to_add
     return number
 
+def replace_needed(part):
+    return part.replace("random", "R").replace("roulette", "RS").replace("ts2", "TS(2)").replace("ts3", "TS(3)")
+
 def normalize_results(line):
     parts = line.split(";")
-    return ";".join(parts[0:-2]+[ trail_zeros(parts[-2]), trail_zeros(parts[-1]).replace("-", "") ])
+    return ";".join(list(map(replace_needed, parts[0:-2]))+[ trail_zeros(parts[-2]), trail_zeros(parts[-1]).replace("-", "") ])
 
 def change_line(line):
     return normalize_results(line).replace(";", " & ")+"\\\\ \\hline \n"

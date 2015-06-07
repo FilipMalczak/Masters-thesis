@@ -11,8 +11,9 @@ W tej części zdarzały się sytuacje w których znaleziono globalne optimum dl
 Miało to na celu uzyskanie wyników dobrych, ale nie najlepszych, aby sprawdzić, czy w dalszych eksperymentach uda się osiągnąć lepsze rezultaty.
 Gdyby już na tym etapie znajdowano optimum globalne, nie dałoby się określić, czy nowe rozwiązania poprawiają wyniki.
 
-Drugą częścią badań było zebranie wyników dla DSEA z wykorzystaniem parametrów znalezionych w poprzednim kroku, ale z różnymi implementacjami operatorów selekcji płciowej.
-Ostatnią ich częścią było odtworzenie wyników dla metod znanych z prac naukowych.
+Drugą częścią badań było zebranie wyników dla DSEA z wykorzystaniem parametrów znalezionych w poprzednim kroku, ale z różnymi implementacjami operatorów selekcji płciowej. 
+Najpierw odtworzono działanie heurystyk GGA i DSEA sparametryzowanej w podobny sposób. Następnie powtórzono to dla heurystyki SexualGA. 
+Na końcu zbadano działanie heurystyki DSEA z operatorem haremowym.
 
 Każdy z tych kroków zostanie opisany oddzielnie, z określeniem rozwiązywanego problemu, zakresem zmienianych parametrów, opisem przebiegu eksperymentu oraz jego najważniejszymi wynikami.
 
@@ -47,7 +48,13 @@ W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA 
 
 \paragraph{Konfiguracja}
 
-W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji wyjściowej. W tabeli \ref{config:tsp_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
+W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji początkowej. 
+Konfiguracja \ref{config:tsp_init_params} przedstawia zbiory wartości parametrów heurystyki oraz wartości stałe w ramach tego etapu - zarówno dla algorytmu ewolucyjnego jak i procedury eksploracji użyte w tym kroku.
+
+Zastosowano losowy operator selekcji płciowej, bez uwzględniania płci, aby zasymulować działanie standardowego algorytmu ewolucyjnego. 
+W związku z tym użyto również jednoelementowego zbioru płci. 
+Statystyką użytą do porównywania konfiguracji była ocena najlepszego przebiegu.
+Miało to na celu silna eliminację parametrów które mogły pogarszać wyniki.
 
 \begin{config}
 	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{config:tsp_init_params}}
@@ -100,34 +107,88 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\centering
 	\begin{tabular}{c|c|c|}
 		\cline{2-3}
-		\multicolumn{1}{l|}{}                                 & {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,3)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		\multicolumn{1}{l|}{} &
+		{\bf Parametr} & 
+		{\bf Określona wartość} \\ 
 		\hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} &
+		$\param{rozmiarPopulacji}$ & 
+		50 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{wspDomieszek}$ & 
+		0,0 \\ 
+		\cline{2-3}
+		\multicolumn{1}{|c|}{} & 
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,3) \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{max}$ & 
+		100 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{opSelNat}$ & 
+		\opName{natSel}(RS) \\ 
+		\hline \hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} &
+		$\param{rozmiarPopulacji}$ & 
+		50 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{wspDomieszek}$ & 
+		0,0 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$(\param{prawdMutacji}, \param{prawdKrzyzowania})$ 
+		& (0,6, 0,1) \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{max}$ & 
+		100 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{opSelNat}$ & 
+		\opName{natSel}(RS) \\ 
+		\hline \hline
+		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} &
+		$\param{rozmiarPopulacji}$ & 
+		50 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{wspDomieszek}$ & 
+		0,0 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & 
+		(0,6, 0,1) \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{max}$ & 
+		100 \\ 
+		\cline{2-3} 
+		\multicolumn{1}{|c|}{} & 
+		$\param{opSelNat}$ & 
+		\opName{natSel}(RS) \\ 
 		\hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,6, 0,1)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 100                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
-		
 	\end{tabular}
 \end{table}
 
 \paragraph{Wyniki}
 
-\todo{Blah, blah, here go results}
+Na tym etapie eksperymentów nie udało się znaleźć globalnego optimum.
+W tabeli \ref{table:tsp_init_results} przedstawiono wyniki wszystkich powtórzeń dla konfiguracji znalezionej w procesie eksploracji.
+Średnia różnica między znalezionym, a najlepszym możliwym rozwiązanie wynosiła około 13 tysięcy, podczas gdy optimum miało wartość około 27 i pół tysiąca.
+Oznacza to, że znajdowane rozwiązania były około półtora raza gorsze niż poszukiwane.
+
+Heurystyka zachowywała się dość stabilnie, tzn. za każdym uruchomieniem zwracała podobny wynik.
+Odchylenie standardowe wyniosło około 2 tysiące, czyli mniej więcej 5\% średniej.
+
+Na rysunku \ref{figure:tsp_init_example} przedstawiono wykres trzeciego z pięciu wykonanych przebiegów.
+Można zaobserwować, że zarówno średnia, jak i najlepsze i najgorsze rozwiązanie spadają na przestrzeni wszystkich populacji, co oznacza, że wyniki sukcesywnie się polepszały.
+
+Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na dość stałym poziomie, z czego można wnioskować, że różnorodność genetyczna była zachowana.
 
 \begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{tsp_init_results}}
+	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:tsp_init_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -151,9 +212,15 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \subsubsection{Poprawa konfiguracji początkowej}
 
-\paragraph{Konfiguracja}
+\paragraph{Konfiguracja} Kolejny etap eksperymentów miał na celu zbadanie przestrzeni parametrów z większą ziarnistością.
+Ponownie wykorzystano procedurę eksploracji.
+Zestawy wartości parametrów zostały określone na podstawie konfiguracji znalezionej w poprzednim kroku.
+Do wartości całkowitoliczbowych (rozmiaru populacji i liczby pokoleń) dodano i odjęto wartości 5 i 10 w celu przeszukania jej lokalnego sąsiedztwa.
+Analogicznie, do wartości rzeczywistych (jak współcznnik domieszek i prawdopodbieństwa zastosowania operatorów genetycznych) dodano i odjęto wartości 0,02 i 0,05.
+Rzecz jasna wykorzystano jedynie te wyniki, które miały sens, tj. dodatnie, a w przypadku parametrów ciągłych - mniejsze od 1.
+Operator selekcji został niezmieniony, ponieważ jest to poniekąd parametr wyliczeniowy i nie da się określić dla niego sąsiedztwa.
 
-\todo{opisać skąd sie wzięły wartości}
+Na tym etapie wykonano jedynie 2 nawroty, trzykrotnie uruchamiając heurystykę z każdą konfiguracją.
 
 \begin{config}
 	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{config:tsp_tweak_params}}
@@ -193,7 +260,11 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \paragraph{Przebieg}
 
-\todo{skomentuj}
+W tabeli \ref{table:tsp_tweak_flow} przedstawiono przebieg procedury eksploracji, korzystając z tej samej reprezentacji co na poprzednim etapie.
+
+Rozmiar populacji i współczynnik domieszek nie zmienił się względem konfiguracji z pierwszego etapu.
+W pierwszym nawrocie określono, że nieznacznie mniejsze (0,58) prawdopodobieństwo krzyżowania i większa liczba pokoleń dają lepsze wyniki.
+Drugi nawrót wykazał, że pierwotne prawdopodobieństwo krzyżowania daje lepsze wyniki, za to zwiększone zostało prawdopodobieństwo mutacji. 
 
 \begin{table}[H]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_tweak_flow}}
@@ -213,10 +284,16 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{table}	
 
 \paragraph{Wyniki}
-\todo{Blah, blah, here go results}
+
+W tabeli \ref{table:tsp_tweak_results} przedstawiono wyniki działania heurystyki dla konfiguracji \ref{config:tsp_base} znalezionej w tym etapie.
+
+Średnia ocena jest niższa (a więc lepsza) od średniej z poprzedniego etapu.
+Przeciętna różnica między znalezionym rozwiązaniem, a optimum spadła do około 9,5 tysiąca, a odchylenie standardowe nieznacznie (o około pół tysiąca) wzrosło.
+
+Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorszenia stabilności heurystyki.
 
 \begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{tsp_tweak_results}}
+	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{table:tsp_tweak_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -229,8 +306,6 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		{\bf Optimum}                & {\bf 27603}                      &                                                     \\ \cline{1-2}
 	\end{tabular}
 \end{table}
-
-\todo{poszło lepiej niż init}
 
 \begin{config}
 	\caption{Parametry używane w dalszych badaniach \label{config:tsp_base}}
@@ -254,7 +329,10 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \subsubsection{Badania skuteczności heurystyki GGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
 
-\paragraph{Konfiguracja} \todo{blah}
+Ten etap eksperymentów miał na celu odtworzenie wyników heurystyki GGA i porównanie ich z heurystyką DSEA.
+
+\paragraph{Konfiguracja} W tym celu wykorzystano konfigurację \ref{config:tsp_gga} opisującą GGA oraz \ref{table:tsp_dsea_gga} opisująca operator zbliżony do GGA w ten sposób, że korzysta z tego samego operatora wyboru dla obu płci (mimo, że nie wymusza różnych płci rodziców, przez co jest zbliżony do SexualGA).
+Każdy z eksperymentów został powtórzony pięciokrotnie.
 
 \begin{config}
 	\caption{Konfiguracja heurystyki GGA \label{config:tsp_gga}}
@@ -312,7 +390,13 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\end{tabularx}
 \end{config}
 
-\paragraph{Wyniki} \todo{bum bada bim}
+\paragraph{Wyniki} Tabela \ref{table:tsp_results_gga} przedstawia średnią i odchylenie standardowe wyników heurystyki GGA, a tabela \ref{table:tsp_dsea_gga} analogiczne wartości dla heurystyki DSEA.
+Drugi wiersz drugiej z tej tabel przedstawia wyniki dla standardowego algorytmu ewolucyjnego.
+Jak widać, jedynie użycie operatora ruletkowego poprawiło względem niego wyniki. 
+Może to wynikać z tego, że wykorzystano również operator selekcji naturalnej korzystający z ruletki.
+
+Pozostałe wyniki są znacznie gorsze niż dwa wymienione wyżej, chociaż w przypadku heurystyki DSEA udało się w ogólności poprawić stabilność.
+W ogólności, heurystyka GGA dawała gorsze wyniki.
 
 \begin{table}[h]
 	\caption{Wyniki heurystyki GGA \label{table:tsp_results_gga}}
@@ -338,7 +422,9 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \subsubsection{Badania skuteczności heurystyki SexualGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
 
-\paragraph{Konfiguracja} \todo{blah}
+Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heurystyki SexualGA i zbadanie działania operatora selekcji płciowej zbliżonego do niej.
+
+\paragraph{Konfiguracja} W tym celu określono trzy konfiguracje: \ref{config:tsp_sexual_ga} opisującą SexualGA, \ref{config:tsp_dsea_sexual_ga_false} zbliżonej do poprzedniej, jednak wykorzystującej ruletkowy operator selekcji płciowej, oraz \ref{config:tsp_dsea_sexual_ga_true} różniącej się od poprzedniej tym, że operator selekcji płciowej wymagał od rodziców tego, żeby byli różnej płci (przez co był zbliżony do GGA).
 
 \begin{config}
 	\caption{Konfiguracja heurystyki SexualGA \label{config:tsp_sexual_ga}}
@@ -407,7 +493,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 \end{config}
 
 \begin{config}
-	%gender, false
+	%gender, true
 	\caption{Konfiguracja heurystyki DSEA z dwoma płciami z operatorem podobnym do SexualGA \label{config:tsp_dsea_sexual_ga_true}}
 	\centering
 	\begin{tabularx}{\linewidth}{lX}
@@ -438,9 +524,22 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\end{tabularx}
 \end{config}
 
-\paragraph{Wyniki} \todo{tam da dam}
+\paragraph{Wyniki} \todo{SexualGA + natsel rox, bez natsel do niczego, dwie płcie nieznacznie gorsze, ogólnie gorsze niż tabela 6, lepsze niż GGA}
 
-\begin{table}[h]
+\begin{table}[H]
+	\caption{Wyniki heurystyki SexualGA \label{table:tsp_results_sexual_ga}}
+	\centering
+	\begin{tabular}{|l|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} &
+		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
+		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
+		\hline \hline
+		\insertData{tsp_sexual_ga}
+	\end{tabular}
+\end{table}
+
+\begin{table}[H]
 	\caption{Wyniki heurystyki DSEA z jedną płcią, z operatorem podobnym do SexualGA \label{table:tsp_results_dsea_sexual_ga_false}}
 	\centering
 	\begin{tabular}{|l|l|r@{$\pm$}l|}
@@ -453,7 +552,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\end{tabular}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 	\caption{Wyniki heurystyki DSEA z dwoma płciami, z operatorem podobnym do SexualGA \label{table:tsp_results_dsea_sexual_ga_true}}
 	\centering
 	\begin{tabular}{|l|l|r@{$\pm$}l|}

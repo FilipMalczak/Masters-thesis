@@ -10,8 +10,6 @@ Ten rozdział zaczyna się od prezentacji wybranych problemów optymalizacji, na
 
 \section{Wybrane problemy optymalizacji}
 
-\todo{NP pełność? knapsack to optymalizacja z ograniczeniami}
-
 Aby zbadać jakość działania wybranych metod zaimplementowano i podjęto próbę rozwiązania dwóch problemów optymalizacji. 
 Były to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
 
@@ -522,13 +520,16 @@ W dalszej części pracy konkretny zestaw parametrów będzie nazywany konfigura
 Wyrażenie ,,wynik eksperymentu dla konfiguracji wyniósł \emph{X}'' oznacza, że heurystyka została uruchomiona z parametrami (rozmiarem populacji, prawdopodobieństwami, itd.) określonymi przez konfigurację, a jej wynikiem było \emph{X}.
 Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dla danej konfiguracji za każdym uruchomieniem może być inny.
 
-W ramach badań wykorzystano dwie procedury eksperymentalne, nazywane kolejno procedurą eksploracji (lub krócej, eksploracją) i procedurą przeglądu (odpowiednio, przeglądem).
+W ramach pierwszej części badań wykorzystano procedurę eksperymentalną, nazywaną procedurą eksploracji (lub krócej, eksploracją).
+% i procedurą przeglądu (odpowiednio, przeglądem).
 
-Pierwsza z nich jest wykorzystywana w sytuacji, w której pojawia się potrzeba przeszukania dużej przestrzeni parametrów.
+Jest ona wykorzystywana w sytuacji, w której pojawia się potrzeba przeszukania dużej przestrzeni parametrów.
 Jest to często niemożliwe, ponieważ pojedyncza ewaluacja zestawu parametrów trwa relatywnie długo, a ilość kombinacji wartości parametrów jest zbyt duża.
 
 Aby obejść ten problem, w tej pracy zdecydowano się na iteracyjne podejście przeszukujące przestrzeń konfiguracji wzdłuż wymiarów.
 Zostało ono wyjaśnione przy pomocy algorytmu \ref{algorithm:explore}.
+
+\clearpage
 
 \begin{algorithm}[H]
 	\caption{Procedura eksploracji \label{algorithm:explore}}
@@ -594,62 +595,62 @@ Wartość ta zostaje zapisana w konfiguracji używanej do badania kolejnego z pa
 
 \todo{referencje do linii}
 
-Druga metoda, czyli przegląd zupełny polega na przeszukanie całego iloczynu kartezjańskiego zestawów wartości parametrów.
-Jest ona wykorzystywana, kiedy to jakość i miarodajność wyników, a nie czas ich uzyskania ma znaczenie.
-
-\begin{algorithm}
-	\caption{\todo{name and label me}}
-	\begin{algorithmic}[1]
-	\Params{
-		$X_1$, $X_2$, $\ldots$, $X_{p}$ \\
-		$I$ \\
-		$statystyka$ \\
-		\Comment{\raggedleft Parametry zdefiniowane w ten sam sposób co dla procedury eksploracji (patrz: algorytm \ref{algorithm:explore})}
-	}
-	\Input{
-		$cialo$ \Comment{\raggedleft Ciało eksperymentu, zdefiniowane w ten sam sposób co dla procedury eksploracji
-		}
-	}
-	\Output{
-		Najlepsza konfiguracja znaleziona podczas przeglądu zupełnego, tj. $p$ wartości $x_{i, j}$ o różnych indeksach $i$
-	}
-	\Start
-	\Operator{przeglad}{$cialo$}
-		\State \Return \opName{okresl}($cialo$, $(X_1, X_2, \ldots, X_p)$, $()$)
-	\EndOperator
-%	\Statex \hrulefill
-	\algrule
-	\Input{
-		$cialo$ \Comment{\raggedleft Ciało eksperymentu, zdefiniowane w ten sam sposób co dla operatora \opName{przeglad}} \\
-		$(X_n, X_{n+1}, \ldots, X_p)$ \Comment{Końcowy podciąg zestawu zbiorów wartości parametrów, który należy zbadać} \\
-		$(p_1, p_2, \ldots, p_{n-1})$ \Comment{Częściowa konfiguracja, dla której szukane są dalsze parametry z zestawu $(X_n, X_{n+1}, \ldots, X_p)$}
-	}
-	\Output{
-		Najlepsza konfiguracja znaleziona dla zadanego ciągu $(p_1, p_2, \ldots, p_{n-1})$
-	}
-	\Start
-	\Operator{okresl}{$cialo$, $(X_n, X_{n+1}, \ldots, X_p)$, $(p_1, p_2, \ldots, p_{n-1})$}
-		\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{n}|$}
-		\Var $konfiguracje = [NULL, NULL, \ldots]$ \Comment{J.w.}
-		\For{$ i \gets 1$ \To $|X_{n}|$}
-			\If{$n = p$} \Comment{Określono wszystkie parametry poza jednym}
-				\State $konfiguracje[i] \gets (p_1, p_2, \ldots, p_{n-1}, x_{n, i})$ 
-			\Else
-				\Var $zbiory \gets (X_{n+1}, X_{n+2}, \ldots, X_p)$
-				\Var $parametry \gets (p_1, p_2, \ldots, p_{n-1}, x_{n, i})$ 			
-				\State $konfiguracje[i] \gets \opName{okresl}(cialo, zbiory, parametry)$
-			\EndIf
-			\Var $wyniki \gets \emptyset$
-			\For{$powtorzenie \gets 1$ \To $I$}
-				\State $wyniki \gets wyniki \cup \{ cialo(konfiguracje[i]) \}$
-			\EndFor
-			\State $statystyki[i] \gets statystyka(wyniki)$
-		\EndFor
-		\Var $najlepszaKonfiguracja \gets \argmin_{i} statystyki[i]$
-		\State \Return $konfiguracje[najlepszaKonfiguracja]$
-	\EndOperator
-	\end{algorithmic}
-\end{algorithm}
-
-\todo{przegląd zupełny - formalnie}
+%Druga metoda, czyli przegląd zupełny polega na przeszukanie całego iloczynu kartezjańskiego zestawów wartości parametrów.
+%Jest ona wykorzystywana, kiedy to jakość i miarodajność wyników, a nie czas ich uzyskania ma znaczenie.
+%
+%\begin{algorithm}
+%	\caption{\todo{name and label me}}
+%	\begin{algorithmic}[1]
+%	\Params{
+%		$X_1$, $X_2$, $\ldots$, $X_{p}$ \\
+%		$I$ \\
+%		$statystyka$ \\
+%		\Comment{\raggedleft Parametry zdefiniowane w ten sam sposób co dla procedury eksploracji (patrz: algorytm \ref{algorithm:explore})}
+%	}
+%	\Input{
+%		$cialo$ \Comment{\raggedleft Ciało eksperymentu, zdefiniowane w ten sam sposób co dla procedury eksploracji
+%		}
+%	}
+%	\Output{
+%		Najlepsza konfiguracja znaleziona podczas przeglądu zupełnego, tj. $p$ wartości $x_{i, j}$ o różnych indeksach $i$
+%	}
+%	\Start
+%	\Operator{przeglad}{$cialo$}
+%		\State \Return \opName{okresl}($cialo$, $(X_1, X_2, \ldots, X_p)$, $()$)
+%	\EndOperator
+%%	\Statex \hrulefill
+%	\algrule
+%	\Input{
+%		$cialo$ \Comment{\raggedleft Ciało eksperymentu, zdefiniowane w ten sam sposób co dla operatora \opName{przeglad}} \\
+%		$(X_n, X_{n+1}, \ldots, X_p)$ \Comment{Końcowy podciąg zestawu zbiorów wartości parametrów, który należy zbadać} \\
+%		$(p_1, p_2, \ldots, p_{n-1})$ \Comment{Częściowa konfiguracja, dla której szukane są dalsze parametry z zestawu $(X_n, X_{n+1}, \ldots, X_p)$}
+%	}
+%	\Output{
+%		Najlepsza konfiguracja znaleziona dla zadanego ciągu $(p_1, p_2, \ldots, p_{n-1})$
+%	}
+%	\Start
+%	\Operator{okresl}{$cialo$, $(X_n, X_{n+1}, \ldots, X_p)$, $(p_1, p_2, \ldots, p_{n-1})$}
+%		\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{n}|$}
+%		\Var $konfiguracje = [NULL, NULL, \ldots]$ \Comment{J.w.}
+%		\For{$ i \gets 1$ \To $|X_{n}|$}
+%			\If{$n = p$} \Comment{Określono wszystkie parametry poza jednym}
+%				\State $konfiguracje[i] \gets (p_1, p_2, \ldots, p_{n-1}, x_{n, i})$ 
+%			\Else
+%				\Var $zbiory \gets (X_{n+1}, X_{n+2}, \ldots, X_p)$
+%				\Var $parametry \gets (p_1, p_2, \ldots, p_{n-1}, x_{n, i})$ 			
+%				\State $konfiguracje[i] \gets \opName{okresl}(cialo, zbiory, parametry)$
+%			\EndIf
+%			\Var $wyniki \gets \emptyset$
+%			\For{$powtorzenie \gets 1$ \To $I$}
+%				\State $wyniki \gets wyniki \cup \{ cialo(konfiguracje[i]) \}$
+%			\EndFor
+%			\State $statystyki[i] \gets statystyka(wyniki)$
+%		\EndFor
+%		\Var $najlepszaKonfiguracja \gets \argmin_{i} statystyki[i]$
+%		\State \Return $konfiguracje[najlepszaKonfiguracja]$
+%	\EndOperator
+%	\end{algorithmic}
+%\end{algorithm}
+%
+%\todo{przegląd zupełny - formalnie}
 \end{document}
