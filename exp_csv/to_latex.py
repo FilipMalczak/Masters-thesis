@@ -10,7 +10,7 @@ def trail_zeros(number):
 
 def normalize_results(line):
     parts = line.split(";")
-    return ";".join(parts[0:-2]+[ trail_zeros(parts[-1]), trail_zeros(parts[-2]).replace("-", "") ])
+    return ";".join(parts[0:-2]+[ trail_zeros(parts[-2]), trail_zeros(parts[-1]).replace("-", "") ])
 
 def change_line(line):
     return normalize_results(line).replace(";", " & ")+"\\\\ \\hline \n"
