@@ -2,11 +2,11 @@
 
 \begin{document}
 \chapter{Eksperymenty} \label{chapter:experiments}
-\fixme{za dużo opis}
+
 Niniejsza praca ma na celu zbadanie i porównanie różnych podejść do zagadnienia płci wykorzystywanych w algorytmach ewolucyjnych.
 Aby to osiągnąć zaimplementowano metody opisane w poprzednim rozdziale i przeprowadzono zestaw eksperymentów, których wyniki zostały porównane.
 
-Ten rozdział zaczyna się od opisu wybranych problemów optymalizacji, na których przeprowadzone zostały badania. Kolejna sekcja zawiera opis implementacji badanych metod. Następnie opisane są procedury wykorzystywane przy eksperymentach. Całość zamknięta jest opisem ich przebiegu i przedstawieniem wyników.
+Ten rozdział zaczyna się od prezentacji wybranych problemów optymalizacji, na których przeprowadzone zostały badania. Kolejna sekcja zawiera opis implementacji badanych metod. Następnie omówione są procedury wykorzystywane przy eksperymentach. Całość zamknięta jest podsumowaniem ich przebiegu i przedstawieniem wyników.
 
 \section{Wybrane problemy optymalizacji}
 
@@ -36,14 +36,15 @@ Rozwiązaniem problemu jest taki zestaw przedmiotów jaki zmieści się w plecak
 Ogólna wersja problemu plecakowego polega na przypisaniu każdemu z przedmiotów (par) liczby naturalnej, określającej ile jego egzemplarzy wkładamy do plecaka, jednak w ramach niniejszej pracy zdecydowano się na binarną wariację tego problemu, która dopuszcza wykorzystanie co najwyżej jednego egzemplarza każdego obiektu.
 
 Opisane problemy zostały wybrane, ponieważ reprezentują dwie klasy zadań powszechnie rozwiązywane przy pomocy algorytmów ewolucyjnych. 
-Binarny problem plecakowy to popularne zadanie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie z ograniczeniami, których nie można przekroczyć. 
+Binarny problem plecakowy to popularne zadanie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie, powszechnie wykorzystywane do badania jakości działania heurystyk. 
+Ponadto, problem plecakowy to zadanie optymalizacji z ograniczeniami, których nie da się łatwo zachować w ramach operatorów genetycznych (w przeciwieństwie np. do problemu komiwojażera, w którym można zastosować operatory, które gwarantują, że zwrócą rozwiązania nie przekraczające ograniczeń, jeżeli osobniki wejściowe ich nie przekraczały).
 
 \section{Implementacja}
 
 W tej sekcji opisane są operatory i ich implementacje wykorzystywane podczas przeprowadzania eksperymentów. 
 Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zarzymania, a kolejne dwie - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
 
-\subsection{Komponenty niezależne od problemu}
+\subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
 
 Niezależnie od tego jaki problem jest rozwiązywany przy pomocy algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
 W tym rozdziale opisane zostaną operatory wyboru oraz kryterium stopu, oraz zestawienie oznaczeń wykorzystywanych w dalszych rozdziałach.
@@ -183,30 +184,36 @@ Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (c
 		\Start
 		\Operator{opTurniejowy}{$populacja$}
 		\Var $turniej \gets \emptyset$
+		\label{line:tourney_init}
 		\While{$|turniej|<\param{n}$}
+		\label{line:tourney_while}
 		\State $turniej \gets turniej \cup random(populacja \setminus turniej)$
+		\label{line:tourney_fill}
 		\EndWhile
 		\Var $wynik \gets NULL$
+		\label{line:tourney_find_init}
 		\For{$s \in turniej$}
+		\label{line:tourney_for}
 		\If{$wynik = NULL \vee (wynik, s) \in \minoritySpecimenRel$}
+		\label{line:tourney_if}
 		\State $wynik \gets s$
+		\label{line:tourney_overwrite}
 		\EndIf
 		\EndFor
 		\State \Return $wynik$
+		\label{line:tourney_return}
 		\EndOperator
 	\end{algorithmic}
 \end{algorithm}
 
 Schemat działania operatora turniejowego jest opisany przy pomocy algorytmu \ref{algorithm:roulette}.
 
-Działanie operatora rozpoczyna się od inicjalizacji zbioru $turniej$ na zbiór pusty.
-Następnie, póki zbiór ten nie osiągnie rozmiaru $n$ dodawane są do niego osobniki losowo wybierane (bez powtórzeń) z populacji.
+Działanie operatora rozpoczyna się od inicjalizacji zbioru $turniej$ na zbiór pusty (w linii \ref{line:tourney_init}).
+Następnie, póki zbiór ten nie osiągnie rozmiaru $n$ (linia \ref{line:tourney_while}) dodawane są do niego osobniki losowo wybierane (bez powtórzeń) z populacji (w linii \ref{line:tourney_fill}).
 W kolejnym kroku $turniej$ jest przeszukiwany pod kątem rozwiązania lepszego od pozostałych.
-Polega to na zainicjalizowaniu pomocniczej zmiennej $wynik$ na wartość $NULL$ (czyli abstrakcyjną, pustą wartość) i sprawdzeniu każdego z osobników ze zbioru $turniej$.
-Jeżeli zmienna $wynik$ ma wartość $NULL$ (czyli pętla dopiero się rozpoczęła) lub rozwiązanie $s$ sprawdzane w danym momencie jest lepsze od wartości tej zmiennej (co sprowadza się do sprawdzenia, czy dana para osobników jest w relacji lepszego dopasowania $\minoritySpecimenRel$), to wartość $wynik$ jest nadpisywana przez $s$.
-Wynikiem działania operatora jest znaleziony w ten sposób najlepszy osobnik spośród losowo wybranych, czyli wartość $wynik$.
-
-\todo{referencje do linii}
+Polega to na zainicjalizowaniu pomocniczej zmiennej $wynik$ na wartość $NULL$ (czyli abstrakcyjną, pustą wartość, linia \ref{line:tourney_find_init}) i sprawdzeniu każdego z osobników ze zbioru $turniej$ (linia \ref{line:tourney_for}). 
+Jeżeli zmienna $wynik$ ma wartość $NULL$ (czyli pętla dopiero się rozpoczęła) lub rozwiązanie $s$ sprawdzane w danym momencie jest lepsze od wartości tej zmiennej (co sprowadza się do sprawdzenia, czy dana para osobników jest w relacji lepszego dopasowania $\minoritySpecimenRel$), to wartość $wynik$ jest nadpisywana przez $s$ (linie \ref{line:tourney_if} i \ref{line:tourney_overwrite}).
+Wynikiem działania operatora jest znaleziony w ten sposób najlepszy osobnik spośród losowo wybranych, czyli wartość $wynik$, zwracana w linii \ref{line:tourney_return}.
 
 \subsubsection{Kryterium stopu}
 
@@ -231,17 +238,18 @@ Działanie takiego operatora opisane jest przy pomocy algorytmu \ref{algorithm:s
 		\Start
 		\Operator{krytStopu}{}
 		\If{$pokolenie \leq \param{max}$}
+		\label{line:stop_if}
 		\State \Return 1
+		\label{line:stop_true}
 		\Else
 		\State \Return 0
+		\label{line:stop_false}
 		\EndIf
 		\EndOperator
 	\end{algorithmic}
 \end{algorithm}
 
-Jego działanie jest trywialne i sprowadza się do sprawdzenia odpowiedniego warunku X i zwrócenia 1 X lub 0 X w zależności od jego prawdziwości.
-
-\todo{referencje do linii}
+Jego działanie jest trywialne i sprowadza się do sprawdzenia odpowiedniego warunku (w linii \ref{line:stop_if}) i zwrócenia 1 (linia \ref{line:stop_true}) lub 0 (linia \ref{line:stop_false}) w zależności od jego prawdziwości.
 
 \subsubsection{Wykorzystane implementacje i oznaczenia}
 
@@ -522,8 +530,6 @@ Jest to często niemożliwe, ponieważ pojedyncza ewaluacja zestawu parametrów 
 Aby obejść ten problem, w tej pracy zdecydowano się na iteracyjne podejście przeszukujące przestrzeń konfiguracji wzdłuż wymiarów.
 Zostało ono wyjaśnione przy pomocy algorytmu \ref{algorithm:explore}.
 
-\fixme{that fucking footnote}
-
 \begin{algorithm}
 	\caption{Procedura eksploracji \label{algorithm:explore}}
 	\begin{algorithmic}[1]
@@ -531,48 +537,48 @@ Zostało ono wyjaśnione przy pomocy algorytmu \ref{algorithm:explore}.
 			$X_1$, $X_2$, $\ldots$, $X_{p}$ \Comment{\raggedleft Zestaw $p$ zbiorów wartości parametrów ($X_i = \{ x_{i, 1}, x_{i, 2}, \ldots, x_{i, |X_i|} \}$, gdzie $x_{i, j}$ to $j$ta wartość $i$tego parametru)} \\
 			$R$ \Comment{Ilość nawrotów procedury} \\
 			$I$ \Comment{Ilość powtórzeń eksperymentu dla każdej konfiguracji} \\
-			$statystyka$ \Comment{Operator, przyjmujący zbiór wyników, a zwracający jakąś ich statystykę, np. średnią, medianę lub wartość maksymalną}
+			$statystyka$ \Comment{Operator, przyjmujący zbiór wyników, a zwracający jakąś ich statystykę, np. średnią, medianę wartość minimalną lub maksymalną}
 		}
 		\Input{
-			$cialo$ \Comment{\raggedleft Ciało eksperymentu, tj. operator wykonania pojedynczego eksperymentu, przyjmujący zestaw parametrów $(P_1, P_2, \ldots)$ ($P_i \in X_i$), a zwracający jakąś miarę jakości działania\footnote{
-					Dla uproszczenia w algorytmie przyjęto, że zwracaną miarę należy zmaksymalizować.
-				}}
+			$cialo$ \Comment{\raggedleft Ciało eksperymentu, tj. operator wykonania pojedynczego eksperymentu, przyjmujący zestaw parametrów $(P_1, P_2, \ldots)$ ($P_i \in X_i$), a zwracający jakąś miarę jakości działania; dla uproszczenia w algorytmie przyjęto, że zwracaną miarę należy zminimalizować.
+				}
 			}
-			\Output{
-				$konfiguracja$ \Comment{\raggedleft Najlepsza konfiguracja znaleziona w procesie eksploracji, tj. $p$ wartości $x_{i, j}$ o różnych indeksach $i$}
-			}
-			\Start
-			\Procedure{eksploruj}{cialo}
-			\Var $konfiguracja = [x_{1, 1}, x_{2, 1}, \ldots, x_{p, 1})]$
-			\Var $nawrot \gets 0$
-			\While{$nawrot < R$}
-			\Var $parametr \gets 1$
-			\While{$parametr \leq p$}
-			\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{parametr}|$}
-			\Var $i \gets 1$
-			\State $konfiguracja[parametr] \gets x_{parametr, i}$ 
-			\raggedright
-			\While{$i \leq |X_{parametr}|$}
-			\Var $powtorzenie = 1$
-			\Var $wyniki \gets \emptyset$
-			\While{$powtorzenie \leq I$}
-			\State $wyniki \gets wyniki \cup \{ cialo(konfiguracja) \}$
-			\State $powtorzenie \gets powtorzenie + 1$
-			\EndWhile
-			\State $statystyki[i] \gets statystyka(wyniki)$
-			\State $i \gets i+1$
-			\EndWhile
-			\State $konfiguracja[parametr] \gets \argmax_{i} statystyki[i]$
-			\State $parametr \gets parametr + 1$
-			\EndWhile
-			\State $nawrot \gets nawrot + 1$
-			\EndWhile
-			\EndProcedure
-		\end{algorithmic}
-		Zapis $a[b]$ oznacza element tablicy $a$ o indeksie $b$
-	\end{algorithm}
-	
-	\todo{Opisać eksplorację}
+		\Output{
+			$konfiguracja$ \Comment{\raggedleft Najlepsza konfiguracja znaleziona w procesie eksploracji, tj. $p$ wartości $x_{i, j}$ o różnych indeksach $i$}
+		}
+		\Start
+		\Procedure{eksploruj}{$cialo$}
+		\Var $konfiguracja = [x_{1, 1}, x_{2, 1}, \ldots, x_{p, 1})]$
+		\Var $nawrot \gets 0$
+		\While{$nawrot < R$}
+		\Var $parametr \gets 1$
+		\While{$parametr \leq p$}
+		\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{parametr}|$}
+		\Var $i \gets 1$
+		\State $konfiguracja[parametr] \gets x_{parametr, i}$ 
+		\raggedright
+		\While{$i \leq |X_{parametr}|$}
+		\Var $powtorzenie = 1$
+		\Var $wyniki \gets \emptyset$
+		\While{$powtorzenie \leq I$}
+		\State $wyniki \gets wyniki \cup \{ cialo(konfiguracja) \}$
+		\State $powtorzenie \gets powtorzenie + 1$
+		\EndWhile
+		\State $statystyki[i] \gets statystyka(wyniki)$
+		\State $i \gets i+1$
+		\EndWhile
+		\State $konfiguracja[parametr] \gets \argmin_{i} statystyki[i]$
+		\State $parametr \gets parametr + 1$
+		\EndWhile
+		\State $nawrot \gets nawrot + 1$
+		\EndWhile
+		\EndProcedure
+	\end{algorithmic}
+	Zapis $a[b]$ oznacza element tablicy $a$ o indeksie $b$
+\end{algorithm}
+
+
+\todo{Opisać eksplorację}
 
 Druga metoda, czyli metoda przeglądu polega na przeszukanie całego iloczynu kartezjańskiego zbiorów wartości parametrów.
 Jest ona wykorzystywana, kiedy to jakość i miarodajność wyników, a nie czas ich uzyskania ma znaczenie.
