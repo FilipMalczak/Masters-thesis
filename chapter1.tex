@@ -1,0 +1,65 @@
+\documentclass[./FM_mgr.tex]{subfiles}
+
+\begin{document}
+\chapter{Wprowadzenie}
+
+Optymalizacja to zadanie wyboru najlepszego elementu z danego zbioru (nazywanego przestrzenią rozwiązań). 
+Przez najlepszy rozumiemy taki, dla którego tzw. funkcja oceny, czy też kryterium przyjmuje najwyższą (w zadaniu maksymalizacji) lub najniższą (w zadaniu minimalizacji) wartość. 
+Z takim problemem spotykamy się wszędzie tam, gdzie chcemy zwiększyć lub zmniejszyć jakieś wskaźniki, np. zminimalizować koszta produkcji lub transportu, albo zmaksymalizować zyski ze sprzedaży lub jakość klasyfikacji.
+
+Jeżeli funkcję oceny można zapisać w postaci analitycznej (np. w formie układu równań różniczkowych) to zazwyczaj możemy ją optymalizować metodami numerycznymi, analitycznymi lub algebraicznymi. 
+Istnieją sytuacje, w których nie możemy skorzystać z żadnej z tych metod. 
+Powody tego mogą być różne, m.in. możemy nie znać postaci funkcji (bo np. reprezentuje ona obserwacje jakiegoś procesu lub zjawiska), funkcja zapisana analitycznie może nie spełniać pewnych kryteriów (np. nie być różniczkowalna), lub obliczenia mogą zajmować zbyt wiele czasu (np. pełne przeszukiwanie przestrzeni rozwiązań będącej iloczynem kartezjańskim dużej liczby dużych, czy wręcz nieskończonych zbiorów). 
+Często nie jest nam potrzebne globalne optimum (tzn najlepsze rozwiązanie ze wszystkich możliwych), a wystarczy rozwiązanie jak najlepsze (tzn. optimum lokalne, lub punkt o wartości kryterium zbliżonej do wartości kryterium optimum globalnego).
+
+Do takich zastosowań przeznaczone są metody nazywane heurystykami. 
+W zależności od źródła definicje tego pojęcia są różne. 
+W dziedzinie informatyki, a w szczególności obliczeń miękkich i sztucznej inteligencji, termin ten możemy nieformalnie opisać jako algorytm który nie daje gwarancji uzyskania poprawnego wyniku, ale z większym prawdopodobieństwe zwróci wyniki ,,lepsze''.
+Heurystyki stosowane są wszędzie tam, gdzie nie mamy rzeczywistej możliwości uzyskania wyniku, więc dowolne jego przybliżenie będzie lepsze niż brak jakichkolwiek rezultatów.
+
+\section{Algorytmy ewolucyjne} \label{section:eaShortDesc}
+
+Ewolucja to proces zachodzący w naturze odpowiedzialny za dopasowywanie się osobników danego gatunku do środowiska w jakim żyją. 
+Podstawą tego procesu jest zasada przetrwania lepiej przystosowanych osobników oraz zjawiska dziedziczenia i mutacji.
+
+Zgodnie z powyższą zasadą, jednostki lepiej dopasowane do środowiska mają większą szansę na przeżycie, a co za tym idzie, na wydanie potomstwa.
+Oznacza to, że rodzice większości osobników z kolejnego pokolenia będą radzić sobie w tym środowisku lepiej niż pozostała część populacji.
+
+Zjawisko dziedziczenia polega na przekazywaniu cech rodziców dzieciom. 
+Zachodzi ono podczas rozmnażania, a więc między dwojgiem rodziców i ich potomstwem. 
+Kod genetyczny potomstwa tworzony jest przez losowe łączenie odpowiednich części kodu genetycznego rodziców, dzięki czemu kolejne pokolenie dzieli ich cechy. 
+W ten sposób niektóre osobniki przejmą od rodziców te cechy, które pozwalały im się dopasować do środowiska.
+Część osobników przejmie jednak nie tylko cechy poprawiające ich szansę przetrwania, ale również cechy negatywne, co przełoży się na ich gorsze dopasowanie.
+
+Mutacja to zjawisko zachodzenia losowych zmian w kodzie genetycznym osobnika, dzięki którym ma on szansę zyskać nowe cechy, co w niektórych przypadkach doprowadzi do lepszego dopasowania.
+Osobniki z przypadkowymi zmianami, które poprawiają ich dopasowanie mają większe szanse na przeżycie i wydanie potomstwa.
+Zmiany te więc zostać rozpropagowane wśród osobników przyszłych pokoleń.
+
+Algorytmy ewolucyjne to rodzina heurystyk naśladujących proces ewolucji w celu optymalizacji \cite{davis1991handbook}. 
+Pojedynczy element przestrzeni rozwiązań jest w nich nazywany osobnikiem. 
+Osobniki możemy między sobą porównywać pod względem wartości optymalizowanej funkcji dla nich, a relacja mniejszości (dla problemów minimalizacji) lub większości (dla problemów maksymalizacji) reprezentuje relację bycia lepiej przystosowanym do środowiska. 
+Ponadto, na osobnikach określone są operatory mutacji i krzyżowania, które mają na celu symulację odpowiednich zjawisk występujących w przyrodzie. 
+Heurystyka polega na wielokrotnym przetworzeniu populacji (czyli zbioru osobników) poprzez zastosowanie każdego z operatorów z pewnym prawdopodobieństwem. 
+W każdym kroku (nazywanym w tym przypadku pokoleniem) do dotychczasowej populacji dołączane są wyniki ich działania tych operatorów, a następnie wybierana jest nowa populacja, używana w kolejnym kroku. 
+Aby odwzorować zasadę przetrwania najlepiej dopasowanych osobników, do kolejnej populacji wybierane są z wyższym prawdopodobieństwem osobniki lepiej przystosowane.
+
+W naturze rozmnażanie się osobników wielu gatunków jest ściśle związane ze zjawiskiej podziału gatunku na płcie. 
+Bardziej szczegółowy opis tego zjawiska znajduje się w rozdziale \ref{chapter:proposed}. 
+W dostępnej literaturze dotyczącej tematu algorytmów ewolucyjnych rzadko można znaleźć prace, w których uwzględnia się ten aspekt procesu ewolucji (patrz: rozdział \ref{chapter:literature}). 
+Powodem tego jest raczej chęć uproszczenia działania samej heurystyki niż lepsza jakość wyników uzyskiwanych z pominięciem tego aspektu (\cite{GGA}, \cite{SexualGA}). 
+
+\section{Cele pracy}
+
+Pierwszym celem niniejszej pracy jest opracowanie formalnego opisu algorytmu ewolucyjnego uwzględniającego płeć.
+Schemat heurystyki jest w pewnym stopniu dowolny, a publikacje z tej dziedziny nie używają jednego wspólnego formalizmu, co utrudnia jednoznaczne porównywanie ich działania.
+Spełnienie tego celu powinno doprowadzić do określenia konkretnego schematu, który pozwoli zaimplementować wybrane istniejące rozwiązania oraz zaproponowane rozwiązanie autorskie.
+
+Kolejnym celem jest opis i implementacja wybranych istniejących rozwiązań wykorzystujących płeć w ramach wcześniej opisanego schematu.
+Poza implementacją tych metod, powinno powstać narzędzie badawcze, które pozwoli na klarowne porównanie ich działania.
+
+Cel trzeci to opracowanie i implementacja nowego podejścia uwzględniającego płeć.
+Jest to główny cel tej pracy, mający wnieść coś nowego do dziedziny algorytmów ewolucyjnych.
+
+Ostatnim celem jest zbadanie wcześniej opisanych i zbadanych podejść.
+Polega to na zebraniu miar jakości działania algorytmów ewolucyjnych dla każdego z nich i porównaniu ich ze sobą.
+\end{document}

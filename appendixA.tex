@@ -1,0 +1,40 @@
+\documentclass[./FM_mgr.tex]{subfiles}
+
+\begin{document}
+\appendix \chapter{Pełne wyniki badań}
+\section{Oceny uruchomień}
+
+\todo{DIS}
+
+\section{Średnia i odchylenie standardowe ocen}
+
+\subsection{Problem komiwojażera}
+
+Pełne wyniki dla konfiguracji A, B i C zostały przedstawione w tabelach (kolejno) \ref{table:tsp_results_compare_a}, \ref{table:tsp_results_compare_b} i \ref{table:tsp_results_compare_c}.
+
+\begin{center}
+	\begin{longtable}{|l|l|l|l|r@{$\pm$}l|}
+		\caption{Pełne wyniki dla konfiguracji D}
+		\label{table:tsp_results_compare_d_full}\\
+		\hline
+		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{c|}{{\bf b}} & \multicolumn{1}{c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hhline{======}
+		\endhead
+		\insertData{tsp_d_all}
+	\end{longtable}
+\end{center}
+
+\subsection{Problem plecakowy}
+
+Pełne wyniki dla konfiguracji A, B i C zostały przedstawione w tabelach (kolejno) \ref{table:knapsack_results_compare_a}, \ref{table:knapsack_results_compare_b} i \ref{table:knapsack_results_compare_c}.
+
+\begin{center}
+	\begin{longtable}{|l|l|l|l|r@{$\pm$}l|}
+		\caption{Pełne wyniki dla konfiguracji D}
+		\label{table:knapsack_results_compare_d_full}\\
+		\hline
+		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{c|}{{\bf b}} & \multicolumn{1}{c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hhline{======}
+		\endhead
+		\insertData{knapsack_d_all}
+	\end{longtable}
+\end{center}
+\end{document}
