@@ -331,7 +331,8 @@ Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorsze
 
 Ten etap eksperymentów miał na celu odtworzenie wyników heurystyki GGA i porównanie ich z heurystyką DSEA.
 
-\paragraph{Konfiguracja} W tym celu wykorzystano konfigurację \ref{config:tsp_gga} opisującą GGA oraz \ref{table:tsp_dsea_gga} opisująca operator zbliżony do GGA w ten sposób, że korzysta z tego samego operatora wyboru dla obu płci (mimo, że nie wymusza różnych płci rodziców, przez co jest zbliżony do SexualGA).
+\paragraph{Konfiguracja} W tym celu wykorzystano konfigurację \ref{config:tsp_gga} opisującą GGA oraz \ref{table:tsp_dsea_gga} opisująca operator zbliżony do GGA.
+Korzysta z tego samego operatora wyboru dla obu płci (mimo, że nie wymusza różnych płci rodziców, przez co jest zbliżony do SexualGA).
 Każdy z eksperymentów został powtórzony pięciokrotnie.
 
 \begin{config}
@@ -392,11 +393,13 @@ Każdy z eksperymentów został powtórzony pięciokrotnie.
 
 \paragraph{Wyniki} Tabela \ref{table:tsp_results_gga} przedstawia średnią i odchylenie standardowe wyników heurystyki GGA, a tabela \ref{table:tsp_dsea_gga} analogiczne wartości dla heurystyki DSEA.
 Drugi wiersz drugiej z tej tabel przedstawia wyniki dla standardowego algorytmu ewolucyjnego.
-Jak widać, jedynie użycie operatora ruletkowego poprawiło względem niego wyniki. 
+Jak widać, jedynie użycie operatora ruletkowego oraz nielosowego operatora selekcji naturalnej poprawiło względem niego wyniki. 
 Może to wynikać z tego, że wykorzystano również operator selekcji naturalnej korzystający z ruletki.
 
-Pozostałe wyniki są znacznie gorsze niż dwa wymienione wyżej, chociaż w przypadku heurystyki DSEA udało się w ogólności poprawić stabilność.
+Pozostałe wyniki są znacznie gorsze niż dwa wymienione wyżej, chociaż w przypadku heurystyki DSEA udało się w nieznacznie poprawić stabilność.
+
 W ogólności, heurystyka GGA dawała gorsze wyniki.
+Najefektywniej działała ona z wykorzystaniem operatora ruletkowego, czyli tego samego co w przypadku selekcji naturalnej.
 
 \begin{table}[h]
 	\caption{Wyniki heurystyki GGA \label{table:tsp_results_gga}}
@@ -425,6 +428,8 @@ W ogólności, heurystyka GGA dawała gorsze wyniki.
 Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heurystyki SexualGA i zbadanie działania operatora selekcji płciowej zbliżonego do niej.
 
 \paragraph{Konfiguracja} W tym celu określono trzy konfiguracje: \ref{config:tsp_sexual_ga} opisującą SexualGA, \ref{config:tsp_dsea_sexual_ga_false} zbliżonej do poprzedniej, jednak wykorzystującej ruletkowy operator selekcji płciowej, oraz \ref{config:tsp_dsea_sexual_ga_true} różniącej się od poprzedniej tym, że operator selekcji płciowej wymagał od rodziców tego, żeby byli różnej płci (przez co był zbliżony do GGA).
+
+Ponownie, każdy z eksperymentów powtórzono pięciokrotnie.
 
 \begin{config}
 	\caption{Konfiguracja heurystyki SexualGA \label{config:tsp_sexual_ga}}
@@ -524,7 +529,20 @@ Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heury
 	\end{tabularx}
 \end{config}
 
-\paragraph{Wyniki} \todo{SexualGA + natsel rox, bez natsel do niczego, dwie płcie nieznacznie gorsze, ogólnie gorsze niż tabela 6, lepsze niż GGA}
+\paragraph{Wyniki} Najlepsze wyniki dała heurystyka DSEA z jedną płcią wykorzystująca operator ruletkowy do wyboru obojga rodziców.
+W gruncie rzeczy jest to sytuacja w której do selekcji płciowej i naturalnej wykorzystywany jest ten sam operator.
+Efektywność na nieznacznie niższym poziomie okazało się mieć zastosowanie heurystyki DSEA z dwoma płciami, jednak spowodowane to było ponownym użyciem dwóch operatorów ruletkowych.
+Wykorzystanie jedynie selekcji płciowej z losowym operatorem selekcji naturalnej (czyli heurystyki SexualGA) przyniosło znacznie gorsze (półtora, a nawet dwa razy wyższe) wyniki.
+Były one porównywalne z heurystyką GGA.
+Podobnie jak w tamtym przypadku, użycie takiego samego operatora wyboru w obu operatorach selekcji przynosiło znacznie lepsze wyniki.
+
+W większości sytuacji stabilność heurystyki była znacznie gorsza.
+W dwóch przypadkach odchylenie standardowe było mniejsze, jednak wydaje się to być spowodowane losowością metody.
+Jeden z tych przypadków to czysta heurystyka SexualGA z użyciem dwóch operatorów turniejowych o różnych rozmiarach, jednak eksperyment dla tych samych parametrów zamienionych kolejnością dał wyniki gorsze.
+Biorąc pod uwagę, że żadna z płci nie jest wyróżniana i ich wpływ na jakość działania powinien być taki sam, poprawę stabilności można uznać za przypadek.
+Drugą taką sytuacje można zaobserwować w eksperymencie korzystającym z operatora ruletkowego i losowego z jedną płcią, jednak dla tej samej konfiguracji z losowym operatorem selekcji naturalnej odchylenie standardowe jest bardzo duże, co również wskazuje na losowość obserwacji.
+
+Wszystkie metody zbadane na tym etapie sprawdzały się znacząco gorzej niż standardowy algorytm ewolucyjny.
 
 \begin{table}[H]
 	\caption{Wyniki heurystyki SexualGA \label{table:tsp_results_sexual_ga}}
@@ -567,11 +585,19 @@ Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heury
 
 \subsubsection{Badania skuteczności heurystyki DSEA z haremowym operatorem selekcji płciowej}
 
-\paragraph{Konfiguracja} \todo{blah}
+Ostatni etap eksperymentów ma na celu zbadanie efektywności DSEA z użyciem zaproponowanego operatora selekcji płciowej.
+
+\paragraph{Konfiguracja} W tym celu określono konfigurację \ref{config:tsp_dsea_harem}.
+Wykorzystuje ona operator haremowy, a co za tym idzie - korzysta ze zbioru 2 płci.
+Zbadano działanie tego operatora dla różnych ilości osobników alfa, różnych współczynników beta oraz różnych operatorów wyboru osobników alfa i beta.
+Użyto losowego operatora wyboru partnerów.
+Pozostałe parametry były takie same jak w konfiguracji znalezionej w drugim etapie.
+
+Podobnie jak w poprzednich dwóch badaniach, każdy eksperyment powtórzono pięć razy.
 
 \begin{config}
 	%harem
-	\caption{Konfiguracja heurystyki DSEA z operatorem haremowym \label{table:tsp_dsea_harem}}
+	\caption{Konfiguracja heurystyki DSEA z operatorem haremowym \label{config:tsp_dsea_harem}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
@@ -613,6 +639,29 @@ Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heury
 		\hline
 	\end{tabularx}
 \end{config}
+
+\paragraph{Wyniki} W tabeli \ref{table:tsp_results_dsea_harem} przedstawiono 12 najlepszych wyników uzyskanych przy użyciu konfiguracji \ref{config:tsp_dsea_harem}.
+Zestawienie pełnych wyników można znaleźć w dodatku \ref{appendix:full_results}.
+
+Można zaobserwować, że heurystyka działała najskuteczniej, kiedy jeden lub oba operatory wyboru były takie same jak użyty w operatorze selekcji naturalnej.
+Ponadto, najlepsze wyniki uzyskano dla większych liczb osobników alfa i beta.
+
+Wykres \ref{figure:tsp_male_avg} przedstawia średnią funkcję oceny dla różnych liczb samców.
+Liczba ta została obliczona jako $\lceil \param{liczbaAlfa} + \param{wspBeta} \times 50 \rceil$, ponieważ $\param{rozmiarPopulacji}$ wynosił 50.
+Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wynikami, z czego można wnioskować, że to operatory wyboru (losowy lub ruletkowy w większości przypadków) decydowały o skuteczności.
+
+Warto zauważyć, że najlepszy i najbardziej stabilny wynik uzyskano wybierając osobniki alfa operatorem ruletkowym, a osobniki beta i partnerów losowym.
+Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a osobniki alfa mają najbardziej korzystne cechy.
+
+Wyniki są około półtora raza gorsze niż dla standardowego algorytmu ewolucyjnego.
+Są również wyższe od najniższych znalezionych w poprzednich badaniach.
+Mimo to, są lepsze niż dla heurystyk GGA i SexualGA działających bez operatora selekcji naturalnej.
+
+\begin{figure}
+	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:tsp_male_avg}}
+	\centering
+	\graph{tsp_male_avg.tex}
+\end{figure}
 
 \begin{table}[h]
 	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:tsp_results_dsea_harem}}
