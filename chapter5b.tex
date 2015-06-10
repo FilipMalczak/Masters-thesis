@@ -138,7 +138,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		0,0 \\ 
 		\cline{2-3} 
 		\multicolumn{1}{|c|}{} & 
-		$(\param{prawdMutacji}, \param{prawdKrzyzowania})$ 
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ 
 		& (0,6, 0,1) \\ 
 		\cline{2-3} 
 		\multicolumn{1}{|c|}{} & 
@@ -158,7 +158,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		0,0 \\ 
 		\cline{2-3} 
 		\multicolumn{1}{|c|}{} & 
-		$(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & 
+		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & 
 		(0,6, 0,1) \\ 
 		\cline{2-3} 
 		\multicolumn{1}{|c|}{} & 
@@ -679,14 +679,15 @@ Mimo to, są lepsze niż dla heurystyk GGA i SexualGA działających bez operato
 
 \subsection{Badania problemu plecakowego}
 
-
-W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA dla problemu komiwojażera, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:knapsack_impl}.
+W następnych podsekcjach zostaną opisane badania działania heurystyki DSEA dla problemu plecakowego, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:knapsack_impl}.
+Struktura tej części pracy jest analogiczna jak poprzedniej, opisującej problem komiwojażera.
 
 \subsubsection{Poszukiwanie parametrów początkowych}
 
 \paragraph{Konfiguracja}
 
-W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji wyjściowej. W tabeli \ref{config:knapsack_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
+Podobnie jak dla problemu komiwojażera, badania rozpoczęto od wykorzystania procedury eksploracji w celu znalezienia konfiguracji wyjściowej. 
+W tabeli \ref{config:knapsack_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
 
 \begin{config}
 	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{config:knapsack_init_params}}
@@ -726,13 +727,11 @@ W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji 
 
 \paragraph{Przebieg}
 
-Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury. 
-Lewa kolumna grupuje znalezione parametry w ramach jednego nawrotu eksploracji. 
-Kolejne dwie, czytane od góry, określają jakie wartości zostały kolejno znalezione.
+Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury.
 
-Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację. 
-W drugim, udało się odnaleźć prawdopodobieństwa mutacji i krzyżowania które dawały lepsze wyniki.
-Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przeszukiwanych.
+Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację, która tylko nieznacznie zmieniła się w kolejnym. 
+Zmiany obejmowały prawdopodobieństwo krzyżowania oraz współczynnik domieszek.
+Trzeci nawrót nie zmienił odnalezionej konfiguracji.
 
 \begin{table}[H]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_init_flow}}
@@ -748,13 +747,13 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 		\hline
 		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,8, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,1)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
 		\hline
 		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdMutacji}, \param{prawdKrzyzowania})$ & (0,8, 0,1)              \\ \cline{2-3} 
+		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,1)              \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
 		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
 		
@@ -763,10 +762,14 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \paragraph{Wyniki}
 
-\todo{Blah, blah, here go results}
+Jak zostało pokazane w tabeli \ref{table:knapsack_init_results}, wyniki dla tak określonego zestawu parametrów są bardzo dobre - najgorszy z nich był większy od optimum o niecałe 6 \%.
+W ostatnim z przebiegów udało się znaleźć optimum globalne.
+
+Na rysunku \ref{figure:knapsack_init_example} pokazany został wykres tego przebiegu.
+Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze działanie heurystyki przeszukiwało przestrzeń rozwiązań, często pogarszając wyniki.
 
 \begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{knapsack_init_results}}
+	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:knapsack_init_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -790,9 +793,9 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 
 \subsubsection{Poprawa konfiguracji początkowej}
 
-\paragraph{Konfiguracja}
+Dla problemu plecakowego również przeprowadzono próbę dostrojenia parametrów używanych w dalszych badaniach.
 
-\todo{opisać skąd sie wzięły wartości}
+\paragraph{Konfiguracja} Zestawy wartości parametrów zostały określone podobnie jak na analogicznym etapie badań problemu TSP - przez dodanie lub odjęcie do parametrów liczbowych 5 i 10 lub 0,02 i 0,05, \fixme{zachowując ograniczenie na ich przedział}.
 
 \begin{config}
 	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{config:knapsack_tweak_params}}

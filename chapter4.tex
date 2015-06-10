@@ -12,24 +12,26 @@ W tym rozdziale zostanie zaproponowana heurystyka, która uwzględnia aspekt pł
 
 Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć.
 Oznacza to, że przestrzeń rozwiązań musi zostać poszerzona o dodatkowy wymiar, jakim jest właśnie ta cecha.
-Jedyne wymaganie nałożone na jej dziedzinę to to, żeby była skończonym, niepustym zbiorem.
+Jedyne wymaganie nałożone na jej przeciwdziedzinę to to, żeby była skończonym, niepustym zbiorem.
+
+\begin{signature}
+	\caption{Osobnik w heurystyce DSEA \label{signature:specimen_dsea}}
+	\begin{align}
+		\important{S}_{DSEA} = &\important{S}_{EA} \times \important{G} \\
+		\important{G} \neq & \emptyset \\
+		|\important{G}| < &\infty
+	\end{align}	
+	$\important{S}_{DSEA}$ to przestrzeń rozwiązań w heurystyce DSEA, a $\important{S}_{EA}$ - w klasycznych algorytmach ewolucyjnych.
+	Jest ona poszerzana o dodatkowy wymiar, reprezentowany przez zbiór $\important{G}$, czyli zbiór możliwych płci.\\
+	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$.
+\end{signature}
 
 \begin{signature}
 	\caption{Funkcja $plec(osobnik)$ \label{signature:genderFoo}}
 	\begin{align}
 	plec: & \important{S} \rightarrow \important{G}
 	\end{align}
-\end{signature}
-
-\begin{signature}
-	\caption{Osobnik w kontekście DSEA \label{signature:specimen_dsea}}
-	\begin{align}
-	\important{S}_{DSEA} = &\important{S}_{EA} \times \important{G} \\
-	\important{G} \neq & \emptyset \\
-	|\important{G}| < &\infty
-	\end{align}	
-	$\important{G}$ to zbiór możliwych płci.\\
-	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$.
+	Funkcja $plec(osobnik)$ przyporządkowywuje swojemu argumentowi jego płeć ze zbioru $\important{G}$.
 \end{signature}
 
 \section{Heurystyka DSEA} \label{section:dsea}
@@ -47,31 +49,30 @@ Na rysunku \ref{figure:dsea} przedstawiono schemat działania heurystyki DSEA w 
 	\img{dsea.png}
 \end{figure}
 
-W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w sekcji \ref{section:general_idea}. 
-Istotne różnice między diagramami to zmiana działania kroku "Wykonaj krzyżowanie oraz dodanie nowego kroku "Zadbaj o różnorodność populacji" zaraz przed nim. 
-Zostały one zdefiniowane w paragrafach kolejno \ref{subsubsection:my_crossover} i  i \ref{figure:fixing}. 
-Ponadto, zmieniła się nazwa operatora używanego w kroku "Dokonaj selekcji naturalnej", co zostanie opisane w podsekcji \ref{subsection:new_natSel}.
+W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w podrozdziale \ref{section:general_idea}. 
+Istotne różnice między diagramami to zmiana działania kroku ,,Wykonaj krzyżowanie'' oraz dodanie nowego kroku ,,Zadbaj o różnorodność populacji'' zaraz przed nim. 
+Zostały one zdefiniowane w kolejnych podrozdziałach.
+Ponadto, zmieniła się nazwa operatora używanego w kroku ,,Dokonaj selekcji naturalnej'', czemu również został poświęcony podrozdział.
 
 \subsubsection{Krok ,,Wykonaj krzyżowanie''} \label{subsubsection:my_crossover}
 
 \begin{figure}[H]
-	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
 	\img{my_crossover.png}
+	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
 \end{figure}
 
-Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok "Wykonaj krzyżowanie" jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{
-	W podsekcji \ref{subsection:new_genSel} opisane zostanie znaczenie i sygnatura tego operatora, wyjaśnione jest uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdKrzyzowania}$. 
+Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok ,,Wykonaj krzyżowanie'' jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{
+	W jednym z następnych podrozdziałów opisane zostało znaczenie i definicja tego operatora, uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdKrzyzowania}$. 
 } generowana jest lista par rodziców. 
 Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. 
-W przeciwieństwie do realizacji opisanej w sekcji \ref{section:ea_details} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. 
+W przeciwieństwie do realizacji opisanej w podrozdziale \ref{section:ea_details} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. 
 Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
 \subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
 
-
 \begin{figure}[H]
-	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
 	\img{fixing.png}
+	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
 \end{figure}
 
 Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. 
@@ -101,7 +102,7 @@ Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operato
 Zachowuje on to samo znaczenie i zastosowanie, opisane w rozdziale \ref{subsection:natSel}. 
 
 Dodatkowo, wymaga się, aby prawdopodobieństwo znalezienia się osobnika w zbiorze zwracanym przez ten operator było niezależne od płci osobnika. 
-Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signature:natSel}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
+Zostało to zapisane przy pomocy równania \ref{line:gender_resistant}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
 
 \begin{signature}
 	\caption{Operator selekcji naturalnej \label{signature:natSel}}
@@ -111,33 +112,45 @@ Zostało to zapisane w linii \ref{line:gender_resistant} sygnatury \ref{signatur
 	p \approx &(1 + \param{prawdMutacji} \times \variable{m} \\
 	&+ \param{prawdKrzyzowania} \times \outputVar{c}) \\
 	&\times \param{rozmiarPopulacji} \\
-	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	s \in \param{opSelNat}(T) &\Leftrightarrow \exists_{t \in T}  t \equiv s \\
-	P(i) \gets &P(t_i \in \param{opSelNat}(T)) \\
-	\forall_{i = 0 \ldots \param{rozmiarPopulacji}-1}P(i) < P(j) &\Leftrightarrow (t_i, t_j) \in \minoritySpecimenRel \\
+	S' \gets &\left\{ s_1, \ldots s_p \right\} \\
+	s \in \param{opSelNat}(S') &\Rightarrow \exists_{s_i \in S'}  s_i = s \\
+	P(i) \gets &P(s_i \in \param{opSelNat}(S')) \\
+	\forall_{i = 1 \ldots p}P(i) < P(j) &\Leftrightarrow (s_i, s_j) \in \minoritySpecimenRel \\
 	\label{line:gender_resistant}
-	\forall_{i = 0 \ldots \param{rozmiarPopulacji}-1, g \in \important{G}}P(i \wedge & plec(t) = g) = P(i) \times P(plec(t_i) = g)
+	\forall_{i = 1 \ldots p, g \in \important{G}} P(s_i \in \param{opSelNat}(S') \wedge & plec(t) = g) = P(i) \times P(plec(s_i) = g)
 	\end{align}
+	$\param{opSelNat}$ to operator selekcji naturalnej.
+	Przyjmuje on populację na końcu każdego pokolenia, a zwraca populację używaną w kolejnym pokoleniu.
+	$p$ to przybliżenie rozmiaru zbioru wejściowego przy pomocy prawdopodobieństw zastosowania operatorów oraz rozmiaru populacji.\\
+	$S'$ to pomocniczy zbiór przedstawiający przykładową populację na końcu pokolenia, zawierający osobniki $s_i$. \\
+	$P()$ to funkcja prawdopodobieństwa. 
+	W szczególności $P(i)$ oznacza prawdopodobieństwo tego, że osobnik $s_i$ znajdzie się w zbiorze będącym wynikiem zastosowania opisywanego operatora do populacji $S'$.\\
+	$\minoritySpecimenRel$ to relacja porządku określona na osobnikach na podstawie ich ocen. Zapis $(s_i, s_j) \in \minoritySpecimenRel$ oznacza, że osobnik $s_i$ jest gorzej dopasowany niż $s_j$.
 \end{signature}
 
 Standardowo korzysta się z operatorów selekcji naturalnej które odpowiednią ilość razy powtarzają wybór pojedynczego osobnika (bez powtórzeń) z populacji wejściowej, zbierając w ten sposób populację wyjściową. 
-O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączane do populacji wyjściowej są zazwyczaj wybierane przy pomocy tego samego podejścia, które dalej będzie nazywane operatorem wyboru.
-Został on zdefiniowany w sygnaturze \ref{signature:chooseOp}.
+O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączane do populacji wyjściowej są zazwyczaj wybierane przy pomocy tej samej metody, która dalej będzie nazywana operatorem wyboru.
+Definicja \ref{signature:chooseOp} opisuje taki operator.
 Rzecz jasna istnieją realizacje, które korzystają z wielu operatorów wyboru, ale nie są one tematem tej pracy i nie będą w niej poruszane.
 
 \begin{signature}
 	\caption{Operator wyboru \label{signature:chooseOp}}
 	\begin{align}
-	\param{opWyboru}: &\withSize{\important{S}}{p} \rightarrow \important{S}
+	\param{opWyboru}: &\withSize{\important{S}}{k} \rightarrow \important{S} \\
+	S' \gets &\left\{ s_1, \ldots s_k \right\} \\
+	s \in \param{opSelNat}(S') &\Rightarrow \exists_{s_i \in S'}  s_i = s
 	\end{align}
+	$\param{opWyboru}$ to operator wyboru.
+	Przyjmuje on $k$ osobników, spośród których wybiera jednego. \\
+	$S'$ to pomocniczy zbiór osobników $s_i$ wykorzystywany w kolejnych równaniach.
 \end{signature}
 
-Realizacje operatorów wyboru nazywamy zgodnie z nazwami operatorów selekcji które z nich korzystają.
+Realizacje operatorów wyboru nazywane są zgodnie z nazwami operatorów selekcji które z nich korzystają.
 Przykładowo, turniejowy operator selekcji korzysta z turniejowego operatora wyboru.
-Operatory wykorzystane w tej pracy zostały opisane w podsekcji \ref{subsection:independent_impl} przy okazji opisu implementacji wykorzystanej do badań.
+Operatory wykorzystane w tej pracy zostały opisane w dalszej części pracy przy okazji opisu implementacji wykorzystanej do badań.
 
-Warto zauważyć, że wcześniej zdefiniowany (sygnatura \ref{signature:random} w rozdziale \ref{chapter:eaDesc}) operator $random(X)$ może być traktowany jako operator wyboru.
-Nie nadaje się on do zastosowań mających na celu poprawę wyników heurystyki, jednak korzystając z niego możemy opisać istniejące podejścia w modelu DSEA (patrz: podsekcja \ref{subsection:literatureRealization}).
+Warto zauważyć, że wcześniej zdefiniowany operator $random(X)$ może być traktowany jako operator wyboru.
+Nie nadaje się on do zastosowań mających na celu poprawę wyników heurystyki, jednak zostanie on wykorzystany do opisu istniejących podejść w modelu DSEA.
 
 Wydzielenie abstrakcji wyboru jednego rozwiązania pozwala na zapisanie uogólnionego schematu działania większości popularnie stosowanych operatorów selekcji.
 Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
@@ -204,17 +217,19 @@ Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, je
 	\begin{align}
 	\param{opSelPlciowej}: &\withSize{ \important{S}}{\param{rozmiarPopulacji} } \rightarrow \withSize{ ( \withSize{\important{S}  }{\inputVar{c}} ) }{q} \\
 	q = & \lceil \param{prawdKrzyzowania} \times \param{rozmiarPopulacji} \rceil \\
-	T \gets &\left\{ t_0, t_1, \ldots t_{\param{rozmiarPopulacji}-1} \right\} \\
-	\exists_{P \in \param{opSelekcji}(T)} t \in P &\Rightarrow t \in T
+	S' \gets &\left\{ s_1, s_2, \ldots s_\param{rozmiarPopulacji} \right\} \\
+	\exists_{P \in \param{opSelekcji}(S')} s \in P &\Rightarrow s \in S'\\
 	\end{align}	
-	$\inputVar{c}$ to ilość osobników potrzebna do wykonania krzyżowania (patrz: sygnatura \ref{signature:crossover}, rozdział \ref{subsection:crossover}). \\
-	Operator zwraca zbiór $q$ zbiorów, z których każdy zawiera $\inputVar{c}$ osobników.
+	$\param{opSelPlciowej}$ to operator selekcji płciowej.
+	Zwraca on zbiór $q$ zbiorów, z których każdy zawiera $\inputVar{c}$ osobników. \\
+	$\inputVar{c}$ to ilość osobników potrzebna do wykonania krzyżowania (patrz: definicja \ref{signature:crossover} w rozdziale \ref{subsection:crossover}). \\
+	$S'$ to pomocniczy zbiór osobników $s_i$, a $P$ to oznaczenie jednego ze zbiorów rodziców.
 \end{signature}
 
 \subsection{Realizacja wybranych operatorów selekcji płciowej} \label{subsection:literatureRealization}
 
 W rozdziale \ref{chapter:literature} przedstawiono przegląd prac naukowych o tematyce zgodnej z tematem tej pracy, tj. z uwzględnianiem zjawiska płci w algorytmach ewolucyjnych.
-Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały nieco odmienne podejścia do zagadnienia: GGA \cite{GGA}, które opierało się o wymuszenie różnych płci rodziców, wybierając ich losowo, oraz SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
+Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały interesujące podejścia do zagadnienia: GGA \cite{GGA}, które opierało się na wymuszeniu różnych płci rodziców, wybierając ich losowo, oraz SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
 
 Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmiennie parametryzowanego dla każdej z tych metod. Jego działanie jest wyjaśnione w algorytmie \ref{algorithm:common_genSel}.
 
@@ -330,19 +345,21 @@ Według autorów najlepsze wyniki osiągano używając operatora losowego w poł
 
 \section{Proponowany operator selekcji płciowej}
 
-U wielu gatunków występujących w przyrodzie (np. u większości płetwonogich, w tym morsów i fok \cite{pletwonogiMajaHaremy}) występuje zjawisko formowania się haremów.
+U wielu gatunków występujących w przyrodzie (np. u większości płetwonogich\cite{pletwonogiMajaHaremy}, w tym morsów i fok) występuje zjawisko formowania się haremów.
 Polega ono na tym, że tylko mała liczba osobników jednej z płci (zazwyczaj samców\footnote{
-	Mimo, że nie zawsze osobniki alfa są płci męskiej, to w dalszej części opisu będziemy zakładać, że tak właśnie jest, mimo, że to uproszczenie.
-}, nazywanych dalej \emph{osobnikami alfa}) przyczynia się do wydania na świat potomstwa.
-Oznacza to, że dostęp do grupy samic (nazywanej \emph{haremem}) ma bardzo ograniczona grupa jednostek.
+	Mimo, że nie zawsze osobniki alfa są płci męskiej, to przyjęte zostanie takie uproszczenie. 
+	Osobniki alfa i beta będą nazywane samcami, a ich parterki - samicami.
+}) nazywanych dalej \emph{osobnikami alfa}, przyczynia się do wydania na świat potomstwa.
+Oznacza to, że dostęp do grupy samic nazywanej \emph{haremem} ma bardzo ograniczona grupa samców.
 Dzieje się tak, ponieważ osobniki alfa są w ogólności silniejsze od pozostałych i bronią dostępu do samic przed resztą samców.
 Zakaz ten nie zawsze jest przestrzegany.
-W momencie, w którym osobniki alfa są czymś zajęte, pewien odsetek osobników tej samej płci ma szansę na rozmnożenie się.
+W momencie, w którym osobniki alfa są czymś zajęte, pewien odsetek samców ma szansę na rozmnożenie się.
 Osobniki którym się to uda nazywane są \emph{osobnikami beta}.
 
 Mimo, że takie zjawisko w dużym stopniu ogranicza różnorodność genetyczną, to w naturze wydaje się przynosić pozytywne rezultaty.
 Z tego powodu zdecydowano się zbadać haremowe podejście do dobierania się w pary w celu rozmnażania.
-Zrealizowano to definiując realizację operatora selekcji płciowej, nazywaną operatorem haremowym, opisaną w algorytmie \ref{algorithm:harem}. Wymaga ona, aby w populacji występowały dokładnie 2 płcie ($|\important{G}| = 2$).
+Zrealizowano to definiując operator selekcji płciowej, nazywany operatorem haremowym. Jest on opisany w algorytmie \ref{algorithm:harem}. 
+Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 płcie ($|\important{G}| = 2$).
 
 \begin{algorithm}
 	\caption{Schemat działania operatora haremowego \label{algorithm:harem}}
@@ -421,13 +438,13 @@ W dalszej kolejności wybierane jest $liczbaBeta$ osobników beta (linie \ref{li
 
 Operator zwraca zmienną $rodzice$ (w linii \ref{line:harem_return}).
 
-Przedstawiony schemat nie zgadza się z sygnaturą operatora selekcji płciowej (sygnaturą \ref{signature:genSel}) przedstawioną w podsekcji \ref{subsection:new_genSel}, ponieważ w niektórych sytuacjach zwraca więcej par rodziców niż powinien. 
+Przedstawiony schemat nie zgadza się z definicją operatora selekcji płciowej przedstawioną w jednym z poprzednich podrozdziałów, ponieważ w niektórych sytuacjach zwraca więcej par rodziców niż powinien. 
 
 Oczekiwany rozmiar zbioru zwracanego przez operator to $liczbaZbiorowRodzicow$, czyli $\lceil \param{prawdKrzyzowania} \times \param{rozmiarPopulacji} \rceil$, jednak ponieważ zaokrąglamy wartość $perAlfa$ w górę, to często generowane jest $\param{liczbaAlfa}$ nadmiarowych par.
 Można temu zaradzić modyfikując ostatnią pętlę, generującą pary z osobnikami beta, w sposób opisany algorytmem \ref{algorithm:harem_fix}.
 
 \begin{algorithm}
-	\caption{Sposób zaradzenia nadmiarowi zwracanych zbiorór \label{algorithm:harem_fix}}
+	\caption{Sposób zaradzenia nadmiarowi zwracanych zbiorów \label{algorithm:harem_fix}}
 	\begin{algorithmic}[1]
 		\Start
 		\Operator{opHaremowy}{$populacja$}
