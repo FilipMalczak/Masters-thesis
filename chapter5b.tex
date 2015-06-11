@@ -1,60 +1,18 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\section{Przeprowadzone eksperymenty}
+\section{Badania} \label{chapter:research}
 
-Badania były przeprowadzane oddzielnie dla każdego problemu.
-Ich pierwszą częścią było znalezienie początkowej konfiguracji, wykorzystywanej w dalszych etapach.
-Odbywało się to w dwóch krokach.
-Pierwszy z nich polegał na znalezieniu parametrów dla standardowego algoryytmu ewolucyjnego przy dużej ziarnistości przeszukiwanych wartości, a drugi - na przeszukaniu lokalnego sąsiedztwa konfiguracji znalezionej w kroku pierwszym.
-W tej części zdarzały się sytuacje w których znaleziono globalne optimum dla problemu, jednak takie zestawy parametrów zostawały odrzucone.
-Miało to na celu uzyskanie wyników dobrych, ale nie najlepszych, aby sprawdzić, czy w dalszych eksperymentach uda się osiągnąć lepsze rezultaty.
-Gdyby już na tym etapie znajdowano optimum globalne, nie dałoby się określić, czy nowe rozwiązania poprawiają wyniki.
+W dalszej części pracy konkretny zestaw parametrów będzie nazywany konfiguracją.
+Wyrażenie ,,wynik eksperymentu dla konfiguracji wyniósł \emph{X}'' oznacza, że heurystyka została uruchomiona z parametrami (rozmiarem populacji, prawdopodobieństwami, itd.) określonymi przez konfigurację, a jej wynikiem było \emph{X}.
+Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dla danej konfiguracji za każdym uruchomieniem może być inny.
 
-Drugą częścią badań było zebranie wyników dla DSEA z wykorzystaniem parametrów znalezionych w poprzednim kroku, ale z różnymi implementacjami operatorów selekcji płciowej. 
-Najpierw odtworzono działanie heurystyk GGA i DSEA sparametryzowanej w podobny sposób. Następnie powtórzono to dla heurystyki SexualGA. 
-Na końcu zbadano działanie heurystyki DSEA z operatorem haremowym.
+\todo{2 etapy - jakie, każdy problem osobno}
 
-Każdy z tych kroków zostanie opisany oddzielnie, z określeniem rozwiązywanego problemu, zakresem zmienianych parametrów, opisem przebiegu eksperymentu oraz jego najważniejszymi wynikami.
+\subsection{Określenie bazowej konfiguracji}
+\label{subsection:init_params}
 
-Pełne wyniki eksperymentów są zamieszczone w dodatkach do niniejszego dokumentu.
-
-Kolejne podsekcje opisują przebieg eksperymentów dla problemu komiwojażera i problemu plecakowego, w tej kolejności.
-
-Dla każdego z eksperymentów należało określić (poza rozwiązywanym problemem, a więc reprezentacją osobnika, operatorami genetycznymi i funkcją oceny):
-
-\begin{itemize}
-	\item rozmiar populacji ($\param{rozmiarPopulacji}$),
-	\item współczynnik domieszek ($\param{wspDomieszek}$),
-	\item liczbę pokoleń (parametr kryterium stopu, $\param{max}$),
-	\item prawdopodobieństwa mutacji i krzyżowania ($\param{prawdMutacji}$, $\param{prawdKrzyzowania}$),
-	\item operator selekcji naturalnej ($\param{opSelNat}$), definiowany przez wykorzystany operator wyboru,
-	\item operator selekcji płciowej ($\param{opSelPlciowej}$), wraz z jego parametrami (zależnymi od implementacji).
-\end{itemize}
-
-Ponadto, korzystając z procedury eksploracji poza powyższymi zbiorami wartości parametrów trzeba było wskazać wartości:
-
-\begin{itemize}
-	\item ilości nawrotów ($R$),
-	\item ilości powtórzeń eksperymentu ($I$), oraz
-	\item statystyki używanej do wyboru dalszej ścieżki eksploracji ($statystyka$).
-\end{itemize}
-
-\subsection{Badania problemu komiwojażera}
-
-W następnych podsekcjach zostaną opisane kolejne kroki badań działania DSEA dla problemu komiwojażera, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:tsp_impl}.
-
-\subsubsection{Poszukiwanie parametrów początkowych}
-
-\paragraph{Konfiguracja}
-
-W tym kroku wykorzystano procedurę eksploracji w celu znalezienia konfiguracji początkowej. 
-Konfiguracja \ref{config:tsp_init_params} przedstawia zbiory wartości parametrów heurystyki oraz wartości stałe w ramach tego etapu - zarówno dla algorytmu ewolucyjnego jak i procedury eksploracji użyte w tym kroku.
-
-Zastosowano losowy operator selekcji płciowej, bez uwzględniania płci, aby zasymulować działanie standardowego algorytmu ewolucyjnego. 
-W związku z tym użyto również jednoelementowego zbioru płci. 
-Statystyką użytą do porównywania konfiguracji była ocena najlepszego przebiegu.
-Miało to na celu silna eliminację parametrów które mogły pogarszać wyniki.
+\todo{krótko o eksploracji}
 
 \begin{config}
 	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{config:tsp_init_params}}
@@ -64,15 +22,15 @@ Miało to na celu silna eliminację parametrów które mogły pogarszać wyniki.
 		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
 		\hline
 		\hline
-		$\param{rozmiarPopulacji}$ & [10, 20, 50] \\
+		$\param{rozmiarPopulacji}$ & 10, 20, 50 \\
 		\hline
-		$\param{wspDomieszek}$ & [0, 0,1, 0,25, 0,5]\\
+		$\param{wspDomieszek}$ & 0, 0,1, 0,25, 0,5\\
 		\hline
 		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,6, 0,7, 0,8] $\times$ [0,1, 0,2, 0,3]  \\
 		\hline
-		$\param{max}$ & [25, 50, 100] \\
+		$\param{max}$ & 25, 50, 100 \\
 		\hline		
-		$\param{opSelNat}$ & [\opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))]\\
+		$\param{opSelNat}$ & \opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))\\
 		\hline
 		\multicolumn{2}{c}{}\\
 		\hline
@@ -81,234 +39,23 @@ Miało to na celu silna eliminację parametrów które mogły pogarszać wyniki.
 		\hline
 		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
 		\hline
-		$R$ & 3\\
-		\hline
-		$I$ & 5\\
-		\hline
-		$statystyka$ & najlepszy wynik \\
-		\hline
+%		$R$ & 3\\
+%		\hline
+%		$I$ & 5\\
+%		\hline
+%		$statystyka$ & najlepszy wynik \\
+%		\hline
 		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
 		\hline
 	\end{tabular}
 \end{config}
 
-\paragraph{Przebieg}
+\todo{zakres, jak przy drugim powtórzeniu}
 
-Tabela \ref{table:tsp_init_flow} przedstawia przebieg wykorzystanej procedury. 
-Lewa kolumna grupuje znalezione parametry w ramach jednego nawrotu eksploracji. 
-Kolejne dwie, czytane od góry, określają jakie wartości zostały kolejno znalezione.
-
-Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację. 
-W drugim, udało się odnaleźć prawdopodobieństwa mutacji i krzyżowania które dawały lepsze wyniki.
-Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przeszukiwanych.
-
-\begin{table}[H]
-	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_init_flow}}
-	\centering
-	\begin{tabular}{c|c|c|}
-		\cline{2-3}
-		\multicolumn{1}{l|}{} &
-		{\bf Parametr} & 
-		{\bf Określona wartość} \\ 
-		\hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} &
-		$\param{rozmiarPopulacji}$ & 
-		50 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{wspDomieszek}$ & 
-		0,0 \\ 
-		\cline{2-3}
-		\multicolumn{1}{|c|}{} & 
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,3) \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{max}$ & 
-		100 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{opSelNat}$ & 
-		\opName{natSel}(RS) \\ 
-		\hline \hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} &
-		$\param{rozmiarPopulacji}$ & 
-		50 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{wspDomieszek}$ & 
-		0,0 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ 
-		& (0,6, 0,1) \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{max}$ & 
-		100 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{opSelNat}$ & 
-		\opName{natSel}(RS) \\ 
-		\hline \hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} &
-		$\param{rozmiarPopulacji}$ & 
-		50 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{wspDomieszek}$ & 
-		0,0 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & 
-		(0,6, 0,1) \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{max}$ & 
-		100 \\ 
-		\cline{2-3} 
-		\multicolumn{1}{|c|}{} & 
-		$\param{opSelNat}$ & 
-		\opName{natSel}(RS) \\ 
-		\hline
-	\end{tabular}
-\end{table}
-
-\paragraph{Wyniki}
-
-Na tym etapie eksperymentów nie udało się znaleźć globalnego optimum.
-W tabeli \ref{table:tsp_init_results} przedstawiono wyniki wszystkich powtórzeń dla konfiguracji znalezionej w procesie eksploracji.
-Średnia różnica między znalezionym, a najlepszym możliwym rozwiązanie wynosiła około 13 tysięcy, podczas gdy optimum miało wartość około 27 i pół tysiąca.
-Oznacza to, że znajdowane rozwiązania były około półtora raza gorsze niż poszukiwane.
-
-Heurystyka zachowywała się dość stabilnie, tzn. za każdym uruchomieniem zwracała podobny wynik.
-Odchylenie standardowe wyniosło około 2 tysiące, czyli mniej więcej 5\% średniej.
-
-Na rysunku \ref{figure:tsp_init_example} przedstawiono wykres trzeciego z pięciu wykonanych przebiegów.
-Można zaobserwować, że zarówno średnia, jak i najlepsze i najgorsze rozwiązanie spadają na przestrzeni wszystkich populacji, co oznacza, że wyniki sukcesywnie się polepszały.
-
-Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na dość stałym poziomie, z czego można wnioskować, że różnorodność genetyczna była zachowana.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:tsp_init_results}}
-	\centering
-	\begin{tabular}{|l|r|r}
-		\hline
-		\multicolumn{1}{|c|}{{\bf Numer powtórzenia}} & \multicolumn{1}{c|}{{\bf Wynik}} & \multicolumn{1}{c|}{{\bf Różnica względem optimum}} \\ \hline \hline
-		1                                             & 42129,167                        & \multicolumn{1}{r|}{14526,167}                      \\ \hline
-		2                                             & 42808,0792                       & \multicolumn{1}{r|}{15205,0792}                     \\ \hline
-		3                                             & 36656,3316                       & \multicolumn{1}{r|}{9053,3316}                      \\ \hline
-		4                                             & 42174,1093                       & \multicolumn{1}{r|}{14571,1093}                     \\ \hline
-		5                                             & 41143,6598                       & \multicolumn{1}{r|}{13540,6598}                     \\ \hline \hline
-		{\bf Średnia}                                 & 40982,2694                      & \multicolumn{1}{r|}{13379,2694}                    \\ \hline
-		{\bf Odchylenie standardowe}                  & 2227,5198                        &                       \\  \hhline{==~}
-		{\bf Optimum}                                 & \multicolumn{1}{r|}{{\bf 27603}} & \multicolumn{1}{l}{}                                \\ \cline{1-2}
-	\end{tabular}
-\end{table}
-
-\begin{figure}[H]
-	\caption{Wykres przebiegu trzeciego powtórzenia znalezionej konfiguracji \label{figure:tsp_init_example}}
-	\centering
-	\graph{tsp_init_example.tex}
-\end{figure}
-
-\subsubsection{Poprawa konfiguracji początkowej}
-
-\paragraph{Konfiguracja} Kolejny etap eksperymentów miał na celu zbadanie przestrzeni parametrów z większą ziarnistością.
-Ponownie wykorzystano procedurę eksploracji.
-Zestawy wartości parametrów zostały określone na podstawie konfiguracji znalezionej w poprzednim kroku.
-Do wartości całkowitoliczbowych (rozmiaru populacji i liczby pokoleń) dodano i odjęto wartości 5 i 10 w celu przeszukania jej lokalnego sąsiedztwa.
-Analogicznie, do wartości rzeczywistych (jak współcznnik domieszek i prawdopodbieństwa zastosowania operatorów genetycznych) dodano i odjęto wartości 0,02 i 0,05.
-Rzecz jasna wykorzystano jedynie te wyniki, które miały sens, tj. dodatnie, a w przypadku parametrów ciągłych - mniejsze od 1.
-Operator selekcji został niezmieniony, ponieważ jest to poniekąd parametr wyliczeniowy i nie da się określić dla niego sąsiedztwa.
-
-Na tym etapie wykonano jedynie 2 nawroty, trzykrotnie uruchamiając heurystykę z każdą konfiguracją.
+\todo{wynikowe konfigi}
 
 \begin{config}
-	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{config:tsp_tweak_params}}
-	\centering
-	\begin{tabular}{|c|l|}
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
-		\hline
-		\hline
-		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
-		\hline
-		$\param{wspDomieszek}$ & [0, 0,05, 0,1]\\
-		\hline
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,55, 0,58, 0,6, 0,62, 0,65] $\times$ [0,05, 0,08, 0,1 0,12, 0,15]  \\
-		\hline
-		$\param{max}$ & [90, 95, 100, 105, 110] \\
-		\hline		
-		\multicolumn{2}{c}{}\\
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
-		\hline
-		\hline
-		$\param{opSelNat}$ & \opName{natSel}(RS)\\
-		\hline
-		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
-		\hline
-		$R$ & 2\\
-		\hline
-		$I$ & 3\\
-		\hline
-		$statystyka$ & najlepsza średnia wyników $I$ powtórzeń \\
-		\hline
-		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
-		\hline
-	\end{tabular}
-\end{config}
-
-\paragraph{Przebieg}
-
-W tabeli \ref{table:tsp_tweak_flow} przedstawiono przebieg procedury eksploracji, korzystając z tej samej reprezentacji co na poprzednim etapie.
-
-Rozmiar populacji i współczynnik domieszek nie zmienił się względem konfiguracji z pierwszego etapu.
-W pierwszym nawrocie określono, że nieznacznie mniejsze (0,58) prawdopodobieństwo krzyżowania i większa liczba pokoleń dają lepsze wyniki.
-Drugi nawrót wykazał, że pierwotne prawdopodobieństwo krzyżowania daje lepsze wyniki, za to zwiększone zostało prawdopodobieństwo mutacji. 
-
-\begin{table}[H]
-	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_tweak_flow}}
-	\centering
-	\begin{tabular}{c|c|c|}
-		\cline{2-3}
-		& {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
-		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,58, 0,1)             \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 110                     \\ \hline \hline
-		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,0                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,6, 0,15)             \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 110                     \\ \hline
-	\end{tabular}
-\end{table}	
-
-\paragraph{Wyniki}
-
-W tabeli \ref{table:tsp_tweak_results} przedstawiono wyniki działania heurystyki dla konfiguracji \ref{config:tsp_base} znalezionej w tym etapie.
-
-Średnia ocena jest niższa (a więc lepsza) od średniej z poprzedniego etapu.
-Przeciętna różnica między znalezionym rozwiązaniem, a optimum spadła do około 9,5 tysiąca, a odchylenie standardowe nieznacznie (o około pół tysiąca) wzrosło.
-
-Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorszenia stabilności heurystyki.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{table:tsp_tweak_results}}
-	\centering
-	\begin{tabular}{|l|r|r}
-		\hline
-		{\bf Numer powtórzenia}      & \multicolumn{1}{l|}{{\bf Wynik}} & \multicolumn{1}{l|}{{\bf Różnica względem optimum}} \\ \hline \hline
-		1                            & 39592,0623                       & \multicolumn{1}{r|}{11989,0623}                     \\ \hline
-		2                            & 34292,9277                       & \multicolumn{1}{r|}{6689,9277}                      \\ \hline
-		3                            & 37904,1809                       & \multicolumn{1}{r|}{10301,1809}                     \\ \hline \hline
-		{\bf Średnia}                & 37263,0570                       & \multicolumn{1}{r|}{9660,0570}                      \\ \hline
-		{\bf Odchylenie standardowe} & 2707,1178                        &                                                     \\ \hhline{==~}
-		{\bf Optimum}                & {\bf 27603}                      &                                                     \\ \cline{1-2}
-	\end{tabular}
-\end{table}
-
-\begin{config}
-	\caption{Parametry używane w dalszych badaniach \label{config:tsp_base}}
+	\caption{Parametry używane w dalszych badaniach problemu komiwojażera \label{config:tsp_base}}
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
@@ -324,558 +71,11 @@ Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorsze
 		$\param{prawdKrzyzowania}$ & 0,6 \\ \hline 
 		$\param{prawdMutacji}$ & 0,15             \\ \hline
 		$\param{max}$                                      & 110                     \\ \hline
-\end{tabular}
-\end{config}
-
-\subsubsection{Badania skuteczności heurystyki GGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
-
-Ten etap eksperymentów miał na celu odtworzenie wyników heurystyki GGA i porównanie ich z heurystyką DSEA.
-
-\paragraph{Konfiguracja} W tym celu wykorzystano konfigurację \ref{config:tsp_gga} opisującą GGA oraz \ref{table:tsp_dsea_gga} opisująca operator zbliżony do GGA.
-Korzysta z tego samego operatora wyboru dla obu płci (mimo, że nie wymusza różnych płci rodziców, przez co jest zbliżony do SexualGA).
-Każdy z eksperymentów został powtórzony pięciokrotnie.
-
-\begin{config}
-	\caption{Konfiguracja heurystyki GGA \label{config:tsp_gga}}
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}} & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
-		\hline
-		& \\
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$W$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
-		\hline
-	\end{tabularx}
-\end{config}
-
-\begin{config}
-	%nogender
-	\caption{Konfiguracja heurystyki DSEA z operatorem podobnym do GGA \label{config:tsp_dsea_gga}}
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $W$, $W$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
-		\hline
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$W$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
-		\hline
-	\end{tabularx}
-\end{config}
-
-\paragraph{Wyniki} Tabela \ref{table:tsp_results_gga} przedstawia średnią i odchylenie standardowe wyników heurystyki GGA, a tabela \ref{table:tsp_dsea_gga} analogiczne wartości dla heurystyki DSEA.
-Drugi wiersz drugiej z tej tabel przedstawia wyniki dla standardowego algorytmu ewolucyjnego.
-Jak widać, jedynie użycie operatora ruletkowego oraz nielosowego operatora selekcji naturalnej poprawiło względem niego wyniki. 
-Może to wynikać z tego, że wykorzystano również operator selekcji naturalnej korzystający z ruletki.
-
-Pozostałe wyniki są znacznie gorsze niż dwa wymienione wyżej, chociaż w przypadku heurystyki DSEA udało się w nieznacznie poprawić stabilność.
-
-W ogólności, heurystyka GGA dawała gorsze wyniki.
-Najefektywniej działała ona z wykorzystaniem operatora ruletkowego, czyli tego samego co w przypadku selekcji naturalnej.
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki GGA \label{table:tsp_results_gga}}
-	\centering
-	\begin{tabular}{|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf W}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
-		\insertData{tsp_gga}
-	\end{tabular}
-\end{table}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z operatorem podobnym do GGA \label{table:tsp_dsea_gga}}
-	\centering
-	\begin{tabular}{|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf W}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{tsp_a}
-	\end{tabular}
-\end{table}
-
-\subsubsection{Badania skuteczności heurystyki SexualGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
-
-Celem kolejnego etapu eksperymentów było odtworzenie wyników działania heurystyki SexualGA i zbadanie działania operatora selekcji płciowej zbliżonego do niej.
-
-\paragraph{Konfiguracja} W tym celu określono trzy konfiguracje: \ref{config:tsp_sexual_ga} opisującą SexualGA, \ref{config:tsp_dsea_sexual_ga_false} zbliżonej do poprzedniej, jednak wykorzystującej ruletkowy operator selekcji płciowej, oraz \ref{config:tsp_dsea_sexual_ga_true} różniącej się od poprzedniej tym, że operator selekcji płciowej wymagał od rodziców tego, żeby byli różnej płci (przez co był zbliżony do GGA).
-
-Ponownie, każdy z eksperymentów powtórzono pięciokrotnie.
-
-\begin{config}
-	\caption{Konfiguracja heurystyki SexualGA \label{config:tsp_sexual_ga}}
-	\centering
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}} &
-		\multicolumn{1}{l|}{\opName{natSel}(R)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[TS(2), TS(3)]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
-		\hline
-	\end{tabularx}
-\end{config}
-
-\begin{config}
-	%gender, false
-	\caption{Konfiguracja heurystyki DSEA z jedną płcią z operatorem podobnym do SexualGA \label{config:tsp_dsea_sexual_ga_false}}
-	\centering
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
-		\hline
-	\end{tabularx}
-\end{config}
-
-\begin{config}
-	%gender, true
-	\caption{Konfiguracja heurystyki DSEA z dwoma płciami z operatorem podobnym do SexualGA \label{config:tsp_dsea_sexual_ga_true}}
-	\centering
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\top$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
-		\hline
-	\end{tabularx}
-\end{config}
-
-\paragraph{Wyniki} Najlepsze wyniki dała heurystyka DSEA z jedną płcią wykorzystująca operator ruletkowy do wyboru obojga rodziców.
-W gruncie rzeczy jest to sytuacja w której do selekcji płciowej i naturalnej wykorzystywany jest ten sam operator.
-Efektywność na nieznacznie niższym poziomie okazało się mieć zastosowanie heurystyki DSEA z dwoma płciami, jednak spowodowane to było ponownym użyciem dwóch operatorów ruletkowych.
-Wykorzystanie jedynie selekcji płciowej z losowym operatorem selekcji naturalnej (czyli heurystyki SexualGA) przyniosło znacznie gorsze (półtora, a nawet dwa razy wyższe) wyniki.
-Były one porównywalne z heurystyką GGA.
-Podobnie jak w tamtym przypadku, użycie takiego samego operatora wyboru w obu operatorach selekcji przynosiło znacznie lepsze wyniki.
-
-W większości sytuacji stabilność heurystyki była znacznie gorsza.
-W dwóch przypadkach odchylenie standardowe było mniejsze, jednak wydaje się to być spowodowane losowością metody.
-Jeden z tych przypadków to czysta heurystyka SexualGA z użyciem dwóch operatorów turniejowych o różnych rozmiarach, jednak eksperyment dla tych samych parametrów zamienionych kolejnością dał wyniki gorsze.
-Biorąc pod uwagę, że żadna z płci nie jest wyróżniana i ich wpływ na jakość działania powinien być taki sam, poprawę stabilności można uznać za przypadek.
-Drugą taką sytuacje można zaobserwować w eksperymencie korzystającym z operatora ruletkowego i losowego z jedną płcią, jednak dla tej samej konfiguracji z losowym operatorem selekcji naturalnej odchylenie standardowe jest bardzo duże, co również wskazuje na losowość obserwacji.
-
-Wszystkie metody zbadane na tym etapie sprawdzały się znacząco gorzej niż standardowy algorytm ewolucyjny.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki SexualGA \label{table:tsp_results_sexual_ga}}
-	\centering
-	\begin{tabular}{|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} &
-		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{tsp_sexual_ga}
-	\end{tabular}
-\end{table}
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki DSEA z jedną płcią, z operatorem podobnym do SexualGA \label{table:tsp_results_dsea_sexual_ga_false}}
-	\centering
-	\begin{tabular}{|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} &
-		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{tsp_c}
-	\end{tabular}
-\end{table}
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki DSEA z dwoma płciami, z operatorem podobnym do SexualGA \label{table:tsp_results_dsea_sexual_ga_true}}
-	\centering
-	\begin{tabular}{|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & 
-		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{tsp_b}
-	\end{tabular}
-\end{table}
-
-\subsubsection{Badania skuteczności heurystyki DSEA z haremowym operatorem selekcji płciowej}
-
-Ostatni etap eksperymentów ma na celu zbadanie efektywności DSEA z użyciem zaproponowanego operatora selekcji płciowej.
-
-\paragraph{Konfiguracja} W tym celu określono konfigurację \ref{config:tsp_dsea_harem}.
-Wykorzystuje ona operator haremowy, a co za tym idzie - korzysta ze zbioru 2 płci.
-Zbadano działanie tego operatora dla różnych ilości osobników alfa, różnych współczynników beta oraz różnych operatorów wyboru osobników alfa i beta.
-Użyto losowego operatora wyboru partnerów.
-Pozostałe parametry były takie same jak w konfiguracji znalezionej w drugim etapie.
-
-Podobnie jak w poprzednich dwóch badaniach, każdy eksperyment powtórzono pięć razy.
-
-\begin{config}
-	%harem
-	\caption{Konfiguracja heurystyki DSEA z operatorem haremowym \label{config:tsp_dsea_harem}}
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{a} & 
-		\multicolumn{1}{l|}{{[}1, 3, 5{]}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{b} & 
-		\multicolumn{1}{l|}{[0, 0,1, 0,25]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{WA} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{WB} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Wartość}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{WP} &
-		\multicolumn{1}{l|}{R} \\ 
-		\hline
-	\end{tabularx}
-\end{config}
-
-\paragraph{Wyniki} W tabeli \ref{table:tsp_results_dsea_harem} przedstawiono 12 najlepszych wyników uzyskanych przy użyciu konfiguracji \ref{config:tsp_dsea_harem}.
-Zestawienie pełnych wyników można znaleźć w dodatku \ref{appendix:full_results}.
-
-Można zaobserwować, że heurystyka działała najskuteczniej, kiedy jeden lub oba operatory wyboru były takie same jak użyty w operatorze selekcji naturalnej.
-Ponadto, najlepsze wyniki uzyskano dla większych liczb osobników alfa i beta.
-
-Wykres \ref{figure:tsp_male_avg} przedstawia średnią funkcję oceny dla różnych liczb samców.
-Liczba ta została obliczona jako $\lceil \param{liczbaAlfa} + \param{wspBeta} \times 50 \rceil$, ponieważ $\param{rozmiarPopulacji}$ wynosił 50.
-Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wynikami, z czego można wnioskować, że to operatory wyboru (losowy lub ruletkowy w większości przypadków) decydowały o skuteczności.
-
-Warto zauważyć, że najlepszy i najbardziej stabilny wynik uzyskano wybierając osobniki alfa operatorem ruletkowym, a osobniki beta i partnerów losowym.
-Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a osobniki alfa mają najbardziej korzystne cechy.
-
-Wyniki są około półtora raza gorsze niż dla standardowego algorytmu ewolucyjnego.
-Są również wyższe od najniższych znalezionych w poprzednich badaniach.
-Mimo to, są lepsze niż dla heurystyk GGA i SexualGA działających bez operatora selekcji naturalnej.
-
-\begin{figure}
-	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:tsp_male_avg}}
-	\centering
-	\graph{tsp_male_avg.tex}
-\end{figure}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:tsp_results_dsea_harem}}
-	\centering
-	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{|c|}{{\bf b}} & \multicolumn{1}{|c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
-		\insertData{tsp_d_top}
-	\end{tabular}	
-\end{table}
-
-\subsubsection{Podsumowanie}
-
-\todo{proza, co wyszło, a co nie}
-
-\subsection{Badania problemu plecakowego}
-
-W następnych podsekcjach zostaną opisane badania działania heurystyki DSEA dla problemu plecakowego, zdefiniowanego i zaimplementowanego zgodnie z podsekcją \ref{subsection:knapsack_impl}.
-Struktura tej części pracy jest analogiczna jak poprzedniej, opisującej problem komiwojażera.
-
-\subsubsection{Poszukiwanie parametrów początkowych}
-
-\paragraph{Konfiguracja}
-
-Podobnie jak dla problemu komiwojażera, badania rozpoczęto od wykorzystania procedury eksploracji w celu znalezienia konfiguracji wyjściowej. 
-W tabeli \ref{config:knapsack_init_params} przedstawiono zbiory wartości parametrów heurystyki i procedury eksploracji użyte w tym kroku.
-
-\begin{config}
-	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{config:knapsack_init_params}}
-	\centering
-	\begin{tabular}{|c|l|}
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
-		\hline
-		\hline
-		$\param{rozmiarPopulacji}$ & [10, 20, 50] \\
-		\hline
-		$\param{wspDomieszek}$ & [0, 0,1, 0,25, 0,5]\\
-		\hline
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,6, 0,7, 0,8] $\times$ [0,1, 0,2, 0,3]  \\
-		\hline
-		$\param{max}$ & [25, 50, 100] \\
-		\hline		
-		$\param{opSelNat}$ & [\opName{natSel}(RS), \opName{natSel}(TS(2)), \opName{natSel}(TS(3))]\\
-		\hline
-		\multicolumn{2}{c}{}\\
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
-		\hline
-		\hline
-		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
-		\hline
-		$R$ & 3\\
-		\hline
-		$I$ & 5\\
-		\hline
-		$statystyka$ & najlepszy wynik \\
-		\hline
-		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
-		\hline
 	\end{tabular}
 \end{config}
 
-\paragraph{Przebieg}
-
-Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury.
-
-Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację, która tylko nieznacznie zmieniła się w kolejnym. 
-Zmiany obejmowały prawdopodobieństwo krzyżowania oraz współczynnik domieszek.
-Trzeci nawrót nie zmienił odnalezionej konfiguracji.
-
-\begin{table}[H]
-	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_init_flow}}
-	\centering
-	\begin{tabular}{c|c|c|}
-		\cline{2-3}
-		\multicolumn{1}{l|}{}                                 & {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,25                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,6, 0,1)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
-		\hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,1)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
-		\hline
-		\multicolumn{1}{|c|}{\multirow{5}{*}{{\bf Nawrót 3}}} & $\param{rozmiarPopulacji}$                         & 50                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,8, 0,1)              \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{opSelNat}$                                 & \opName{natSel}(RS)                \\ \hline
-		
-	\end{tabular}
-\end{table}
-
-\paragraph{Wyniki}
-
-Jak zostało pokazane w tabeli \ref{table:knapsack_init_results}, wyniki dla tak określonego zestawu parametrów są bardzo dobre - najgorszy z nich był większy od optimum o niecałe 6 \%.
-W ostatnim z przebiegów udało się znaleźć optimum globalne.
-
-Na rysunku \ref{figure:knapsack_init_example} pokazany został wykres tego przebiegu.
-Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze działanie heurystyki przeszukiwało przestrzeń rozwiązań, często pogarszając wyniki.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:knapsack_init_results}}
-	\centering
-	\begin{tabular}{|l|r|r}
-		\hline
-		\multicolumn{1}{|c|}{{\bf Numer powtórzenia}} & \multicolumn{1}{c|}{{\bf Wynik}} & \multicolumn{1}{c|}{{\bf Różnica względem optimum}} \\ \hline \hline
-		1                                             & -1107                            & \multicolumn{1}{r|}{66}                             \\ \hline
-		2                                             & -1156                            & \multicolumn{1}{r|}{17}                             \\ \hline
-		3                                             & -1115                            & \multicolumn{1}{r|}{58}                             \\ \hline
-		4                                             & -1120                            & \multicolumn{1}{r|}{53}                             \\ \hline
-		5                                             & -1173                            & \multicolumn{1}{r|}{0}                              \\ \hline \hline
-		{\bf Średnia}                                 & -1134,2000                          & \multicolumn{1}{r|}{38,8000}                           \\ \hline
-		{\bf Odchylenie standardowe}                  & 28,6827                          & \multicolumn{1}{l}{}                                \\ \hhline{==~}
-		{\bf Optimum}                                 & {\bf -1173}                      & \multicolumn{1}{l}{}                                \\ \cline{1-2}
-	\end{tabular}
-\end{table}
-
-\begin{figure}[H]
-	\caption{Wykres przebiegu piątego powtórzenia znalezionej konfiguracji \label{figure:knapsack_init_example}}
-	\centering
-	\graph{knapsack_init_example.tex}
-\end{figure}
-
-\subsubsection{Poprawa konfiguracji początkowej}
-
-Dla problemu plecakowego również przeprowadzono próbę dostrojenia parametrów używanych w dalszych badaniach.
-
-\paragraph{Konfiguracja} Zestawy wartości parametrów zostały określone podobnie jak na analogicznym etapie badań problemu TSP - przez dodanie lub odjęcie do parametrów liczbowych 5 i 10 lub 0,02 i 0,05, \fixme{zachowując ograniczenie na ich przedział}.
-
 \begin{config}
-	\caption{Wartości wykorzystane podczas poprawy parametrów początkowych \label{config:knapsack_tweak_params}}
-	\centering
-	\begin{tabular}{|c|l|}
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
-		\hline
-		\hline
-		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
-		\hline
-		$\param{wspDomieszek}$ & [0, 0,05, 0,1, 0,15, 0,2]\\
-		\hline
-		$(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & [0,75, 0,78, 0,8, 0,82, 0,85] $\times$ [0,05, 0,08, 0,1 0,12, 0,15]  \\
-		\hline
-		$\param{max}$ & [40, 45, 50, 55, 60] \\
-		\hline		
-		\multicolumn{2}{c}{}\\
-		\hline
-		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Wartość}} \\
-		\hline
-		\hline
-		$\param{opSelNat}$ & \opName{natSel}(RS)\\
-		\hline
-		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
-		\hline
-		$R$ & 2\\
-		\hline
-		$I$ & 3\\
-		\hline
-		$statystyka$ & najlepsza średnia wyników $I$ powtórzeń \\
-		\hline
-		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
-		\hline
-	\end{tabular}
-\end{config}
-
-\paragraph{Przebieg}
-
-\todo{skomentuj}
-
-\begin{table}[H]
-	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_tweak_flow}}
-	\centering
-	\begin{tabular}{c|c|c|}
-		\cline{2-3}
-		& {\bf Parametr}                                     & {\bf Określona wartość} \\ \hline
-		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 1}}} & $\param{rozmiarPopulacji}$                         & 60                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,75, 0,1)             \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 50                     \\ \hline \hline
-		\multicolumn{1}{|c|}{\multirow{4}{*}{{\bf Nawrót 2}}} & $\param{rozmiarPopulacji}$                         & 60                      \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{wspDomieszek}$                             & 0,1                     \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $(\param{prawdKrzyzowania}, \param{prawdMutacji})$ & (0,75, 0,15)             \\ \cline{2-3} 
-		\multicolumn{1}{|c|}{}                                & $\param{max}$                                      & 60                     \\ \hline
-	\end{tabular}
-\end{table}	
-
-\paragraph{Wyniki}
-\todo{Blah, blah, here go results}
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{knapsack_tweak_results}}
-	\centering
-	\begin{tabular}{|l|r|r}
-		\hline
-		{\bf Numer powtórzenia}      & \multicolumn{1}{l|}{{\bf Wynik}} & \multicolumn{1}{l|}{{\bf Różnica względem optimum}} \\ \hline \hline
-		1                                             & -1127                            & \multicolumn{1}{r|}{46}                             \\ \hline
-		2                                             & -1161                            & \multicolumn{1}{r|}{12}                             \\ \hline
-		3                                             & -1131                            & \multicolumn{1}{r|}{42}                             \\ \hline \hline
-		{\bf Średnia}                                 & -1139,6667                       & \multicolumn{1}{r|}{33,3334}                        \\ \hline
-		{\bf Odchylenie standardowe}                  & 18,5831                          &                                                     \\ \hhline{==~}
-		{\bf Optimum}                                 & {\bf -1173}                      &                                                     \\ \cline{1-2}
-	\end{tabular}
-\end{table}
-
-\todo{poszło lepiej niż init}
-
-\begin{config}
-	\caption{Parametry używane w dalszych badaniach \label{config:knapsack_base}}
+	\caption{Parametry używane w dalszych badaniach problemu plecakowego \label{config:knapsack_base}}
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
@@ -892,268 +92,237 @@ Dla problemu plecakowego również przeprowadzono próbę dostrojenia parametró
 	\end{tabular}
 \end{config}
 
-\subsubsection{Badania skuteczności heurystyki GGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
+\subsection{Badania porównawcze} \label{subsection:compare}
+\todo{co zbadano}
+\todo{fallback do poprzednich tabel}
 
-\paragraph{Konfiguracja} \todo{blah}
+\subsubsection{Badane konfiguracje}
+
+\todo{plain; gga; sexual ga; uogólniony ; harem}
 
 \begin{config}
-	\caption{Konfiguracja heurystyki GGA \label{config:knapsack_gga}}
+	\caption{Konfiguracja standardowego algorytmu ewolucyjnego \label{config:ea}}
+	\centering
+	\begin{tabu} to \textwidth {lX}
+		\hline
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} &
+		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, R, R)} \\ 
+		\hline
+		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
+		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\hline
+		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
+		\multicolumn{1}{l|}{5} \\ 
+		\hline
+		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
+		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
+		\hline
+	\end{tabu}
+\end{config}
+
+\begin{config}
+	\caption{Konfiguracja heurystyki GGA \label{config:gga}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ 
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}} & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ 
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji naturalnej}} & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
+		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} & \multicolumn{1}{l|}{5} \\ 
+		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} & \multicolumn{1}{l|}{5} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
+		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
 		\hline
 		& \\
 		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
+		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
+		\multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\ 
 		\hline \hline
 		\multicolumn{1}{|l|}{$W$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{RS, TS(2), TS(3)} \\ 
 		\hline
 	\end{tabularx}
 \end{config}
 
 \begin{config}
-	%nogender
-	\caption{Konfiguracja heurystyki DSEA z operatorem podobnym do GGA \label{config:knapsack_dsea_gga}}
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $W$, $W$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
-		\hline
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$W$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
-		\hline
-	\end{tabularx}
-\end{config}
-
-\paragraph{Wyniki} \todo{bum bada bim}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki GGA \label{table:knapsack_results_gga}}
-	\centering
-	\begin{tabular}{|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf W}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
-		\insertData{knapsack_gga}
-	\end{tabular}
-\end{table}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z operatorem podobnym do GGA \label{table:knapsack_dsea_gga}}
-	\centering
-	\begin{tabular}{|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf W}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{knapsack_a}
-	\end{tabular}
-\end{table}
-
-\subsubsection{Badania skuteczności heurystyki SexualGA oraz heurystyki DSEA z podobnym operatorem selekcji płciowej}
-
-\paragraph{Konfiguracja} \todo{blah}
-
-\begin{config}
-	\caption{Konfiguracja heurystyki SexualGA \label{config:knapsack_sexual_ga}}
+	\caption{Konfiguracja heurystyki SexualGA \label{config:sexual_ga}}
 	\centering
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} &
 		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji naturalnej}} &
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji naturalnej}} &
 		\multicolumn{1}{l|}{\opName{natSel}(R)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
+		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
+		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
 		\multicolumn{1}{l|}{5} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
+		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
 		\hline
 		& \\ 
 		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
+		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
+		\multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\ 
 		\hline \hline
 		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{RS, TS(2), TS(3)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
 	\end{tabularx}
 \end{config}
 
 \begin{config}
-	%gender, false
-	\caption{Konfiguracja heurystyki DSEA z jedną płcią z operatorem podobnym do SexualGA \label{config:knapsack_dsea_sexual_ga_false}}
+	%gender, true
+	\caption{Konfiguracja heurystyki DSEA z uogólnionym operatorem selekcji płciowej \label{config:dsea_general}}
 	\centering
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} &
+		\multicolumn{1}{l|}{\opName{stdGenSel}($p$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} &
+		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
+		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
 		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
 		\hline
 		& \\ 
 		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
+		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
+		\multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\ 
 		\hline \hline
+		\multicolumn{1}{|l|}{$p = \param{plecMaZnaczenie}$} & 
+		\multicolumn{1}{l|}{$\top, \bot$} \\
+		\hline
 		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{RS, TS(2), TS(3)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
+		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\
+		\hline
+		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
+		\multicolumn{1}{l|}{ $|\important{G}| \in \{1, 2\}$, zależnie od $\param{plecMaZnaczenie}$ } \\ 
 		\hline
 	\end{tabularx}
 \end{config}
-
-\begin{config}
-	%gender, false
-	\caption{Konfiguracja heurystyki DSEA z dwoma płciami z operatorem podobnym do SexualGA \label{config:knapsack_dsea_sexual_ga_true}}
-	\centering
-	\begin{tabularx}{\linewidth}{lX}
-		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
-		\multicolumn{1}{l|}{\opName{stdGenSel}($\top$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
-		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
-		\hline
-		& \\ 
-		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
-		\hline \hline
-		\multicolumn{1}{|l|}{$\param{opWyboru1}$} & 
-		\multicolumn{1}{l|}{[RS, TS(2), TS(3)]} \\ 
-		\hline
-		\multicolumn{1}{|l|}{$\param{opWyboru2}$} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\
-		\hline
-	\end{tabularx}
-\end{config}
-
-\paragraph{Wyniki} \todo{tam da dam}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z jedną płcią, z operatorem podobnym do SexualGA \label{table:knapsack_results_dsea_sexual_ga_false}}
-	\centering
-	\begin{tabular}{|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} &
-		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{knapsack_c}
-	\end{tabular}
-\end{table}
-
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z dwoma płciami, z operatorem podobnym do SexualGA \label{table:knapsack_results_dsea_sexual_ga_true}}
-	\centering
-	\begin{tabular}{|l|l|r@{$\pm$}l|}
-		\hline
-		\multicolumn{1}{|c|}{{\bf $\param{opWyboru1}$}} & 
-		\multicolumn{1}{c|}{{\bf $\param{opWyboru2}$}} & 
-		\multicolumn{2}{c|}{{\bf Ocena}} \\ 
-		\hline \hline
-		\insertData{knapsack_b}
-	\end{tabular}
-\end{table}
-
-\subsubsection{Badania skuteczności heurystyki DSEA z haremowym operatorem selekcji płciowej}
-
-\paragraph{Konfiguracja} \todo{blah}
 
 \begin{config}
 	%harem
-	\caption{Konfiguracja heurystyki DSEA z operatorem haremowym \label{table:knapsack_dsea_harem}}
+	\caption{Konfiguracja heurystyki DSEA z haremowym operatorem selekcji płciowej \label{config:dsea_harem}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
-		\multicolumn{1}{|l|}{{\bf Operator selekcji płciowej}} &
+		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} &
 		\multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} &
+		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Ilość powtórzeń}} &
+		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
 		\multicolumn{1}{l|}{5} \\ 
 		\hline
-		\multicolumn{1}{|l|}{{\bf Zbiór płci}} & 
+		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
 		\hline
 		& \\ 
 		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Zbiór wartości}} \\ 
+		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
+		\multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\ 
 		\hline \hline
 		\multicolumn{1}{|l|}{a} & 
-		\multicolumn{1}{l|}{{[}1, 3, 5{]}} \\ 
+		\multicolumn{1}{l|}{1, 3, 5} \\ 
 		\hline
 		\multicolumn{1}{|l|}{b} & 
-		\multicolumn{1}{l|}{[0, 0,1, 0,25]} \\ 
+		\multicolumn{1}{l|}{0, 0,1, 0,25} \\ 
 		\hline
 		\multicolumn{1}{|l|}{WA} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{WB} & 
-		\multicolumn{1}{l|}{[R, RS, TS(2), TS(3)]} \\ 
+		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
 		& \\ 
 		\hline
-		\multicolumn{1}{|c|}{{\bf Parametr}} & 
-		\multicolumn{1}{c|}{{\bf Wartość}} \\ 
+		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
+		\multicolumn{1}{c|}{\textbf{Wartość}} \\ 
 		\hline \hline
 		\multicolumn{1}{|l|}{WP} &
 		\multicolumn{1}{l|}{R} \\ 
 		\hline
 	\end{tabularx}
 \end{config}
+
+\subsubsection{Wyniki}
+
+\paragraph{Problem komiwojażera}
+
+\begin{table}[h]
+	\centering
+	\caption{My caption}
+	\label{my-label}
+	\begin{tabular}{|l|l|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{\multirow{2}{*}{{\bf Heurystyka}}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{2}{c|}{\multirow{2}{*}{{\bf Ocena}}} \\
+		\multicolumn{1}{|c|}{}                                  & \multicolumn{1}{c|}{{\bf płciowej}}          & \multicolumn{1}{c|}{{\bf naturalnej}}        & \multicolumn{2}{c|}{}                             \\ \hline
+		Alg. ewolucyjny                    & opNatSel(RS)                                          & stdGenSel($\bot$, R, R)                                 & 37830,7834      & 1865,7587      \\ \hline
+		GGA                                    & opNatSel(RS)                                          & stdGenSel($\top$, R, R)                                 & 68582,5919      & 2240,5888      \\ \hline
+		\multirow{2}{*}{SexualGA}              & \multirow{2}{*}{opNatSel(R)}                          & stdGenSel($\bot$, RS, RS)                               & 65454,5598      & 4541,7191      \\ \cline{3-5} 
+		&                                                       & stdGenSel($\bot$, RS, R)                                & 72023,5817      & 5135,7596      \\ \hline
+		\multirow{6}{*}{DSEA}                  & \multirow{6}{*}{opNatSel(RS)}                         & stdGenSel($\bot$, RS, RS)                               & 40199,6226      & 3708,8267      \\ \cline{3-5} 
+		&                                                       & stdGenSel($\bot$, RS, R)                                & 45328,6013      & 967,5844       \\ \cline{3-5} 
+		&                                                       & stdGenSel($\top$, RS, RS)                               & 41555,6377      & 3146,2442      \\ \cline{3-5} 
+		&                                                       & stdGenSel($\top$, RS, R)                                & 46760,4675      & 4193,2035      \\ \cline{3-5} 
+		&                                                       & harem(5, 0,1, RS, RS, R)                                & 49180,7887      & 4249,2504      \\ \cline{3-5} 
+		&                                                       & harem(5, 0,1, RS, R, R)                                 & 48915,0643      & 799,6703       \\ \hline
+	\end{tabular}
+\end{table}
+
+\begin{figure}
+	\centering
+	\graph{tsp_results_summary.tex}
+\end{figure}
+
+\todo{słupki i tabela z porównaniem plain/gga/sga/general true/false/harem}
+
+W tabeli \ref{table:tsp_results_dsea_harem} przedstawiono 12 najlepszych wyników uzyskanych przy użyciu konfiguracji \ref{config:dsea_harem}.
+Zestawienie pełnych wyników można znaleźć w dodatku \ref{appendix:full_results}.
+
+Można zaobserwować, że heurystyka działała najskuteczniej, kiedy jeden lub oba operatory wyboru były takie same jak użyty w operatorze selekcji naturalnej.
+Ponadto, najlepsze wyniki uzyskano dla większych liczb osobników alfa i beta.
+
+Warto zauważyć, że najlepszy i najbardziej stabilny wynik uzyskano wybierając osobniki alfa operatorem ruletkowym, a osobniki beta i partnerów losowym.
+Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a osobniki alfa mają najbardziej korzystne cechy.
+
+\begin{table}[h]
+	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:tsp_results_dsea_harem}}
+	\centering
+	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
+		\hline
+		\multicolumn{1}{|c|}{{\bf a}} & \multicolumn{1}{|c|}{{\bf b}} & \multicolumn{1}{|c|}{{\bf WA}} & \multicolumn{1}{c|}{{\bf WB}} & \multicolumn{2}{c|}{{\bf Ocena}} \\ \hline \hline
+		\insertData{tsp_d_top}
+	\end{tabular}	
+\end{table}
+
+Wykres \ref{figure:tsp_male_avg} przedstawia średnią funkcję oceny dla różnych liczb samców.
+Liczba ta została obliczona jako $\lceil \param{liczbaAlfa} + \param{wspBeta} \times 50 \rceil$, ponieważ $\param{rozmiarPopulacji}$ wynosił 50.
+Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wynikami, z czego można wnioskować, że to operatory wyboru (losowy lub ruletkowy w większości przypadków) decydowały o skuteczności.
+
+\begin{figure}
+	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:tsp_male_avg}}
+	\centering
+	\graph{tsp_male_avg.tex}
+\end{figure}
+
+\paragraph{Problem plecakowy}
 
 \begin{table}[h]
 	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:knapsack_results_dsea_harem}}
@@ -1165,7 +334,12 @@ Dla problemu plecakowego również przeprowadzono próbę dostrojenia parametró
 	\end{tabular}	
 \end{table}
 
-\subsubsection{Podsumowanie}
 
-\todo{proza, co wyszło, a co nie}
+
+\begin{figure}
+	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:knapsack_male_avg}}
+	\centering
+	\graph{knapsack_male_avg.tex}
+\end{figure}
+
 \end{document}

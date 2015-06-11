@@ -1,0 +1,10 @@
+1   \rotatebox[origin=c]{90}{opNatSel(RS)+stdGenSel($\\bot$,R,R)}   37830,7834
+2   "opNatSel(RS)+stdGenSel($\\top$,R,R)"   68582,5919
+3   "opNatSel(R)+stdGenSel($\\bot$,RS,RS)"   65454,5598
+4   "opNatSel(R)+stdGenSel($\\bot$,RS,R)"   72023,5817
+5   "opNatSel(RS)+stdGenSel($\\bot$,RS,RS)"   40199,6226
+6   "opNatSel(RS)+stdGenSel($\\bot$,RS,R)"   45328,6013
+7   "opNatSel(RS)+stdGenSel($\\top$,RS,RS)"   41555,6377
+8   "opNatSel(RS)+stdGenSel($\\top$,RS,R)"   46760,4675
+9   "opNatSel(RS)+harem(5,0,1,RS,RS,R)"   49180,7887
+10   "opNatSel(RS)+harem(5,0,1,RS,R,R)"   48915,0643

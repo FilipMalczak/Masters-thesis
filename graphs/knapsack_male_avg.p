@@ -4,5 +4,5 @@ set output "knapsack_male_avg.tex"
 #set output "knapsack_male_avg.png"
 set key outside center bottom
 set xrange [0:22]
-set yrange[6000:8000]
+set yrange[-150:-100]
 plot "data/knapsack_male_avg.dat" using 1:2 with linespoints notitle
