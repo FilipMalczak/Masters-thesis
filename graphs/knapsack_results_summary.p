@@ -3,7 +3,7 @@ set terminal lua tikz mono dashed
 #set terminal pngcairo mono size 640,480 dashed enhanced font 'Verdana,10'
 set output "knapsack_results_summary.tex"
 #set output "knapsack_results_summary.png"
-set boxwidth 0.5
+set boxwidth 0.75
 set border 3
 set xrange [0:11]
 set yrange [-800:-1200]
