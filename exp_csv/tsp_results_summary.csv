@@ -1,0 +1,11 @@
+Heurystyka;Operator selekcji płciowej;Operator selekcji naturalnej;Ocena;
+Algorytm ewolucyjny;opNatSel(RS);stdGenSel($\bot$, R, R);37830,7834;1865,7587
+GGA;opNatSel(RS);stdGenSel($\top$, R, R);68582,5919;2240,5888
+SexualGA;opNatSel(R);stdGenSel($\bot$, RS, RS);65454,5598;4541,7191
+;;stdGenSel($\bot$, RS, R);72023,5817;5135,7596
+DSEA;opNatSel(RS);stdGenSel($\bot$, RS, RS);40199,6226;3708,8267
+;;stdGenSel($\bot$, RS, R);45328,6013;967,5844
+;;stdGenSel($\top$, RS, RS);41555,6377;3146,2442
+;;stdGenSel($\top$, RS, R);46760,4675;4193,2035
+;;harem(5, 0,1, RS, RS, R);49180,7887;4249,2504
+;;harem(5, 0,1, RS, R, R);48915,0643;799,6703

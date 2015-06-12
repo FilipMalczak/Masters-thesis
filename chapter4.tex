@@ -1,29 +1,37 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\chapter{Proponowane rozwiązania} \label{chapter:proposed}
+\chapter{Proponowane rozwiązania - algorytm ewolucyjny DSEA (\emph{ang. double selection evolutionary algorithm})} \label{chapter:proposed}
 
-Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt procesu ewolucji, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. 
-W rzeczywistości większa część istniejących gatunków, zaczynając od dość prostych (jak owady, czy rośliny), a kończąc na złożonych (takich jak ssaki), do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. 
+Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA}, \cite{SexualGA}) pomijały ważny aspekt rzeczywistości, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. 
+W naturze większa część istniejących gatunków, zaczynając od dość prostych jak owady, czy rośliny, a kończąc na złożonych takich jak ssaki, do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. 
 Różnica ta jest powodem istnienia całego zespołu cech, które pozwalają podzielić osobniki na żeńskie i męskie, a w ogólności na osobniki różnych płci. 
 Mimo, że nie jest to spotykane w naturze, to w ramach eksperymentu myślowego można założyć dowolną liczbę płci, a nie tylko dwie.
 
-W tym rozdziale zostanie zaproponowana heurystyka, która uwzględnia aspekt płci jako integralną część swojego działania, a nie (jak w istniejących rozwiązaniach) jako modyfikację powszechnie używanej metody.
+W tym rozdziale zostanie zaproponowana metaheurystyka DSEA, która uwzględnia aspekt płci jako integralną część swojego działania, a nie jak w istniejących rozwiązaniach jako modyfikację powszechnie używanej metody.
+Różni się ona od zwyczajnych algorytmów ewolucyjnych tym, że wyróżnia się w niej 2 osobne operatory selekcji naturalnej i płciowej.
+Pierwszy z nich to w uproszczeniu operator selekcji z klasycznych algorytmów ewolucyjnych.
+Drugi ma za zadanie symulowanie dobierania się osobników w pary.
+Taki podział może prowadzić do stanu w których dalsze działanie algorytmu jest niemożliwe lub nieefektywne.
+W metaheurystyce DSEA zaproponowano sposoby zapobiegania takim sytuacjom.
 
-Przy opisywaniu operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć.
-Oznacza to, że przestrzeń rozwiązań musi zostać poszerzona o dodatkowy wymiar, jakim jest właśnie ta cecha.
+Przy opisywaniu pojęć i operatorów wprowadzanych w tym rozdziale, używana będzie funkcja $plec(osobnik)$, przypisująca osobnikowi jego płeć.
 Jedyne wymaganie nałożone na jej przeciwdziedzinę to to, żeby była skończonym, niepustym zbiorem.
+Oznacza to, że reprezentację rozwiązania musimy powiększyć o odpowiednią cechę, określającą wartość tej funkcji.
 
 \begin{signature}
-	\caption{Osobnik w heurystyce DSEA \label{signature:specimen_dsea}}
+	\caption{Osobnik w metaheurystyce DSEA \label{signature:specimen_dsea}}
 	\begin{align}
-		\important{S}_{DSEA} = &\important{S}_{EA} \times \important{G} \\
+		osobnik  \in &\important{S} \\
+		osobnik_{DSEA} &= osobnik_{EA} | g \\
+		g \in &\important{G} \\
 		\important{G} \neq & \emptyset \\
 		|\important{G}| < &\infty
 	\end{align}	
-	$\important{S}_{DSEA}$ to przestrzeń rozwiązań w heurystyce DSEA, a $\important{S}_{EA}$ - w klasycznych algorytmach ewolucyjnych.
-	Jest ona poszerzana o dodatkowy wymiar, reprezentowany przez zbiór $\important{G}$, czyli zbiór możliwych płci.\\
-	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$.
+	$\important{S}$ to przestrzeń rozwiązań, czyli zbiór wszystkich możliwych osobników $osobnik$.
+	$osobnik_{DSEA}$ oznacza reprezentację wykorzystywaną w metaheurystyce DSEA, a $osobnik_{EA}$ - wykorzystywaną w klasycznych algorytmach ewolucyjnych. $g \in \important{G}$ to cecha określająca płeć. \\
+	$\important{G}$ t zbiór możliwych płci.\\
+	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$. Symbol $\odot$ to arbitralne oznaczenie na płeć w sytuacji, w której nie jest ona ważna do działania metahuerystyki.
 \end{signature}
 
 \begin{signature}
@@ -34,75 +42,40 @@ Jedyne wymaganie nałożone na jej przeciwdziedzinę to to, żeby była skończo
 	Funkcja $plec(osobnik)$ przyporządkowywuje swojemu argumentowi jego płeć ze zbioru $\important{G}$.
 \end{signature}
 
-\section{Heurystyka DSEA} \label{section:dsea}
+\newpage
+
+\section{Algorytm DSEA w szczegółach} \label{section:dsea}
 
 Jak zostało pokazane w rozdziale \ref{chapter:literature}, istnieją rozwiązania które nie ignorują podziału populacji na płcie. 
-Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania heurystki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on wyżej opisany aspekt biologii organizmów w ramach nowego operatora selekcji. 
-W dalszej części pracy tak zdefiniowaną heurystykę nazywać będziemy \textbf{algorytmem ewolucyjnym o podwójnej selekcji} (ang. \emph{double selection evolutionary algorithm}) i odnosić się do niej przy pomocy skrótu \textbf{DSEA}, będącego akronimem nazwy angielskiej.
+Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania metaheurystki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on opisany aspekt płci organizmów w ramach nowego operatora selekcji. 
+W dalszej części pracy tak zdefiniowaną metaheurystykę nazywać będziemy \textbf{algorytmem ewolucyjnym o podwójnej selekcji} (ang. \emph{double selection evolutionary algorithm}) i odnosić się do niej za pomocą skrótu \textbf{DSEA}, będącego akronimem nazwy angielskiej.
 
-\subsection{Działanie} \label{subsection:dsea_scheme}
+Na rysunku \ref{figure:dsea} przedstawiono schemat działania metaheurystyki DSEA w postaci schematu blokowego. 
 
-Na rysunku \ref{figure:dsea} przedstawiono schemat działania heurystyki DSEA w postaci schematu blokowego. 
+\newpage
 
 \begin{figure}[H]
-	\caption{Schemat działania heurystyki DSEA \label{figure:dsea}}
+	\caption{Schemat działania metaheurystyki DSEA \label{figure:dsea}}
 	\img{dsea.png}
 \end{figure}
 
 W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w podrozdziale \ref{section:general_idea}. 
 Istotne różnice między diagramami to zmiana działania kroku ,,Wykonaj krzyżowanie'' oraz dodanie nowego kroku ,,Zadbaj o różnorodność populacji'' zaraz przed nim. 
-Zostały one zdefiniowane w kolejnych podrozdziałach.
-Ponadto, zmieniła się nazwa operatora używanego w kroku ,,Dokonaj selekcji naturalnej'', czemu również został poświęcony podrozdział.
 
-\subsubsection{Krok ,,Wykonaj krzyżowanie''} \label{subsubsection:my_crossover}
-
-\begin{figure}[H]
-	\img{my_crossover.png}
-	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
-\end{figure}
-
-Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok ,,Wykonaj krzyżowanie'' jako sekwencję mniejszych kroków. Za pomocą operatora selekcji płciowej\footnote{
-	W jednym z następnych podrozdziałów opisane zostało znaczenie i definicja tego operatora, uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdKrzyzowania}$. 
-} generowana jest lista par rodziców. 
-Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. 
-W przeciwieństwie do realizacji opisanej w podrozdziale \ref{section:ea_details} przy pomocy algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania nie są dołączane do osobnego zbioru, a od razu do całości populacji. 
-Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
-
-\subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
-
-\begin{figure}[H]
-	\img{fixing.png}
-	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
-\end{figure}
-
-Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. 
-Co za tym idzie, obie podgrupy powinny różnić się tym bardziej, im więcej generacji zostało przeprowadzonych.
-Efekt taki ma zarówno wady, jak i zalety. 
-Dzięki niemu potomstwo (czyli wynik operatora krzyżowania) w danej populacji powinno również zachować większą różnorodność. 
-Negatywną stroną tego zjawiska jest fakt, że operator selekcji naturalnej, który nie powinien brać pod uwagę płci, może zaburzyć stosunek liczności osobników danych płci względem siebie. 
-W skrajnych sytuacjach może dojść do tego, że w całej populacji zabraknie osobników którejś z płci, co uniemożliwi dalsze działanie heurystyki (ponieważ niemożliwe byłoby zastosowanie operatora krzyżowania). 
-Ponadto, im dysproporcje między różnymi płciami będą większe, tym mniejsza będzie różnorodność całej populacji, co szybko prowadzi do stagnacji.
-
-Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej. 
-
-W pierwszej jego części do populacji dodajemy tzw. ,,domieszki'' (ang. \emph{mixins}), czyli losowe osobniki (tworzone w ten sam sposób co populacja początkowa). 
-Ma to na celu regularne uzupełnianie puli genów obecnych w populacji, na wypadek gdyby geny odpowiedzialne za pozytywną cechę zanikły z powodu losowości operatora selekcji naturalnej lub płciowej. 
-Ilość domieszek jest kontrolowana przez współczynnik domieszek ($\param{wspDomieszek}$), będący stosunkiem pożądanej ilości nowych osobników do wartości $\param{rozmiarPopulacji}$.
-
-Druga część kroku ma zapobiec sytuacjom, w których któraś płeć nie występuje w populacji, lub jest zbyt słabo reprezentowana. 
-Jeśli liczność którejś z płci w populacji spadnie poniżej arbitralnie dobranej liczby $\param{d}$, to do populacji dołączane jest $\lceil \param{wspSamorodków} \times \param{rozmiarPopulacji} \rceil$ (lub $d$, jeśli $d$ jest większe) losowych osobników tej płci\footnote{
-	Alternatywnym rozwiązaniem mogłaby być zmiana płci losowych osobników pozostałych płci.
-}. 
-W praktyce, w ramach tej pracy użyto arbitralnie dobranych wartości $\param{d} = 5$ i $\param{wspSamorodków} = 0.05$.
+Dodatkowo, DSEA wykorzystuje dwa operatory selekcji zamiast jednego - operator selekcji płciowej i naturalnej.
+Pierwszy z nich wraz z operatorem krzyżowania jest używany w kroku ,,Wykonaj krzyżowanie'',a drugi w kroku ,,Dokonaj selekcji naturalnej''.
+W następnych dwóch podrozdziałach zostaną one szczegółowo opisane. 
+W kolejnym podrozdziale znajdują się opisy zmian działania odpowiednich kroków.
+Całość zamknięta jest opisem związku między DSEA, a innymi odmianami algorytmu ewolucyjnego.
 
 \subsection{Operator selekcji naturalnej} \label{subsection:new_natSel}
 
-Heurystyka DSEA, jak nazwa wskazuje, korzysta z dwóch operatorów selekcji, które należy rózróżnić. 
+Algorytm DSEA, jak sugeruje nazwa w języku angielskim, korzysta z dwóch operatorów selekcji, które należy rózróżnić. 
 Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operator selekcji naturalnej}. 
-Zachowuje on to samo znaczenie i zastosowanie, opisane w rozdziale \ref{subsection:natSel}. 
+Zachowuje on to samo znaczenie i zastosowanie, jak zostało opisane w rozdziale \ref{subsection:natSel}. 
 
 Dodatkowo, wymaga się, aby prawdopodobieństwo znalezienia się osobnika w zbiorze zwracanym przez ten operator było niezależne od płci osobnika. 
-Zostało to zapisane przy pomocy równania \ref{line:gender_resistant}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
+Zostało to zapisane za pomocą równania \ref{line:gender_resistant}, korzystając z twierdzenia zgodnie z którym prawdopodobieństwo łączne dwóch zdarzeń jest równe iloczynowi ich prawdopodobieństw wtedy i tylko wtedy, gdy są to zdarzenia niezależne.
 
 \begin{signature}
 	\caption{Operator selekcji naturalnej \label{signature:natSel}}
@@ -120,18 +93,25 @@ Zostało to zapisane przy pomocy równania \ref{line:gender_resistant}, korzysta
 	\forall_{i = 1 \ldots p, g \in \important{G}} P(s_i \in \param{opSelNat}(S') \wedge & plec(t) = g) = P(i) \times P(plec(s_i) = g)
 	\end{align}
 	$\param{opSelNat}$ to operator selekcji naturalnej.
-	Przyjmuje on populację na końcu każdego pokolenia, a zwraca populację używaną w kolejnym pokoleniu.
-	$p$ to przybliżenie rozmiaru zbioru wejściowego przy pomocy prawdopodobieństw zastosowania operatorów oraz rozmiaru populacji.\\
+	Jako wejście przyjmuje on populację na końcu każdego pokolenia, a zwraca populację używaną w kolejnym pokoleniu.
+	$p$ to przybliżenie rozmiaru zbioru wejściowego za pomocą prawdopodobieństw zastosowania operatorów oraz rozmiaru populacji.\\
 	$S'$ to pomocniczy zbiór przedstawiający przykładową populację na końcu pokolenia, zawierający osobniki $s_i$. \\
 	$P()$ to funkcja prawdopodobieństwa. 
 	W szczególności $P(i)$ oznacza prawdopodobieństwo tego, że osobnik $s_i$ znajdzie się w zbiorze będącym wynikiem zastosowania opisywanego operatora do populacji $S'$.\\
 	$\minoritySpecimenRel$ to relacja porządku określona na osobnikach na podstawie ich ocen. Zapis $(s_i, s_j) \in \minoritySpecimenRel$ oznacza, że osobnik $s_i$ jest gorzej dopasowany niż $s_j$.
 \end{signature}
 
-Standardowo korzysta się z operatorów selekcji naturalnej które odpowiednią ilość razy powtarzają wybór pojedynczego osobnika (bez powtórzeń) z populacji wejściowej, zbierając w ten sposób populację wyjściową. 
-O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączane do populacji wyjściowej są zazwyczaj wybierane przy pomocy tej samej metody, która dalej będzie nazywana operatorem wyboru.
+\subsubsection{Operator wyboru}
+
+Standardowo korzysta się z operatorów selekcji naturalnej, które odpowiednią liczbę razy powtarzają wybór pojedynczego osobnika (bez powtórzeń) z populacji wejściowej, zbierając w ten sposób populację wyjściową. 
+O ile sam sposób wyboru różni się między realizacjami operatora, to kolejne osobniki dołączane do populacji wyjściowej są zazwyczaj wybierane za pomocą tej samej metody, która dalej będzie nazywana operatorem wyboru.
 Definicja \ref{signature:chooseOp} opisuje taki operator.
 Rzecz jasna istnieją realizacje, które korzystają z wielu operatorów wyboru, ale nie są one tematem tej pracy i nie będą w niej poruszane.
+
+Intuicyjnie, operator selekcji to przekształcenie jednego zbioru w inny, którego elementy będą albo elementami zbioru wejściowego, albo jego podzbiorami.
+Pierwsza z tych możliwości opisuje operator selekcji naturalnej, przyjmujący populację z końca pokolenia, a zwracający populację z początku następnej generacji.
+Druga z nich mówi o operatorze selekcji płciowej, przyjmującym populację na początku pokolenia, a zwraca zbiór zestawów rodziców, wykorzystywany później w krzyżowaniu.
+Operator wyboru natomiast służy do wyboru pojedynczego elementu z tego zbioru.
 
 \begin{signature}
 	\caption{Operator wyboru \label{signature:chooseOp}}
@@ -150,7 +130,9 @@ Przykładowo, turniejowy operator selekcji korzysta z turniejowego operatora wyb
 Operatory wykorzystane w tej pracy zostały opisane w dalszej części pracy przy okazji opisu implementacji wykorzystanej do badań.
 
 Warto zauważyć, że wcześniej zdefiniowany operator $random(X)$ może być traktowany jako operator wyboru.
-Nie nadaje się on do zastosowań mających na celu poprawę wyników heurystyki, jednak zostanie on wykorzystany do opisu istniejących podejść w modelu DSEA.
+Nie nadaje się on do zastosowań mających na celu poprawę wyników algorytmu, jednak zostanie on wykorzystany do opisu istniejących podejść w modelu DSEA.
+
+\subsubsection{Operator selekcji naturalnej wykorzystujący operator wyboru}
 
 Wydzielenie abstrakcji wyboru jednego rozwiązania pozwala na zapisanie uogólnionego schematu działania większości popularnie stosowanych operatorów selekcji.
 Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
@@ -183,7 +165,7 @@ Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
 	\end{algorithmic}
 \end{algorithm}
 
-Działanie takiego operatora zaczyna się od inicjalizacji zmiennej $wynik$, zwracanej jako rezultat (linia \ref{line:natSelChoose_return}). 
+Działanie takiego operatora zaczyna się od inicjalizacji zmiennej $wynik$, zwracanej jako efekt końcowy algorytmu (linia \ref{line:natSelChoose_return}). 
 Początkowa jej wartość to zbiór pusty (linia \ref{line:natSelChoose_init}), jednak w kolejnym kroku rozpoczyna się pętla, powtarzana tak długo, aż zbiór ten będzie miał odpowiedni rozmiar (linia \ref{line:natSelChoose_while}).
 W ciele tej pętli za pomocą operatora wyboru $\param{opWyboru}$ dokonuje się selekcji jednego nie wybranego jeszcze rozwiązania i dołącza sie je do zbioru $wynik$ (linia \ref{line:natSelChoose_choose}).
 
@@ -197,15 +179,13 @@ Ponadto, różne gatunki stosują różne strategie wiązania się w pary.
 Niektóre z nich starają się krzyżować tak często jak to możliwe z możliwie dużą liczbą partnerów, co powoduje dużą liczbę potomstwa, z których ,,odsiewana'' jest słabo przystosowana do środowiska większość.
 Inne wiążą się w pary na całe życie (jak np. niektóre gatunki ptaków), albo przynajmniej na jakiś czas, dłuższy niż jedno pokolenie.
 
-Operator selekcji płciowej to nowy element schematu heurystyki, który ma symulować te zjawiska i strategie.
+Operator selekcji płciowej to nowy element wprowadzany metaheurystyki DSEA, który ma symulować te zjawiska i strategie.
 W ogólności osobniki lepiej dopasowane do środowiska powinny mieć większą szansę na zostanie rodzicami niż te dopasowane gorzej.
 Zastosowanie tego operatora do populacji z poprzedniego pokolenia powinno zwrócić zestaw par osobników-rodziców, z których każda para zostanie dalej przekazana do operatora krzyżowania.
 
 W naturze, podobnie jak w podejściach porównywanych w tej pracy, rodziców jest dwoje. 
 W sztucznym środowisku symulacyjnym liczba ta może być w gruncie rzeczy dowolna. 
 Oznacza to, że wspomniane wyżej pary rodziców mogą być zbiorami o dowolnym rozmiarze.
-
-Dotychczasowe algorytmy ewolucyjne można traktować jako DSEA z losowym operatorem selekcji płciowej.
 
 Zmienia się znaczenie prawdopodobieństwa krzyżowania. 
 Nazwa tego parametru zostaje bez zmian, aby nie komplikować nazewnictwa, jednak sama wartość nie przekłada się na matematyczne prawdopodobieństwo tego, że losowy osobnik zostanie rodzicem. 
@@ -226,18 +206,68 @@ Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, je
 	$S'$ to pomocniczy zbiór osobników $s_i$, a $P$ to oznaczenie jednego ze zbiorów rodziców.
 \end{signature}
 
+\subsection{Różnice w działaniu kroków algorytmu DSEA względem klasycznych algorytmów ewolucyjnych}
+
+Metaheurystyka DSEA różni się od innych nie tylko wykorzystywanymi przez nią operatorami.
+Niektóre kroki jej działania również są niestandardowe.
+Zostanie to opisane w kolejnych podrozdziałach.
+
+\subsubsection{Krok ,,Wykonaj krzyżowanie''} \label{subsubsection:my_crossover}
+
+\begin{figure}[H]
+	\img{my_crossover.png}
+	\caption{Szczegóły działania kroku ,,Wykonaj krzyżowanie'' \label{figure:my_crossover}}
+\end{figure}
+
+Na rysunku \ref{figure:my_crossover} znajduje się diagram przedstawiający krok ,,Wykonaj krzyżowanie'' w postaci sekwencji kolejnych kroków. Za pomocą operatora selekcji płciowej\footnote{
+	W jednym z następnych podrozdziałów opisane zostało znaczenie i definicja tego operatora, uproszczenie polegające na zwracaniu par rodziców oraz różnica w interpretacji parametru $\param{prawdKrzyzowania}$. 
+} generowana jest lista par rodziców. 
+Następnie, dla każdej z nich wykonuje się krzyżowanie, traktując oba osobniki z pary jako argumenty operatora krzyżowania, a jego wynik dołączając do populacji. 
+W  realizacji opisanej w podrozdziale \ref{section:ea_details} za pomocą algorytmu \ref{algorithm:crossOver_std} wyniki operatora krzyżowania są dołączane najpierw do osobnego zbioru, a dopiero po wystarczającej liczbie powtórzeń operacji krzyżowania.
+Ma to zapobiegać sytuacjom, w których potomek wygenerowany w tym pokoleniu zostałby w tym samym pokoleniu rodzicem.
+W heurystyce potomstwo jest od razu dołączane do całości populacji.
+Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
+
+\subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
+
+Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. 
+Negatywną stroną tego zjawiska jest fakt, że operator selekcji naturalnej, który nie powinien brać pod uwagę płci, może zaburzyć stosunek liczności osobników danej płci względem siebie. 
+W skrajnych sytuacjach może dojść do tego, że w całej populacji zabraknie osobników którejś z płci, co uniemożliwi dalsze działanie metaheurystyki (ponieważ niemożliwe byłoby zastosowanie operatora krzyżowania). 
+Ponadto, im dysproporcje między różnymi płciami będą większe, tym mniejsza będzie różnorodność całej populacji, co szybko prowadzi do stagnacji.
+
+\newpage
+
+\begin{figure}[H]
+	\img{fixing.png}
+	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
+\end{figure}
+
+Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej. 
+
+W pierwszej jego części do populacji dodajemy tzw. ,,domieszki'' (ang. \emph{mixins}), czyli losowe osobniki (tworzone w ten sam sposób co populacja początkowa). 
+Ma to na celu regularne uzupełnianie puli genów obecnych w populacji, na wypadek gdyby geny odpowiedzialne za pozytywną cechę zanikły z powodu losowości operatora selekcji naturalnej lub płciowej. 
+Ilość domieszek jest kontrolowana przez współczynnik domieszek ($\param{wspDomieszek}$), będący stosunkiem pożądanej liczby nowych osobników do wartości $\param{rozmiarPopulacji}$.
+
+Druga procedura w tym kroku ma zapobiec sytuacjom, w których któraś płeć nie występuje w populacji, lub jest zbyt słabo reprezentowana. 
+Jeśli liczność którejś z płci w populacji spadnie poniżej arbitralnie dobranej liczby $\param{d}$, to do populacji dołączane jest $\lceil \param{wspSamorodków} \times \param{rozmiarPopulacji} \rceil$ (lub $d$, jeśli $d$ jest większe) losowych osobników tej płci\footnote{
+	Alternatywnym rozwiązaniem mogłaby być zmiana płci losowych osobników pozostałych płci.
+}. 
+W praktyce, w ramach tej pracy użyto arbitralnie dobranych wartości $\param{d} = 5$ i $\param{wspSamorodków} = 0.05$.
+
+
+
 \subsection{Realizacja wybranych operatorów selekcji płciowej} \label{subsection:literatureRealization}
 
-W rozdziale \ref{chapter:literature} przedstawiono przegląd prac naukowych o tematyce zgodnej z tematem tej pracy, tj. z uwzględnianiem zjawiska płci w algorytmach ewolucyjnych.
-Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały interesujące podejścia do zagadnienia: GGA \cite{GGA}, które opierało się na wymuszeniu różnych płci rodziców, wybierając ich losowo, oraz SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
+W rozdziale \ref{chapter:literature} przedstawiono kilka prac naukowych uwzględniających zjawisko płci w algorytmach ewolucyjnych.
+Spośród przedstawionych tam pozycji wybrano dwie, które prezentowały interesujące podejścia do zagadnienia: GGA \cite{GGA}, które opierało się na wymuszeniu różnych płci rodziców, wybierając ich losowo, SexualGA \cite{SexualGA}, w którym nie wprowadzano rozróżnienia osobników na płcie, ale każdego z rodziców wybierano w inny sposób, tj. za pomocą innego operatora wyboru.
 
-Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmiennie parametryzowanego dla każdej z tych metod. Jego działanie jest wyjaśnione w algorytmie \ref{algorithm:common_genSel}.
+Oba te podejścia można opisać za pomocą tego samego schematu, jednak odmiennie parametryzowanego dla każdej z tych metod. Jego działanie jest wyjaśnione w algorytmie \ref{algorithm:common_genSel}.
 
 \begin{algorithm}
 	\caption{Schemat działania wybranych operatorów selekcji płciowej \label{algorithm:common_genSel} }
 	\begin{algorithmic}[1]
 		\Input{
-			$populacja$ \Comment{Populacja wyjściowa}
+			$populacja$ \Comment{\raggedleft Populacja wejściowa, z początku aktualnego pokolenia}
 		}
 		\Output{
 			$rodzice$ \Comment{Zbiór par rodziców}
@@ -276,7 +306,8 @@ Oba te podejścia można opisać przy pomocy tego samego schematu, jednak odmien
 		\label{line:stdGenSelChoose_return}
 		\EndOperator
 	\end{algorithmic}
-	Symbole $\top$ i $\bot$ oznaczają kolejno prawdę i fałsz.
+	Symbole $\top$ i $\bot$ oznaczają kolejno prawdę i fałsz.\\
+	Operator wyboru przyjmuje zbiór osobników, a zwraca jego element.
 \end{algorithm}
 
 Działanie operatora rozpoczyna się od deklaracji i inicjalizacji zmiennych pomocniczych.
@@ -289,16 +320,24 @@ Za pomocą operatora $\param{opWyboru1}$ ze zbioru $\param{kandydaci1}$ wybieran
 Drugi z rodziców jest wybierany ze zbioru $\param{kandydaci2}$ za pomocą operatora $\param{opWyboru2}$  (linia \ref{line:stdGenSelChoose_choose_end}), nie dopuszczając do sytuacji w której oboje rodziców byłoby tym samym osobnikiem (mogłoby się tak zdarzyć, jeżeli $\param{plecMaZnaczenie} = \bot$, więc oboje z nich byłoby wybieranych z całej populacji).
 Dwuelementowy zbiór tak wybranych rodziców jest dołączany do zbioru $rodzice$.
 
+
 Kiedy określimy odpowiednio dużo par, zmienna $rodzice$ jest zwracana jako wynik operatora (linia \ref{line:stdGenSelChoose_return}).
 
-Tak określona realizacja powiela założenie tej pracy, zgodnie z którym płci jest co najwyżej 2 ($|\important{G}| \in \{ 1, 2 \}$; jeżeli $\param{plecMaZnaczenie} = \bot$ to liczność tego zbioru nie ma znaczenia, ponieważ funkcja $plec(s)$ nie jest używana, w jednak w przeciwnej sytuacji musi ona wynosić 2), dodatkowo zakładając liczbę rodziców wymaganą przez operator krzyżowania $\inputVar{c}=2$.
+Tak określona realizacja spełnia założenie tej pracy, zgodnie z którym płci jest co najwyżej 2 ($|\important{G}| \in \{ 1, 2 \}$; jeżeli $\param{plecMaZnaczenie} = \bot$ to liczność tego zbioru nie ma znaczenia, ponieważ funkcja $plec(s)$ nie jest używana, jednak w przeciwnej sytuacji musi ona wynosić 2.
+Dodatkowo zakłada się liczbę rodziców wymaganą przez operator krzyżowania $\inputVar{c}=2$.
 Algorytm można dość łatwo uogólnić do postaci, w której liczby te są większe, pamiętając, że jeżeli $\param{plecMaZnaczenie} = \top$, to rodzice muszą być różnych płci, więc rozmiar argumentu operatora krzyżowania musi być równy ich liczbie ($\inputVar{c} = |\important{G}|$).
+
+\newpage
+
+Metaheurystyka DSEA jest w pewien sposób ogólniejsza od zwykłych algorytmów ewolucyjnych.
+Jeżeli dobierze się odpowiednie operatory i parametry, to można za jej pomocą zasymulowanie istniejących rozwiązań.
+Następne 3 podrozdziały opisują sposoby parametryzacji DSEA potrzebne do odtworzenia innych metageurystyk znanych z literatury.
 
 \subsubsection{Standardowe algorytmy ewolucyjne}
 
 Jeżeli:
 \begin{itemize}
-	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego przy pomocy:
+	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego za pomocą:
 	\begin{itemize}
 		\item $\param{plecMaZnaczenie} = \bot$,
 		\item $\param{opWyboru1} = random$,
@@ -311,9 +350,9 @@ to DSEA sprowadza się do standardowego algorytmu ewolucyjnego, w którym na pra
 
 \subsubsection{GGA}
 
-GGA \cite{GGA} to wariacja na temat algorytmu genetycznego (co oznacza, że jej autorzy wykorzystywali reprezentację osobnika przez wektor bitów), w której wyróżnia się cechę osobnika określającej jego płeć i wymaga, aby rodzice różnili się nią. Każdy z rodziców jest wybierany losowo. Można to zrealizować spełniając następujące warunki:
+GGA \cite{GGA} to odmiana algorytmu genetycznego (co oznacza, że jej autorzy wykorzystywali reprezentację osobnika przez wektor bitów), w której wyróżnia się cechę osobnika określającej jego płeć i wymaga, aby rodzice różnili się nią. Każdy z rodziców jest wybierany losowo. Można to zrealizować spełniając następujące warunki:
 \begin{itemize}
-	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego przy pomocy:
+	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego za pomocą:
 	\begin{itemize}
 		\item $\param{plecMaZnaczenie} = \top$,
 		\item $\param{opWyboru1} = random$,
@@ -325,13 +364,13 @@ GGA \cite{GGA} to wariacja na temat algorytmu genetycznego (co oznacza, że jej 
 
 \subsubsection{SexualGA}
 
-SexualGA \cite{SexualGA} to kolejna wariacja na temat algorytmu genetycznego. Autorzy nie wyróżniali w niej cechy określającej płeć osobnika, proponując inne podejście do tego zjawiska. Przedstawione rozwiązanie wykorzystywało operator selekcji do wybrania rodziców, a nie osobników przechodzących do kolejnego pokolenia, a każdy z nich był wybierany za pomocą innego operatora wyboru\footnote{
+SexualGA \cite{SexualGA} to inna odmiana na temat algorytmu genetycznego uwzględniającego płeć. Autorzy nie wyróżniali w niej cechy określającej płeć osobnika, proponując inne podejście do tego zjawiska. Przedstawione rozwiązanie wykorzystywało operator selekcji do wybrania rodziców, a nie osobników przechodzących do kolejnego pokolenia, a każdy z nich był wybierany za pomocą innego operatora wyboru\footnote{
 	W oryginalnej pracy nie używano określenia ,,operator wyboru'', a ,,operator selekcji''.
 }. Miało to symulować różne zachowania samców i samic związane z wyborem partnera.
 
 Jeżeli poniższe warunki będą spełnione, to DSEA sprowadza się do SexualGA:
 \begin{itemize}
-	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego przy pomocy:
+	\item użyto operatora selekcji płciowej opisanego powyżej, sparametryzowanego za pomocą:
 	\begin{itemize}
 		\item $\param{plecMaZnaczenie} = \bot$,
 		\item $\param{opWyboru1} \neq random \vee \param{opWyboru2} \neq random$,
@@ -340,7 +379,7 @@ Jeżeli poniższe warunki będą spełnione, to DSEA sprowadza się do SexualGA:
 	\item zignorowano liczbę płci ($|\important{G}| \in \numberSet{N}_{+}$) , ponieważ $\param{plecMaZnaczenie} = \bot$).
 \end{itemize}
 
-Podany wyżej warunek, mówiący o tym, że co najmniej jeden operator wyboru musi być różny od losowego ($random$) wynika z tego, że gdyby oba operatory działały losowo, to heurystyka polegałaby na kompletnie przypadkowym przeszukiwaniu przestrzeni rozwiązań.
+Podany wyżej warunek, mówiący o tym, że co najmniej jeden operator wyboru musi być różny od losowego ($random$) wynika z tego, że gdyby oba operatory działały losowo, to metaheurystyka polegałaby na kompletnie przypadkowym przeszukiwaniu przestrzeni rozwiązań.
 Według autorów najlepsze wyniki osiągano używając operatora losowego w połączeniu z innym, różnym od niego, jednak sytuacja w której użyto tego samego operatora dla obu płci jest warta zbadania.
 
 \section{Proponowany operator selekcji płciowej}
@@ -357,7 +396,7 @@ W momencie, w którym osobniki alfa są czymś zajęte, pewien odsetek samców m
 Osobniki którym się to uda nazywane są \emph{osobnikami beta}.
 
 Mimo, że takie zjawisko w dużym stopniu ogranicza różnorodność genetyczną, to w naturze wydaje się przynosić pozytywne rezultaty.
-Z tego powodu zdecydowano się zbadać haremowe podejście do dobierania się w pary w celu rozmnażania.
+Z tego powodu w niniejszej pracy zdecydowano się zbadać haremowe podejście do dobierania się w pary w celu rozmnażania.
 Zrealizowano to definiując operator selekcji płciowej, nazywany operatorem haremowym. Jest on opisany w algorytmie \ref{algorithm:harem}. 
 Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 płcie ($|\important{G}| = 2$).
 
@@ -365,7 +404,7 @@ Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 
 	\caption{Schemat działania operatora haremowego \label{algorithm:harem}}
 	\begin{algorithmic}[1]
 		\Input{
-			$populacja$ \Comment{Populacja wyjściowa}
+			$populacja$ \Comment{\raggedleft Populacja wejściowa, z początku aktualnego pokolenia}
 		}
 		\Output{
 			$rodzice$ \Comment{Zbiór par rodziców}
@@ -377,7 +416,7 @@ Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 
 			$\param{opWyboruBeta}$ \Comment{Operator wyboru osobników beta} \\
 			$\param{opWyboruPartnerow}$ \Comment{\raggedleft Operator wyboru partnerów przeciwnej płci} \\
 			$\param{prawdKrzyzowania}$ \Comment{Prawdopodobieństwo krzyżowania} \\
-			$\param{rozmiarPopulacji}$ \Comment{Ilość osobników na początku pokolenia}
+			$\param{rozmiarPopulacji}$ \Comment{Liczba osobników na początku pokolenia}
 		}
 		\Start
 		\Operator{opHaremowy}{$populacja$}
@@ -392,13 +431,15 @@ Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 
 		\Var $liczbaBeta \gets \lceil \param{wspBeta} \times liczbaZbiorowRodzicow \rceil$
 		\label{line:harem_init_beta_count}
 		\Var $perAlfa \gets \lceil (liczbaZbiorowRodzicow-liczbaBeta)/\param{liczbaAlfa } \rceil$
+		\State \Comment{Liczba zbiorów rodziców w których znajdzie się dany osobnik alfa}
+		
 		\label{line:harem_init_per_alfa}
 		\For {$i \gets 1 \To \param{liczbaAfa}$}
 		\label{line:harem_alfa_main_loop}
 		\Var $alfa \gets \param{opWyboruAlfa}(kandydaci1)$
 		\label{line:harem_choose_alfa}
 		\State $kandydaci1 \gets kandydaci1 \setminus \left\{ alfa \right\}$
-		\label{line:harem_alfa_remove_alfa}
+		\label{line:harem_remove_alfa}
 		\For {$j \gets 1 \To perAlfa$}
 		\label{line:harem_alfa_partner_loop}
 		\Var $partner \gets \param{opWyboruPartnerów}(kandydaci2)$
@@ -422,7 +463,7 @@ Tak przedstawiona realizacja wymaga, aby w populacji występowały dokładnie 2 
 	\end{algorithmic}
 \end{algorithm}
 
-Działanie takiego operatora zależy od pięciu parametrów, poza parametrami samej heurystyki.
+Działanie takiego operatora zależy od pięciu parametrów, poza parametrami samej metaheurystyki.
 Są to trzy operatory wyboru: $\param{opWyboruAlfa}$ służący do wyboru osobników alfa, $\param{opWyboruBeta}$ używany do wyboru osobników beta oraz $\param{opWyboruPartnerów}$ wykorzystywany do wyboru partnerów dla osobników alfa i beta.
 Ponadto, wykorzystywane są dwa parametry liczbowe: $\param{liczbaAlfa}$ określający liczbę osobników alfa wybieranych w pojedynczym pokoleniu i $\param{wspBeta}$, czyli współczynnik określający stosunek liczby par rodziców z których jeden jest osobnikiem beta do liczby wszystkich par rodziców 
 

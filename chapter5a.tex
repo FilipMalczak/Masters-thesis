@@ -33,7 +33,7 @@ Rozwiązaniem problemu jest taki zestaw przedmiotów jaki zmieści się w plecak
 
 Ogólna wersja problemu plecakowego polega na przypisaniu każdemu z przedmiotów (par) liczby naturalnej, określającej ile jego egzemplarzy wkładamy do plecaka, jednak w ramach niniejszej pracy zdecydowano się na binarną wariację tego problemu, która dopuszcza wykorzystanie co najwyżej jednego egzemplarza każdego obiektu.
 
-Opisane problemy zostały wybrane, ponieważ reprezentują dwie klasy zadań powszechnie rozwiązywane przy pomocy algorytmów ewolucyjnych. 
+Opisane problemy zostały wybrane, ponieważ reprezentują dwie klasy zadań powszechnie rozwiązywane za pomocą algorytmów ewolucyjnych. 
 Binarny problem plecakowy to popularne zadanie w którym rozwiązania są reprezentowane jako wektory bitów, a problem komiwojażera to znane zagadnienie, powszechnie wykorzystywane do badania jakości działania heurystyk. 
 Ponadto, problem plecakowy to zadanie optymalizacji z ograniczeniami, których nie da się łatwo zachować w ramach operatorów genetycznych (w przeciwieństwie np. do problemu komiwojażera, w którym można zastosować operatory, które gwarantują, że zwrócą rozwiązania nie przekraczające ograniczeń, jeżeli osobniki wejściowe ich nie przekraczały).
 
@@ -44,7 +44,7 @@ Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu,
 
 \subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
 
-Niezależnie od tego jaki problem jest rozwiązywany przy pomocy algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
+Niezależnie od tego jaki problem jest rozwiązywany za pomocą algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
 W tym rozdziale opisane zostaną operatory wyboru oraz kryterium stopu, oraz zestawienie oznaczeń wykorzystywanych w dalszych rozdziałach.
 
 \subsubsection{Operatory wyboru}
@@ -68,7 +68,7 @@ Jeżeli dla danego problemu znana jest górne ograniczenie funkcji oceny (czyli 
 	Prosta zmiana znaku kryterium również sprowadza problem minimalizacji do problemu maksymalizacji, jednak nie pozwala na zastosowanie operatora ruletkowego, ponieważ waga osobnika musi być dodatnia. 
 	Alternatywne podejście, polegające na użyciu odwrotności wartości kryterium również nie zawsze jest możliwe do użycia, ponieważ wartość oceny może wynosić 0.
 }.
-W takiej sytuacji, osobniki możemy ważyć przy pomocy ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
+W takiej sytuacji, osobniki możemy ważyć za pomocą ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
 Dzięki temu najgorszy osobnik zajmuje jedną jednostke obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
 Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczny zarówno w problemach minimalizacji, jak i maksymalizacji.
 
@@ -108,7 +108,7 @@ Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnika
 	\end{algorithmic}
 \end{algorithm}
 
-Schemat działania operatora ruletkowego jest opisany przy pomocy algorytmu \ref{algorithm:roulette}.
+Schemat działania operatora ruletkowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
 
 Pierwszym krokiem działania operatora jest posortowanie populacji wejściowej tak, aby osobniki o większej wadze (czyli o większym prawdopodobieństwie wyboru) znalazły się bliżej początku posortowanego wektora $posortowane$ (w linii \ref{line:roulette_sort}).
 Następnie, obliczana jest suma wag wszystkich osobników, przechowywana w zmiennej $sumaWag$ (linia \ref{line:roulette_sum}).
@@ -204,7 +204,7 @@ Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (c
 	\end{algorithmic}
 \end{algorithm}
 
-Schemat działania operatora turniejowego jest opisany przy pomocy algorytmu \ref{algorithm:roulette}.
+Schemat działania operatora turniejowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
 
 Działanie operatora rozpoczyna się od inicjalizacji zbioru $turniej$ na zbiór pusty (w linii \ref{line:tourney_init}).
 Następnie, póki zbiór ten nie osiągnie rozmiaru $n$ (linia \ref{line:tourney_while}) dodawane są do niego osobniki losowo wybierane (bez powtórzeń) z populacji (w linii \ref{line:tourney_fill}).
@@ -219,7 +219,7 @@ Jak zostało opisane w podsekcji \ref{subsection:stop} zadaniem kryterium stopu 
 Ma to na celu ograniczenie czasu działania procesu do skończonej wartości.
 
 Najprostszą implementacją tego warunku jest zatrzymanie heurystyki po przetworzeniu określonej liczby pokoleń.
-Działanie takiego operatora opisane jest przy pomocy algorytmu \ref{algorithm:stdStop}
+Działanie takiego operatora opisane jest za pomocą algorytmu \ref{algorithm:stdStop}
 
 \begin{algorithm}
 	\caption{Warunek zatrzymania po określonej liczbie pokoleń \label{algorithm:stdStop}}
@@ -443,7 +443,7 @@ Aby sprowadzić problem do problemu minimalizacji\footnote{
 } jest ona mnożona przez -1.
 Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich obiętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
 W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
-Zostało to zapisane przy pomocy równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
+Zostało to zapisane za pomocą równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
 
 \begin{align}
 \label{line:knapsack_eval_start}

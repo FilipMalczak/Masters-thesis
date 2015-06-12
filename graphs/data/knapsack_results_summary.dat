@@ -1,0 +1,10 @@
+1 stdGenSel($\bot$,R,R) -1068
+2 stdGenSel($\top$,R,R) -1020
+3 stdGenSel($\bot$,RS,RS) -1102
+4 stdGenSel($\bot$,RS,TS(2)) -909,2
+5 stdGenSel($\bot$,RS,RS) -1152,8
+6 stdGenSel($\bot$,RS,R) -1143,2
+7 stdGenSel($\top$,RS,RS) -1138,6
+8 stdGenSel($\top$,RS,R) -1136,2
+9 harem(5,0,25,RS,RS,R) -1144,2
+10 harem(3,0,0,RS,TS(2),R) -1142

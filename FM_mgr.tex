@@ -70,6 +70,7 @@
 \usepackage{morefloats}
 \usepackage{tablefootnote}
 \usepackage{tabu}
+\usepackage{gnuplot-lua-tikz}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -140,6 +141,7 @@
 
 
 \newcommand{\img}[1]{\centering \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{pictures/#1}}
+\newcommand{\customImg}[1]{\centering \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{#1}}
 \newcommand{\graph}[1]{\centering \input{graphs/#1}}
 %\newcommand{\vectorGraphics}[1]{\input{vector/#1}}
 \newcommand{\insertData}[1]{\input{exp_csv/tex/#1.tex}}
@@ -196,9 +198,9 @@ Bardzo krótkie streszczenie w którym powinno się znaleźć omówienie tematu 
 \subfile{chapter5b.tex}
 %\subfile{stubs/chapter5b.tex}
 \subfile{chapter6.tex}
-\subfile{stubs/chapter6.tex}
-%\subfile{chapter7.tex}
-\subfile{stubs/chapter7.tex}
+%\subfile{stubs/chapter6.tex}
+\subfile{chapter7.tex}
+%\subfile{stubs/chapter7.tex}
 
 \pagestyle{plain}
 
