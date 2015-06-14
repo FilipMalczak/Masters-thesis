@@ -6,9 +6,11 @@ set output "knapsack_results_summary.tex"
 set boxwidth 0.75
 set border 3
 set xrange [0:11]
-set yrange [-800:-1200]
-set key outside reverse Left top right
+set yrange [-1200:-800] reverse
+set key outside reverse Left top right title "Heurystyka:"
 set ytics border nomirror
+set ylabel "Najniższa średnia ocen"
+#set ylabel "\\rotatebox{90}{Ocena}"
 unset xtics
 #plot 'data/knapsack_results_summary.dat' u 1:($3+700):2 w labels left rotate by 75, \\
 #'' u 1:3 w boxes fs solid 1

@@ -1,14 +1,13 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\appendix
-\chapter{Przebieg procedury eksploracji} \label{appendix:explore-flow}
+\section{Przebieg procedury eksploracji} \label{appendix:explore_flow}
 
-\section{Problem komiwojażera}
+\subsection{Problem komiwojażera}
 
-\subsection{Znalezienie konfiguracji początkowej}
+\subsubsection{Znalezienie konfiguracji początkowej}
 
-\subsubsection{Przebieg}
+\paragraph{Przebieg}
 
 Tabela \ref{table:tsp_init_flow} przedstawia przebieg wykorzystanej procedury. 
 Lewa kolumna grupuje znalezione parametry w ramach jednego nawrotu eksploracji. 
@@ -88,7 +87,7 @@ Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przesz
 	\end{tabular}
 \end{table}
 
-\subsubsection{Wyniki}
+\paragraph{Wyniki}
 
 Na tym etapie eksperymentów nie udało się znaleźć globalnego optimum.
 W tabeli \ref{table:tsp_init_results} przedstawiono wyniki wszystkich powtórzeń dla konfiguracji znalezionej w procesie eksploracji.
@@ -126,9 +125,9 @@ Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na d
 	\graph{tsp_init_example.tex}
 \end{figure}
 
-\subsection{Poprawa konfiguracji początkowej}
+\subsubsection{Poprawa konfiguracji początkowej}
 
-\subsubsection{Przebieg}
+\paragraph{Przebieg}
 
 W tabeli \ref{table:tsp_tweak_flow} przedstawiono przebieg procedury eksploracji, korzystając z tej samej reprezentacji co na poprzednim etapie.
 
@@ -153,7 +152,7 @@ Drugi nawrót wykazał, że pierwotne prawdopodobieństwo krzyżowania daje leps
 	\end{tabular}
 \end{table}	
 
-\subsubsection{Wyniki}
+\paragraph{Wyniki}
 
 W tabeli \ref{table:tsp_tweak_results} przedstawiono wyniki działania heurystyki dla konfiguracji \ref{config:tsp_base} znalezionej w tym etapie.
 
@@ -177,11 +176,11 @@ Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorsze
 	\end{tabular}
 \end{table}
 
-\section{Problem plecakowy}
+\subsection{Problem plecakowy}
 
-\subsection{Znalezienie konfiguracji początkowej}
+\subsubsection{Znalezienie konfiguracji początkowej}
 
-\subsubsection{Przebieg}
+\paragraph{Przebieg}
 
 
 Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury.
@@ -217,7 +216,7 @@ Trzeci nawrót nie zmienił odnalezionej konfiguracji.
 	\end{tabular}
 \end{table}
 
-\subsubsection{Wyniki}
+\paragraph{Wyniki}
 
 Jak zostało pokazane w tabeli \ref{table:knapsack_init_results}, wyniki dla tak określonego zestawu parametrów są bardzo dobre - najgorszy z nich był większy od optimum o niecałe 6 \%.
 W ostatnim z przebiegów udało się znaleźć optimum globalne.
@@ -248,9 +247,9 @@ Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze dz
 	\graph{knapsack_init_example.tex}
 \end{figure}
 
-\subsection{Poprawa konfiguracji początkowej}
+\subsubsection{Poprawa konfiguracji początkowej}
 
-\subsubsection{Przebieg}
+\paragraph{Przebieg}
 
 \todo{skomentuj}
 
@@ -271,7 +270,7 @@ Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze dz
 	\end{tabular}
 \end{table}	
 
-\subsubsection{Wyniki}
+\paragraph{Wyniki}
 \todo{Blah, blah, here go results}
 
 \begin{table}[H]

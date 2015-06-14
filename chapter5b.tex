@@ -3,19 +3,53 @@
 \begin{document}
 \section{Badania} \label{chapter:research}
 
-W dalszej części pracy konkretny zestaw parametrów będzie nazywany konfiguracją.
-Wyrażenie ,,wynik eksperymentu dla konfiguracji wyniósł \emph{X}'' oznacza, że heurystyka została uruchomiona z parametrami (rozmiarem populacji, prawdopodobieństwami, itd.) określonymi przez konfigurację, a jej wynikiem było \emph{X}.
-Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dla danej konfiguracji za każdym uruchomieniem może być inny.
+%W dalszej części pracy konkretny zestaw parametrów będzie nazywany konfiguracją.
+%Wyrażenie ,,wynik eksperymentu dla konfiguracji wyniósł \emph{X}'' oznacza, że metaheurystyka została uruchomiona z parametrami (rozmiarem populacji, prawdopodobieństwami, itd.) określonymi przez konfigurację, a jej wynikiem było \emph{X}.
+%Należy pamiętać, że algorytm ewolucyjny to metaheurystyka losowa, więc wynik dla danej konfiguracji za każdym uruchomieniem może być inny.
 
-\todo{2 etapy - jakie, każdy problem osobno}
+Celem przeprowadzonych badań było porównanie skuteczności działania standardowego algorytmu ewolucyjnego, wybranych metaheurystyk uwzględniających płeć oraz heuerystyki DSEA z różnymi operatorami selekcji płciowej.
+Przez skuteczność działania rozumiano wartość funkcji oceny, uśrednioną między wieloma uruchomieniami algorytmu dla tych samych parametrów.
 
-\subsection{Określenie bazowej konfiguracji}
+Aby móc tego dokonać wybrano dwa opisane wcześniej problemy, zdefiniowane jako problemy minimalizacji. 
+Dla każdego z nich przeprowadzono eksperymenty podzielone na 2 etapy.
+Pierwszy z nich miał na celu określenie wartości parametrów zwykłego algorytmu ewolucyjnego dla danego problemu.
+Drugi z etapów wykorzystywał parametry znalezione wcześniej do zbadania różnych operatorów selekcji naturalnej i płciowej.
+
+\subsection{Badania wrażliwości metahuerystyki na wartość parametrów}
 \label{subsection:init_params}
 
-\todo{krótko o eksploracji}
+\subsubsection*{Cel}
+Celem tego zestawu badań było zbadanie związku między wartościami użytych parametrów, a wynikami metaheurystyki oraz określenie jak najlepszego zestawu parametrów dla każdego z problemów.
 
-\begin{config}
-	\caption{Wartości wykorzystane podczas poszukiwania parametrów początkowych \label{config:tsp_init_params}}
+\subsubsection*{Założenia}
+Każdy eksperyment na każdym etapie badań wykonano niezależnie dla obu problemów. 
+
+Aby to osiągnąć założono pewien zestaw wartości parametrów, pokazany w tabeli \ref{table:init_params}.
+Ponieważ łączna liczba ich możliwych kombinacji była tak duża, że praktycznie uniemożliwiała zbadanie ich wszystkich zdecydowano się wykorzystać iteracyjne, adaptacyjne podejście do dostrajania heurystyki.
+Wykorzystaną procedurę nazwano \emph{procedurą eksploracji}, lub krócej \emph{eksploracją}.
+Została ona szczegółowo opisana w dodatku \ref{appendix:explore}.
+Polega ona na wielokrotnym powtórzeniu iteracji nazwanej nawrotem.
+W ramach jednego nawrotu każdy parametr był dobierany osobno tak, aby heurystyka dawała jak najlepsze wyniki.
+Polegało to na ,,zamrożeniu'' wartości pozostałych parametrów i wielokrotnym uruchomieniu heurystyki z różną wartością badanego parametru.
+Kiedy określono najlepszą wartość, zaczynano badać wartość kolejnego z nich.
+Aby zastosować taką procedurę należało określić (prócz samych wartości parametrów) ilość nawrotów, ilość powtórzeń dla każdego zestawu parametrów oraz sposób oceny tego który zestaw jest lepszy.
+
+\subsubsection*{Przebieg}
+Cały eksperyment był dodatkowo podzielony na 2 kroki. 
+Szczegółowy zapis ich przebiegu zamieszczony jest w dodatku \ref{appendix:explore_flow}
+W pierwszym kroku wykorzystywano procedurę eksploracji do badania zakresów parametrów przedstawione w tabeli \ref{table:init_params}.
+Wykonano tu trzy nawroty, a w każdym z nich każdy zestaw parametrów był używany w pięciu uruchomieniach heurystyki.
+Przez najlepsze wyniki działania heurystyki rozumiano tu najniższy wynik dla danego zestawu parametrów spośród pięciu powtórzeń.
+
+Drugi krok również działał w oparciu o eksplorację, jednak badane zakresy  zależały od wyników kroku poprzedniego.
+W tej części badań zmieniano jedynie wartości liczbowe, próbkując lokalne sąsiedztwo wartości danego parametru.
+Jeśli przyjmował on wartości z przedziału $\range{0}{1}$, to wynik pierwszego kroku zmieniano o $\pm0,02$ oraz $\pm0,05$ (odrzucając wartości mniejsze od 0 i większe od 1).
+Jeśli miał on jednak wartości całkowite, to dotychczasowy wynik zmieniano o $\pm5$ i $\pm10$.
+W ten sposób określano założenia dotyczące wartości parametrów w drugim kroku.
+Wykonano dwa nawroty, w każdym po trzy uruchomienia heurystyki, przez najlepszy wynik rozumiejąc najniższą średnią ocenę z trzech uruchomień.
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów \label{table:init_params}}
 	\centering
 	\begin{tabular}{|c|l|}
 		\hline
@@ -48,14 +82,21 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		Zbiór płci  & $\important{G}=\{ \odot \}$ \\
 		\hline
 	\end{tabular}
-\end{config}
+\end{table}
 
-\todo{zakres, jak przy drugim powtórzeniu}
+\subsubsection*{Wyniki}
+Tabele \ref{table:tsp_base} i \ref{table:knapsack_base} opisują znalezione wyniki parametrów kolejno dla problemu komiwojażera i problemu plecakowego.
+Przebieg obu kroków eksploracji został szczegółowo opisany w dodatku \ref{appendix:explore_flow}.
 
-\todo{wynikowe konfigi}
+Warto zauważyc, że znaleziono duże (tzn. jedne z największych badanych) rozmiary populacji i liczby pokoleń.
+Mniejszą liczbę pokoleń określono dla problemu plecakowego, jednak dla niego wykorzystano wartość współczynnika domieszek 0,1 i największy badany rozmiar populacji.
+Dodatkowo, dla problemu plecakowego określono wyższe prawdopodobieństwo krzyżowania.
 
-\begin{config}
-	\caption{Parametry używane w dalszych badaniach problemu komiwojażera \label{config:tsp_base}}
+Może to wskazywać na fakt, iż do rozwiązania problemu komiwojażera potrzebna jest słabsza eksploatacja przestrzeni rozwiązań, niż dla problemu plecakowego.
+Innymi słowy istnieje podejrzenie, że przestrzeń rozwiązań problemu komiwojażera można próbkować rzadziej niż przestrzeń problemu plecakowego.
+
+\begin{table}
+	\caption{Parametry używane w dalszych badaniach problemu komiwojażera \label{table:tsp_base}}
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
@@ -72,10 +113,10 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		$\param{prawdMutacji}$ & 0,15             \\ \hline
 		$\param{max}$                                      & 110                     \\ \hline
 	\end{tabular}
-\end{config}
+\end{table}
 
-\begin{config}
-	\caption{Parametry używane w dalszych badaniach problemu plecakowego \label{config:knapsack_base}}
+\begin{table}
+	\caption{Parametry używane w dalszych badaniach problemu plecakowego \label{table:knapsack_base}}
 	\centering
 	\begin{tabular}{|l|l|}
 		\hline
@@ -84,24 +125,31 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\hline
 		$\param{opSelNat}$ & \opName{natSel}(RS)\\
 		\hline
+		$\param{opSelPlciowej}$ & \opName{stdGenSel}($\bot$, R, R)\\
+		\hline
 		$\param{rozmiarPopulacji}$                         & 60                      \\ \hline 
 		$\param{wspDomieszek}$                             & 0,1                    \\ \hline
 		$\param{prawdKrzyzowania}$ & 0,75 \\ \hline 
 		$\param{prawdMutacji}$ & 0,15             \\ \hline
 		$\param{max}$                                      & 60                     \\ \hline
 	\end{tabular}
-\end{config}
+\end{table}
 
-\subsection{Badania porównawcze} \label{subsection:compare}
-\todo{co zbadano}
-\todo{fallback do poprzednich tabel}
+\subsection{Badanie efektywności metaheurystyki w zależności od operatorów selekcji} \label{subsection:compare}
 
-\subsubsection{Badane konfiguracje}
+\subsubsection*{Cel}
+Celem badań przeprowadzonych na tym etapie było porównanie efektywności wybranych metod optymalizacji.
+Były to: klasyczny algorytm ewolucyjny, metaheurystyka GGA, metaheurystyka SexualGA oraz algorytm DSEA.
+Miarą efektywności była średnia najniższa ocena z pięciu powtórzeń działania heurystyki.
 
-\todo{plain; gga; sexual ga; uogólniony ; harem}
+\subsubsection*{Założenia} 
+Każdy eksperyment był powtórzony pięciokrotnie dla każdego z problemów oddzielnie, dla każdego zestawu parametrów.
 
-\begin{config}
-	\caption{Konfiguracja standardowego algorytmu ewolucyjnego \label{config:ea}}
+W tabelach \ref{table:ea}-\ref{table:dsea_harem} przedstawiono zestawy parametrów wykorzystywane w wykonanych eksperymentach. 
+Jeżeli wartość jakiegoś z parametrów nie jest w nich określona, wykorzystano wartość podaną w tabelach \ref{table:tsp_base} i \ref{table:knapsack_base}, w zależności od problemu.
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów standardowego algorytmu ewolucyjnego \label{table:ea}}
 	\centering
 	\begin{tabu} to \textwidth {lX}
 		\hline
@@ -109,19 +157,22 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{\opName{stdGenSel}($\bot$, R, R)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{l|}{Zgodne z tabelą \ref{table:tsp_base} lub \ref{table:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
+		%		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
+		%		\multicolumn{1}{l|}{5} \\ 
+		%		\hline
 		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
 		\hline
 	\end{tabu}
-\end{config}
+\end{table}
 
-\begin{config}
-	\caption{Konfiguracja heurystyki GGA \label{config:gga}}
+Tabela \ref{table:ea} opisuje parametry wykorzystane w badaniach klasycznego algorytmu ewolucyjnego. 
+Wykorzystano całkowicie losowy operator selekcji płciowej i jednoelementowy zbiór płci, aby wyeliminować jakikolwiek wpływ tej cechy na wyniki algorytmu. 
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów metaheurystyki GGA \label{table:gga}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} & \multicolumn{1}{l|}{\opName{stdGenSel}($\top$, R, R)} \\ 
@@ -129,10 +180,10 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{|l|}{\textbf{Operator selekcji naturalnej}} & \multicolumn{1}{l|}{\opName{natSel}($W$)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{l|}{Zgodne z tabelą \ref{table:tsp_base} lub \ref{table:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} & \multicolumn{1}{l|}{5} \\ 
-		\hline
+		%		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} & \multicolumn{1}{l|}{5} \\ 
+		%		\hline
 		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
 		\hline
@@ -145,10 +196,14 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{RS, TS(2), TS(3)} \\ 
 		\hline
 	\end{tabularx}
-\end{config}
+\end{table}
 
-\begin{config}
-	\caption{Konfiguracja heurystyki SexualGA \label{config:sexual_ga}}
+Tabela \ref{table:gga} pokazuje wartości użyte w badaniach heurystyki GGA. 
+Operator selekcji płciowej wybierał rodziców losowo, każdego z inną płcią. 
+Zbadano efektywność dla różnych operatorów selekcji naturalnej.
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów metametaheurystyki SexualGA \label{table:sexual_ga}}
 	\centering
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
@@ -159,11 +214,11 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{\opName{natSel}(R)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} & 
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{l|}{Zgodne z tabelą \ref{table:tsp_base} lub \ref{table:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
+		%		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
+		%		\multicolumn{1}{l|}{5} \\ 
+		%		\hline
 		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \odot \}$} \\ 
 		\hline
@@ -179,11 +234,17 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
 	\end{tabularx}
-\end{config}
+\end{table}
 
-\begin{config}
+Tabela \ref{table:sexual_ga} mówi o parametrach heurystyki SexualGA.
+Wykorzystano tu losowy operator selekcji naturalnej, przez co przeszukiwaniem przestrzeni rozwiąząń sterował jedynie operator selekcji płciowej.
+Zbadano 12 zestawów parametrów tego operatora, nie rozróżniając osobników po płci, jednak każdego rodziców wybierając w inny sposób.
+Zbadano również sytuacje, w których oboje rodziców jest wybierane tym samym operatorem.
+Pominięto taką, w której oba te operatory wyboru są losowe (ponieważ wtedy heurystyka zachowywałaby się zupełnie losowo).
+
+\begin{table}
 	%gender, true
-	\caption{Konfiguracja heurystyki DSEA z uogólnionym operatorem selekcji płciowej \label{config:dsea_general}}
+	\caption{Założenia dot. wartości parametrów  metaheurystyki DSEA z uogólnionym operatorem selekcji płciowej \label{table:dsea_general}}
 	\centering
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
@@ -191,11 +252,11 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{\opName{stdGenSel}($p$, $\param{opWyboru1}$, $\param{opWyboru2}$)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{l|}{Zgodne z tabelą \ref{table:tsp_base} lub \ref{table:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
+		%		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
+		%		\multicolumn{1}{l|}{5} \\ 
+		%		\hline
 		& \\ 
 		\hline
 		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
@@ -214,22 +275,26 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{l|}{ $|\important{G}| \in \{1, 2\}$, zależnie od $\param{plecMaZnaczenie}$ } \\ 
 		\hline
 	\end{tabularx}
-\end{config}
+\end{table}
 
-\begin{config}
+W tabeli \ref{table:dsea_general} przedstawiono założenia dotyczące wartości parametrów dla eksperymentów.
+Wykorzystano konfigurację przedstawioną w tabelach \ref{table:tsp_base} i \ref{table:knapsack_base}, zmieniając jedynie operator selekcji płciowej.
+Zbadano każdą kombinację operatorów wyboru (z pominięciem dwóch operatorów losowych) dla obu wartości $\param{plecMaZnaczenie}$, co daje łącznie 24 zestawy parametrów.
+
+\begin{table}
 	%harem
-	\caption{Konfiguracja heurystyki DSEA z haremowym operatorem selekcji płciowej \label{config:dsea_harem}}
+	\caption{Założenia dot. wartości parametrów  metaheurystyki DSEA z haremowym operatorem selekcji płciowej \label{table:dsea_harem}}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Operator selekcji płciowej}} &
 		\multicolumn{1}{l|}{\opName{harem}(a, b, WA, WB, WP)} \\ 
 		\hline
 		\multicolumn{1}{|l|}{\textbf{Pozostałe parametry}} &
-		\multicolumn{1}{l|}{Zgodne z konfiguracją \ref{config:tsp_base} lub \ref{config:knapsack_base}} \\ 
+		\multicolumn{1}{l|}{Zgodne z tabelą \ref{table:tsp_base} lub \ref{table:knapsack_base}} \\ 
 		\hline
-		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
-		\multicolumn{1}{l|}{5} \\ 
-		\hline
+		%		\multicolumn{1}{|l|}{\textbf{Ilość powtórzeń}} &
+		%		\multicolumn{1}{l|}{5} \\ 
+		%		\hline
 		\multicolumn{1}{|l|}{\textbf{Zbiór płci}} & 
 		\multicolumn{1}{l|}{$\important{G} = \{ \male, \female \}$} \\ 
 		\hline
@@ -238,16 +303,16 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
 		\multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\ 
 		\hline \hline
-		\multicolumn{1}{|l|}{a} & 
+		\multicolumn{1}{|l|}{a = $\param{liczbaAlfa}$} & 
 		\multicolumn{1}{l|}{1, 3, 5} \\ 
 		\hline
-		\multicolumn{1}{|l|}{b} & 
+		\multicolumn{1}{|l|}{b = $\param{wspBeta}$} & 
 		\multicolumn{1}{l|}{0, 0,1, 0,25} \\ 
 		\hline
-		\multicolumn{1}{|l|}{WA} & 
+		\multicolumn{1}{|l|}{WA = $\param{opWyboruAlfa}$} & 
 		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
-		\multicolumn{1}{|l|}{WB} & 
+		\multicolumn{1}{|l|}{WB = $\param{opWyboruBeta}$} & 
 		\multicolumn{1}{l|}{R, RS, TS(2), TS(3)} \\ 
 		\hline
 		& \\ 
@@ -255,22 +320,42 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 		\multicolumn{1}{|c|}{\textbf{Parametr}} & 
 		\multicolumn{1}{c|}{\textbf{Wartość}} \\ 
 		\hline \hline
-		\multicolumn{1}{|l|}{WP} &
+		\multicolumn{1}{|l|}{WP = $\param{opWyboruPartnerow}$} &
 		\multicolumn{1}{l|}{R} \\ 
 		\hline
 	\end{tabularx}
-\end{config}
+\end{table}
 
-\subsubsection{Wyniki}
+Tabela \ref{table:dsea_harem} przedstawia zestawy parametrów wykorzystane do zbadania heurystyki DSEA z haremowym operatorem selekcji płciowej.
+Wykorzystano parametry znalezione na poprzednim etapie badań, jednak zbadano różne kombinacje odpowiednich parametrów liczbowych ($\param{liczbaAlfa}$ oraz $\param{wspBeta}$) i operatorów wyboru ($\param{opWyboruAlfa}$ oraz $\param{opWyboruBeta}$).
+Operator wyboru partnerów przyjmował stałą wartość operatora losowego.
+
+%Nie pominięto sytuacji w której wszystkie operatory były losowe, aby zbadać, czy sama strategia bardzo drastycznej selekcji jednej z płci ma znaczenie. \todo{chcemy na pewno?}
+
+Zbadano wszystkie kombinacje zestawów podanych w kolumnie \textbf{Zbiór wartości}.
+Było ich łącznie 144.
+
+W sumie, na tym etapie wykonano pięć uruchomień heurystyki dla każdego z 181 zestawów parametrów, dla każdego z problemów osobno.
+
+\subsubsection*{Wyniki}
+
+Rezultaty przeprowadzonych eksperymentów zostaną przedstawione osobno dla każdego z problemów.
 
 \paragraph{Problem komiwojażera}
 
+W tabeli \ref{table:tsp_results_summary} i na wykresie \ref{figure:tsp_results_summary} przedstawiono zestawienie najlepszych wyników różnych heurystyk.
+Heurystyce SexualGA poświęcono dwa wiersze, pokazujące dwa najlepsze zestawy parametrów, które jednocześnie pokazują sytuacje w której oba operatory wyboru są takie same lub różne.
+Dla algorytmu DSEA przeznaczono 6 wierszy. 
+Pierwsze 4 to najlepsze wyniki dla uogólnionego operatora selekcji płciowej.
+Ponadto są to sytuacje zarówno z dwoma różnymi i dwoma takimi samymi operatorami wyboru, jak i z różnym podejściem do płci rodziców.
+Ostatnie dwa wiersze poświęcone są na najlepsze wyniki dla operatora haremowego.
+Równocześnie są to zestawy parametrów z dwoma różnymi lub takimi samymi operatorami wyboru alfa i beta.
 
+\newpage
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
-	\caption{My caption}
-	\label{my-label}
+	\caption{Najlepsze wyniki różnych heurystyk dla problemu komiwojażera, pokazane na wykresie \ref{figure:tsp_results_summary} \label{table:tsp_results_summary}}
 	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
 		\hline
 		\multicolumn{1}{|c|}{\multirow{2}{*}{{\bf Nr.}}} &\multicolumn{1}{c|}{\multirow{2}{*}{{\bf Heurystyka}}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{2}{c|}{\multirow{2}{*}{{\bf Ocena}}} \\
@@ -309,24 +394,25 @@ Należy pamiętać, że algorytm ewolucyjny to heurystyka losowa, więc wynik dl
 %	\end{tabular}
 %\end{table}
 
-\begin{figure}
+\begin{figure}[H]
 	\centering
 	\graph{tsp_results_summary.tex}
+	\caption{Najlepsze wyniki różnych heurystyk dla problemu komiwojażera, przedstawione w tabeli \ref{figure:tsp_results_summary}. Niższe słupki oznaczają lepsze wyniki. \label{figure:tsp_results_summary}}
 \end{figure}
 
-\todo{słupki i tabela z porównaniem plain/gga/sga/general true/false/harem}
+Pełne zestawienie wyników można znaleźć w dodatku \ref{appendix:full_results}.
 
-W tabeli \ref{table:tsp_results_dsea_harem} przedstawiono 12 najlepszych wyników uzyskanych przy użyciu konfiguracji \ref{config:dsea_harem}.
-Zestawienie pełnych wyników można znaleźć w dodatku \ref{appendix:full_results}.
 
-Można zaobserwować, że heurystyka działała najskuteczniej, kiedy jeden lub oba operatory wyboru były takie same jak użyty w operatorze selekcji naturalnej.
-Ponadto, najlepsze wyniki uzyskano dla większych liczb osobników alfa i beta.
+Najefektywniejszy okazał się być standardowy algorytm ewolucyjny.
+Niewiele gorsze wyniki osiągnął algorytm DSEA z uogólnionym operatorem selekcji płciowej, korzystający z tego samego operatora wyboru dla obu płci, co operator selekcji naturalnej, tzn. operatora ruletkowego.
+Nieco gorzej zadziałała heurystyka DSEA korzystająca z uogólnionego operatora selekcji płciowej używającego operatorów ruletkowego i losowego. Jeszcze niższe wyniki osiągnęła heurystyka DSEA z haremowym operatorem selekcji płciowej. Najgorzej poradziły sobie heurystyki SexualGA i GGA.
 
-Warto zauważyć, że najlepszy i najbardziej stabilny wynik uzyskano wybierając osobniki alfa operatorem ruletkowym, a osobniki beta i partnerów losowym.
-Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a osobniki alfa mają najbardziej korzystne cechy.
+Żadna ze zbadanych heurystyk nie przyniosła lepszych wyników niż standardowy algorytm ewolucyjny. 
+Heurystyka DSEA okazała się lepsza od istniejących heurystyk GGA i SexualGA. 
+Druga z nich dała lepsze wyniki niż GGA jeżeli używała dwóch takich samych operatorów wyboru, jednak po zastąpieniu jednego z nich operatorem losowym otrzymano gorsze wyniki.
 
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:tsp_results_dsea_harem}}
+\begin{table}[H]
+	\caption{Wyniki metaheurystyki DSEA z operatorem haremowym \label{table:tsp_results_dsea_harem}}
 	\centering
 	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
 		\hline
@@ -335,11 +421,19 @@ Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a
 	\end{tabular}	
 \end{table}
 
+Można zaobserwować, że heurystyka działała najskuteczniej, kiedy jeden lub oba operatory wyboru były takie same jak użyty w operatorze selekcji naturalnej.
+Ponadto, najlepsze wyniki uzyskano dla większych liczb osobników alfa i beta.
+
+Warto zauważyć, że najlepszy i najbardziej stabilny wynik uzyskano wybierając osobniki alfa operatorem ruletkowym, a osobniki beta i partnerów losowym.
+Może to oznaczać, że drastyczna selekcja rodziców nie jest nieuzasadniona, a osobniki alfa mają najbardziej korzystne cechy.
+
 Wykres \ref{figure:tsp_male_avg} przedstawia średnią funkcję oceny dla różnych liczb samców.
 Liczba ta została obliczona jako $\lceil \param{liczbaAlfa} + \param{wspBeta} \times 50 \rceil$, ponieważ $\param{rozmiarPopulacji}$ wynosił 50.
-Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wynikami, z czego można wnioskować, że to operatory wyboru (losowy lub ruletkowy w większości przypadków) decydowały o skuteczności.
+Nie udało się zaobserwować żadnej jednoznacznej zależności między tą liczbą, a wynikami, z czego można wnioskować, że to operatory wyboru (losowy lub ruletkowy w większości przypadków) decydowały o skuteczności.
 
-\begin{figure}
+\newpage
+
+\begin{figure}[H]
 	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:tsp_male_avg}}
 	\centering
 	\graph{tsp_male_avg.tex}
@@ -347,23 +441,30 @@ Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wyn
 
 \paragraph{Problem plecakowy}
 
-\begin{figure}
-	\centering
-	\graph{knapsack_results_summary.tex}
-%	\customImg{graphs/knapsack_results_summary.png}
-\end{figure}
+W tabeli \ref{table:knapsack_results_summary} i na wykresie \ref{figure:knapsack_results_summary} przedstawiono podumowanie wyników różnych heurystyk. 
+W wierszach znajdują się wyniki dla odpowiednich parametrow, pokrywające się znaczeniem z tymi z tabeli \ref{table:tsp_results_summary} przedstawiającej wyniki dla problemu komiwojażera.
+Co ciekawe, w niektórych sytuacjach (wiersz 4. i wiersz 10.) tam, gdzie dla problemu plecakowego użyto losowego operatora wyboru zastosowano tym razem operator turniejowy (o rozmiarze turnieju równym 2).
 
+Najlepsze wyniki udało się uzyskać przy pomocy heurystyki DSEA. 
+Najniższy z nich znaleziono korzystając z uogólnionego operatora wyboru nie wymuszającego różnych płci rodziców i dwukrotnie korzystającego z ruletkowego operatora wyboru, używanego też przez operator selekcji naturalnej.
+Różnice między wynikami DSEA są jednak zbyt małe, żeby uważać to konkretne rozwiązanie za znacząco lepsze.
 
-\begin{figure}
-	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:knapsack_male_avg}}
-	\centering
-	\graph{knapsack_male_avg.tex}
-\end{figure}
+Pozostałe metody sprawdziły się w ogólności gorzej.
+Warto zauważyć, że jedynie SexualGA korzystające z tego samego operatora selekcji płciowej co DSEA w najlepszym przypadku osiągnęło lepsze rezultaty niż standardowy algorytm ewolucyjny.
+Mimo to, w tym przypadku działanie heurystyki było o wiele mniej stabilne, ponieważ odchylenie standardowe było ponad 6,6 raza większe niż dla standardowego algorytmu ewolucyjnego.
 
-\begin{table}[h]
+Można podejrzewać, że w tym przypadku selekcja naturalna była ,,za słaba'' i za wolno odrzucała mało przydatne rozwiązania.
+Po dodaniu dodatkowego członu, dodatkowo zmniejszającego szanse słabo dopasowanych osobników na wydanie potomstwa, efektywność wydawała się wzrosnąć.
+Takiego efektu nie zaobserwowaliśmy dla SexualGA ponieważ tam eksplorację przestrzeni rozwiązań zakłócał losowy operator selekcji naturalnej.
+
+Przy pomocy haremowego operatora wyboru uzyskano drugi i czwarty najlepszy wynik.
+Jak było wcześniej wspomniane, różnice w tej części rankingu są zbyt mało znaczące, aby z nich wnioskować.
+Warto zauważyć, że oceny tych wyników mają największe odchylenia standardowe wśrod wyników DSEA.
+Są one jednak od 3 do ponad 8 razy mniejsze niż w przypadku innych heurystyk.
+
+\begin{table}[H]
 	\centering
-	\caption{My caption}
-	\label{my-label2}
+	\caption{Najlepsze wyniki różnych heurystyk dla problemu plecakowego, pokazane na wykresie \ref{figure:knapsack_results_summary} \label{table:knapsack_results_summary}}
 	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
 		\hline
 		\multicolumn{1}{|c|}{\multirow{2}{*}{{\bf Nr.}}} & \multicolumn{1}{c|}{\multirow{2}{*}{{\bf Heurystyka}}} & \multicolumn{1}{c|}{{\bf Op.selekcji}} & \multicolumn{1}{c|}{{\bf Op.selekcji}} & \multicolumn{2}{c|}{\multirow{2}{*}{{\bf Ocena}}} \\
@@ -402,8 +503,17 @@ Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wyn
 %	\end{tabular}
 %\end{table}
 
-\begin{table}[h]
-	\caption{Wyniki heurystyki DSEA z operatorem haremowym \label{table:knapsack_results_dsea_harem}}
+\begin{figure}[H]
+	\centering
+	\graph{knapsack_results_summary.tex}
+%	\customImg{graphs/knapsack_results_summary.png}
+	\caption{Najlepsze wyniki różnych heurystyk dla problemu plecakowego, przedstawione w tabeli \ref{figure:knapsack_results_summary}. Wyższe słupki oznaczają lepsze wyniki. \label{figure:knapsack_results_summary}}
+\end{figure}
+
+\newpage
+
+\begin{table}[H]
+	\caption{Wyniki metaheurystyki DSEA z operatorem haremowym \label{table:knapsack_results_dsea_harem}}
 	\centering
 	\begin{tabular}{|l|l|l|l|r@{$\pm$}l|}
 		\hline
@@ -411,6 +521,47 @@ Jak widać, nie ma żadnej jednoznacznej zależności między tą liczbą, a wyn
 		\insertData{knapsack_d_top}
 	\end{tabular}	
 \end{table}
+
+W tabeli \ref{table:knapsack_results_dsea_harem} przedstawiono 12 najlepszych wyników heurystyki DSEA korzystającej z haremowego operatora selekcji płciowej.
+Można zauważyć, że wyniki są na dość niskim poziomiem a pierwsze trzy do pięciu z najlepszych jest podobnych do pozostałych wyników heurystyki DSEA.
+
+Ponadto, rozwiązując problem komiwojażera najlepsze wyniki osiągano korzystając jedynie z operatora ruletkowego i losowego, w różnych kombinacjach.
+Przy rozwiązywaniu tego problemu dość często korzysta się również z operatora turniejowego.
+Cztery z tych wyników korzystają z rozmiaru turnieju równego 2, a pozostałe dwa z rozmiaru równego 3, jednak jest to zbyt mała próbka danych, żeby wnioskować o jakichś proporcjach efektywności działania i wartości tego parametru.
+Jeśli jednak zauważy się, że operator turniejowy używany był głównie w sytuacjach w których współczynnik beta był równo 0, a więc operator ten nie był w ogóle wykorzystywany, liczby te zmaleją do dwóch wyników z których każdy miał inny rozmiar turnieju (2 lub 3).
+Są to dość niskie wyniki stojące daleko w rankingu, gorsze niż wyniki DSEA z uogólnionym operatorem selekcji płciowej, jednak wciąż lepsze niż wyniki pozostałych heurystyk.
+
+\newpage
+
+\begin{figure}[H]
+	\caption{Wykres średniej oceny od łącznej liczby osobników alfa i beta \label{figure:knapsack_male_avg}}
+	\centering
+	\graph{knapsack_male_avg.tex}
+\end{figure}
+
+Na rysunku \ref{chapter:research} znajduje się wykres średniej oceny uruchomień w zależności od łącznej liczby samców (tj. osobników alfa i beta) w nich wykorzystanej.
+Jest ona obliczana podobnie jak dla problemu komiwojażera, jednak tym razem $\param{rozmiarPopulacji}=60$.
+Podobnie jak dla poprzedniego problemu, tu również nie da się zauważyć znaczącej zależności między tymi wartościami.
+
+\paragraph{Podsumowanie}
+
+Na tym etapie eksperymentów nie udało się znaleźć optimum globalnego.
+Dla problemu komiwojażera znaleziono punkty dające zadowalające, jednak nie optymalne wyniki.
+Tymczasem dla problemu plecakowego udało się znaleźć punkty o wartości kryterium bardzo bliskich wartości optimum.
+
+Porównano cztery wybrane metody optymalizacji.
+Dla problemu komiwojażera najlepszy okazał się klasyczny algorytm ewolucyjny, następnie DSEA, a na końcu heurystyki GGA i SexualGA.
+Dla problemu plecakowego najlepsza była heurystyka DSEA, a standardowy algorytm ewolucyjny, SexualGA i GGA były na zbliżonym poziomie.
+
+Dla obu problemów lepsze wyniki osiągnięto przy pomocy uogólnionego operatora selekcji płciowej, niż operatora haremowego.
+W obu przypadakch najlepszy wynik spośród nich dawało użycie dwóch operatorów ruletkowych oraz ignorowanie cechy płci.
+W ogólności operator sparametryzowany tak aby tą cechę ignorował daje nieznacznie lepsze wyniki niż operator sparametryzowany tymi samymi operatorami, ale wymuszający różną płeć rodziców.
+
+Przy rozwiązywaniu problemu komiwojażera żadne z alternatywnych podejść nie było lepsze niż klasyczny algorytm ewolucyjny.
+Jednakże dla problemu plecakowego udało się znacząco poprawić wyniki.
+W tej sytuacji dodanie drugiego operatora selekcji wykorzystywanego do wyboru rodziców powoduje poprawę wyników.
+Dzieje się tak jednak tylko wtedy, kiedy co najmniej jeden zastosowany operator wyboru jest taki sam jak zastosowany w operatorze selekcji naturalnej.
+
 
 
 \end{document}

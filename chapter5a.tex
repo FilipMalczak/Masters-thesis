@@ -1,14 +1,14 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\chapter{Eksperymenty} \label{chapter:experiments}
+\chapter{Przeprowadzone badania} \label{chapter:experiments}
 
 Niniejsza praca ma na celu zbadanie i porównanie różnych podejść do zagadnienia płci wykorzystywanych w algorytmach ewolucyjnych.
 Aby to osiągnąć zaimplementowano metody opisane w poprzednim rozdziale i przeprowadzono zestaw eksperymentów, których wyniki zostały porównane.
 
 Ten rozdział zaczyna się od prezentacji wybranych problemów optymalizacji, na których przeprowadzone zostały badania. Kolejna sekcja zawiera opis implementacji badanych metod. Następnie omówione są procedury wykorzystywane przy eksperymentach. Całość zamknięta jest podsumowaniem ich przebiegu i przedstawieniem wyników.
 
-\section{Wybrane problemy optymalizacji}
+\section{Wybrane problemy testowe}
 
 Aby zbadać jakość działania wybranych metod zaimplementowano i podjęto próbę rozwiązania dwóch problemów optymalizacji. 
 Były to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
@@ -42,6 +42,16 @@ Ponadto, problem plecakowy to zadanie optymalizacji z ograniczeniami, których n
 W tej sekcji opisane są operatory i ich implementacje wykorzystywane podczas przeprowadzania eksperymentów. 
 Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zarzymania, a kolejne dwie - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
 
+\subsection{Utworzona biblioteka programistyczna}
+
+Aby zbadać skuteczność wybranych metod potrzebna była ich implementacja.
+Metaheurystyka DSEA pozwala na zasymulowanie pozostałych wybranych metod, więc to ją właśnie zaimplementowano.
+W wyniku tego powstała biblioteka programistyczna w języku Groovy 2.3. Jest to język działający w oparciu o maszynę wirtualną Java, a biblioteki w nim pisane są automatycznie dostępne dla wszystkich języków działających w tej technologii, łącznie z samym językiem Java.
+Poza samym algorytmem zamplementowano również reprezentacje i operatory genetyczne dla dwóch opisanych wyżej problemów.
+Ponadto, powstał zestaw operatorow selekcji płciowej, naturalnej oraz operatorów wyboru opisanych w kolejnych podrozdziałach.
+
+Dodatkowo, prócz biblioteki powstał zestaw skryptów w języku Groovy pozwalających na utrwalanie wyników i powracanie do przerwanych badań, oraz opisujących wykonanie i analizę wyników wszystkich eksperymentów potrzebnych w tej pracy.
+
 \subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
 
 Niezależnie od tego jaki problem jest rozwiązywany za pomocą algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
@@ -49,7 +59,7 @@ W tym rozdziale opisane zostaną operatory wyboru oraz kryterium stopu, oraz zes
 
 \subsubsection{Operatory wyboru}
 
-Jak zostało zdefiniowane w podsekcji \ref{subsection:new_natSel}, zadaniem operatora wyboru jest zwrócenie pojedynczego elementu ze zbioru osobników.
+Jak zostało zdefiniowane w podrozdziale \ref{subsection:new_natSel}, zadaniem operatora wyboru jest zwrócenie pojedynczego elementu ze zbioru osobników.
 W standardowych algorytmach ewolucyjnych powszechnie używane są operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}, korzystające z tego operatora w celu wybrania każdego ze zwracanych osobników.
 Ponadto, operatory wykorzystywane w heurystyce DSEA również korzystają z tej abstrakcji.
 
@@ -215,7 +225,7 @@ Wynikiem działania operatora jest znaleziony w ten sposób najlepszy osobnik sp
 
 \subsubsection{Kryterium stopu}
 
-Jak zostało opisane w podsekcji \ref{subsection:stop} zadaniem kryterium stopu jest przerwanie działania heurystyki w wybranym momencie.
+Zadaniem kryterium stopu jest przerwanie działania heurystyki w wybranym momencie.
 Ma to na celu ograniczenie czasu działania procesu do skończonej wartości.
 
 Najprostszą implementacją tego warunku jest zatrzymanie heurystyki po przetworzeniu określonej liczby pokoleń.
@@ -374,7 +384,7 @@ Zostało to zobrazowane na rysunku \ref{figure:tsp_crossover}, gdzie na górze p
 	\draw[ultra thick] (1.5, -4) -- (1.5, -7);
 	
 	% operator arrow
-	\draw [->, thick] (2, -2)  -- (2, -4) node[right, midway]{$\param{opKrzyzowania}_{TSP}$};
+	\draw [->, thick] (2, -2)  -- (2, -4) node[right, midway]{operator krzyżowania};
 	
 	\end{tikzpicture}
 \end{figure}
@@ -419,7 +429,13 @@ Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
 	\draw[ultra thick] (6.5, -3) -- (6.5, -5);
 	
 	% operator arrow
-	\draw [->, thick] (4.5, -1)  -- (4.5, -3) node[right, midway]{$\param{opMutacji}_{TSP}$};
+	\draw [->, thick] (4.5, -1)  -- (4.5, -3) node[right, midway]{operator mutacji};
+	
+	%swap
+	\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
+	(3, -0.5) to (6, -0.5);
+	\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
+	(4, -0.5) to (5, -0.5);
 	
 	\end{tikzpicture}
 \end{figure}
@@ -457,7 +473,7 @@ nadmiar(x) = &\begin{cases}
 \end{align}
 
 W tej pracy wykorzystano zbiór \emph{medium} \cite{knapsack_data}, opisujący 100 przedmiotów i maksymalny rozmiar plecaka wynoszący 27.
-Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1137, co oznacza, że wybrane przedmioty mają łączny koszt 1137 i ograniczenie na rozmiar nie jest przekroczone.
+Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1173, co oznacza, że wybrane przedmioty mają łączny koszt 1173 i ograniczenie na rozmiar nie jest przekroczone.
 
 Zastosowano standardowy operator krzyżowania dla wektorów binarnych, opisany w rozdziale \ref{section:general_idea}, zobrazowany rysunkiem \ref{vector:example_crossover}.
 Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamianie ich drugich części w celu uzyskania potomków.

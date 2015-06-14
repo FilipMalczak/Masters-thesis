@@ -8,9 +8,11 @@ set boxwidth 0.75
 set border 3
 set xrange [0:11]
 set yrange [0:80000]
-set key outside reverse Left top right
+set key outside reverse Left top right title "Heurystyka:"
 set ytics border nomirror
 unset xtics
+set ylabel "Najniższa średnia ocen"
+#set ylabel "\\rotatebox{90}{Ocena}"
 #plot 'data/tsp_result_summary.dat' u 1:($3+700):2 w labels left rotate by 75, \
 #'' u 1:3 w boxes fs solid 1
 
