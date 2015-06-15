@@ -4,16 +4,31 @@
 \chapter{Wnioski i spostrzeżenia}
 
 Spośród dwóch zbadanych problemow w jednym heurystyka DSEA dała najlepsze rezultaty, a w obu lepsze niż pozostałe heurystyki inne niż klasyczny algorytm ewolucyjny.
-Można z tego wnioskować, że dla wybranych klas problemow dodanie dodatkowego operatora selekcji przynosi pozytywne skutki.
+Można z tego wnioskować, że dla wybranych klas problemow dodanie dodatkowego operatora selekcji jest najlepszym z porównanych podejść do zagadnienia płci.
 
 W ogólności, operator selekcji płciowej działa lepiej, jeżeli korzysta z tego samego operatora wyboru co operator selekcji naturalnej.
+Można podejrzewać, że dodatkowy operator selekcji zwiększa różnice między prawdopodobieństwami wydania potomstwa osobników gorzej i lepiej dopasowanych.
+Co za tym idzie przeszukiwanie przestrzeni jest znacznie bardziej rygorystyczne.
+W wyniku tego w niektórych przypadkach, jak dla problemu plecakowego, otrzymywane są lepsze rezultaty.
+W innych przypadkach, jak dla problemu komiwojażera, takie zjawisko powoduje zbyt drastyczną selekcję, czego skutkiem są wyniki gorsze niż dla klasycznego algorytmu ewolucyjnego.
 
 Algorytm DSEA jest na tyle ogólny, zeby można było skutecznie zbadać i porównać różne istniejące rozwiązania przy jego użyciu.
+Ponadto w ramach eksperymentów wyniki osiągane przez DSEA korzystające z uogólnionego rozwiązania opartego o heurystyki SexualGA i GGA udało się osiągnąć lepsze wyniki niż dla obu tych metod.
 
-Haremowy operator selekcji płciowej sprawdza się gorzej niż taki uogólniony operator.
-Można to stwierdzić jedynie w sytuacji, w ktorej operator wyboru partnerów jest losowy.
+Haremowy operator selekcji płciowej sprawdza się gorzej niż uogólniony operator.
+Można to stwierdzić jedynie w sytuacji, w której operator wyboru partnerów jest losowy.
 Liczba osobników alfa i beta wydaje się nie mieć większego wpływu na efektywność heurystyki.
+Mimo to wiele z najlepszych wyników dla obu problemów uzyskano dla małej liczby osobników beta lub wręcz ich braku.
+Można podejrzewać, że osobniki alfa mają większe znaczenie niż osobniki beta.
 
+Zauważono bardzo mocny związek między operatorem selekcji płciowej, a operatorem selekcji naturalnej.
+Dla obu badanych problemów określono, że operator ruletkowy daje najlepsze rezultaty w sytuacji w której rodzice wybierani są losowo.
+W trakcie badań wszystkie metody dawały najlepsze rezultaty korzystając z tego samego operatora.
+
+Można wywnioskować, że strategia doboru płciowego nie ma w gruncie rzeczy znaczenia, a pozytywny rezultat przynosi zwiększenie dysproporcji między prawdopodobieństwem krzyżowania się źle, a dobrze dopasowanych osobników.
+Pierwsza przesłanka ku temu to fakt, iż działanie heurystyki jest wrażliwe na dobór operatora wyboru, a nie liczbowych i binarnych parametrów operatorów.
+Kolejna to to, że heurystyki SexualGA i GGA korzystały z tylko jednego z tych dwóch operatorów selekcji, w roli drugiego używając operatora losowego.
+Spowodowało to gorsze wyniki niż osiągnięte przez DSEA, które korzystało z dwóch nielosowych operatorów selekcji.
 
 
 
