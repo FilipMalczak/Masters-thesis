@@ -3,5 +3,67 @@
 \begin{document}
 \chapter{Przegląd literatury} \label{chapter:literature}
 
-%mój workflow wyglądał tak, że szukałem z 2-3 prac przeglądowych na temat (słowo kluczowe survey), czytałem i wypisywałem nazwy rozwiązań/algorytmów/whatever wraz z tym, w której pracy wystąpiły i jaki miały numerek referencji. potej je sortuję po tym, jak mi się podobają i czy mają źródła, czytam właściwe źródła już na bieżąco pisząc w pracy co uznam za stosowne
+Badania nad algorytmami ewolucyjnymi wykorzystującymi płeć trwają już od pewnego czasu.
+Niniejszy rozdział poświęcony jest na przegląd prac naukowych które mają temat podobny do badanego w tej pracy.
+Większość pozycji zajmuje się optymalizacja jednokryterialną wykorzystując dość podobne rozwiązania.
+Zostaną one opisane na początku tego rozdziału.
+Jedna z prac znacząco różni się od innych, ponieważ zamiast analizować jakieś miary skuteczności obliczeń ewolucyjnych, bada ona zachowanie podgrup sztucznie utworzonej populacji.
+Zostanie ona poruszona w dalszej kolejności.
+Ostatnie dwie opisane prace traktują o optymalizacji wielokryterialnej i stosują podobne podejście.
+
+
+W pracy \cite{GGA} przedstawiono heurystykę GGA.
+Została ona wykorzystana do rozwiązania problemu partycjonowania grafu.
+Sprowadzono 
+GGA czyli algorytm genetyczny oparty o płeć (\emph{ang. gender-based genetic algorithm}) to algorytm genetyczny w którym każdy osobnik w populacji miał cechę określającą jego płeć.
+Była ona wykorzystywana jedynie podczas krzyżowania.
+Algorytm GGA losował każdego z rodziców z osobnego podzbioru populacji, zawierającego osobniki jednej płci.
+
+Pozycja \cite{SexualGA} opisuje kolejną heurystykę SexualGA.
+W tej pracy nie badano wyników heurystyki, a ,,ciśnienie selekcyjne'' (\emph{ang. selection pressure}).
+Termin ten oznacza pewną miarę prawdopodobieństwa tego, że pojedynczy osobnik zostanie rodzicem w danym pokoleniu.
+Sama heurystyka SexualGA nie wymagała użycia cechy osobnika mówiącej o jego płci.
+W zamian wykorzystywała operator selekcji do wyboru rodziców zamiast do selekcji naturalnej.
+Ponadto, każdy z rodziców był wybierany za pomocą innego operatorem.
+
+W pracy \cite{ansotegui} wykorzystano zmodyfikowany algorytm ewolucyjny do dostrajania innych heurystyk.
+Przedstawiona tutaj heurysyka nazywała się tak samo jak opisana w pracy \cite{GGA} - GGA, rozwijane i tłumaczone w ten sam sposób.
+Nadawała ona każdemu z osobników cechę płci.
+Podczas krzyżowania wybierani byli rodzice różniący się płcią.
+Jeden z nich był wybierany elitystycznie, a drugi losowo.
+Dodatkowo, zamiast selekcji naturalnej zasymulowano tutaj starzenie się osobników.
+Jednostki które były w populacji więcej niż określoną liczbę pokoleń były z niej odrzucane.
+
+Praca \cite{sanchez} przedstawia badania nad nienazwanym rozwiązaniem w którym osobnicy mają cechę płci.
+Rodzice jednej z tych płci są wybierana za pomocą operatora selekcji. 
+Drugie z rodzicow sa wybierani tym samym operatorem, jednak ich ocena jest obliczana jako pewna funkcja oceny używanej przy płci pierwszej.
+Funkcja ta bierze pod uwagę wiek osobnika oraz pewną miarę tego jak dużą szansę drugi z rodziców ma na poprawienie jakości pierwszego rodzica poprzez krzyżowanie.
+Podejście to zostało zbadane dla problemu komiwojażera oraz dwóch problemach przeznaczonych tylko do testów, opisanych funkcjami.
+
+Pozycja \cite{simulating} różni się znacząco od wyżej opisanych.
+Nie badano w niej efektywności w rozwiązywaniu problemu przy pomocy heurystyki, a raczej ewolucję pewnego systemu w którym pewne grupy osobników ze sobą współżyją.
+Grupy te powstały przez podział populacji na 4 płcie: męską, żeńską, samo-zapładniającą (\emph{ang. self-fertilizing}) oraz obojniacką (\emph{ang. hermaphrodite}).
+Osobnicy każdej z płci mogli dobierać się w pary jedynie z osobnikami wybranych płci.
+Osobniki trzeciej z płci mogły dobierać się w pary z każdym, łącznie z osobnikami swojej płci.
+Przedstawiciele pozostałych płci mogli wydawać potomstwo z osobnikiem dowolnej płci niż jego.
+Ponadto, wprowadzono mechanizm mający zapobiec sytuacjom w których któraś z płci jest źle reprezentowana.
+Losowe osobniki które przez pewną liczbę pokoleń nie wydawały potomstwa miały szansę z pewnym prawdopodobieństwem zmienić swoją płeć.
+
+Ponadto, znaleziono dwie prace: \cite{msga} oraz \cite{allenson}.
+Obie opisywały bardzo podobne podejście do optymalizacji wielokryterialnej.
+Pierwsza z nich opisywała heurystykę MSGA (\emph{ang. Multisexual Genetic Algorithm}, czyli wielopłciowy algorytm genetyczny).
+Przypisywała ona każdemu osobnikowi cechę płci.
+Możliwych wartości tej cechy było tyle ile kryteriów w rozwiązywanym problemie.
+Każda z nich miała do siebie przypisane jedno kryterium.
+Osobniki z tą wartością płci były oceniane przy pomocy tej wybranej funkcji.
+Poza tym, podobnie jak w GGA wymuszano różne płci rodziców, wybierając ich losowo.
+W pracy \cite{msga} zbadano działanie MSGA dla dwóch testowych parach funkcji analitycznych.
+
+Praca \cite{allenson} opisuje bardzo podobne podejście, nie nadając mu nazwy.
+Jedyna różnica względem MSGA to zastosowanie atraktorów płciowych (\emph{ang. sexual attractors}).
+Są to czynniki wpływające na prawdopodobieństwo dobrania się w parę z innym osobnikiem.
+W opisywanej pracy zasymulowano to poprzez wykorzystanie dodatkowej cechy atrakcyjności, która dla rozwiązań początkowych jest tożsama z ranga.
+Zbadano różne podejścia do dziedziczenia cechy, decydując się ostatecznie na obliczanie wypadkowej atrakcyjności.
+Taka heurystyka została zastosowana do planowania ścieżki dla rury, oceniając rozwiązanie zarówno po długości rury jak i po szkodliwym wpływie na środowiska.
+
 \end{document}

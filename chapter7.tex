@@ -2,4 +2,42 @@
 
 \begin{document}
 \chapter{Dalsze drogi rozwoju}
+
+Proponowane operatory haremowy oraz uogólniający heurystyki GGA i SexualGA osiągnęły lepsze wyniki niż wspomniane heurystyki.
+W jednym z przypadków nie udało się jednak osiągnąć lepszych wyników niż klasyczny algorytm ewolucyjny.
+Ponadto, operator haremowy działał równie dobrze, lub gorzej od uogólnionego.
+
+W niniejszej pracy nie zbadano wpływu operatora wyboru partnerów na wyniki DSEA z operatorem haremowym.
+Być może użycie czegoś innego niż operator losowy spowodowałoby poprawę wyników.
+Ponadto, być może określając ilość osobników alfa jako procent rozmiaru populacji można osiągnąć lepsze wyniki dla wyższych takich wartości.
+Warto również zbadać znacznie wyższe wartości współczynnika beta.
+Nie jest wykluczone, że dla większej liczby osobników beta role się zamienią i to beta będą przyczyniać się do jakości wyników.
+
+Operatory selekcji płciowej przedstawione w tej pracy nie wyczerpują wszystkich strategii dostępnych naturze.
+Potencjalnie dobrym pomysłem mogłoby być dobieranie się osobników w pary tak, aby rodzice byli jak najbardziej odmienni genetycznie od siebie.
+Wymagałoby to okreslenia pewnej miary odległości między rozwiązaniami, wykorzystywanej podczas wyboru.
+
+Innym pomysłem jest rozszerzenie operatora haremowego o przypisaniu roli osobnika alfa aż do wirtualnej ,,śmierci'' tego osobnika.
+Do reprezentacji osobnika należałoby dodać bit oznaczający fakt bycia osobnikiem alfa.
+Bit ten nie byłby dziedziczony i dopóki nie zostałby ręcznie zapalony miałby wartość 0 (fałsz).
+Na etapie selekcji płciowej populacja byłaby przeszukiwana pod kątem osobników z zapalonym bitem alfa.
+Jeżeli byłoby ich za mało, przy pomocy odpowiedniego operatora wyboru losowano by odpowiednią ich ilość i oznaczano jako osobniki alfa.
+Osobniki beta i partnerzy byliby wybierani niezależnie w każdym pokoleniu.
+Zapalone bity znikałyby stopniowo z populacji z powodu zastosowania selekcji płciowej.
+
+Ponadto, istnieje wiele operatorów wyboru które nie zostały zbadane.
+Przykładem może być prosty operator elitystyczny lub operator turniejowy o większym rozmiarze turnieju.
+W inny sposób można również ważyć prawdopodobieństwa wybrania każdego z osobników w przypadku operatora ruletkowego.
+
+Ponadto, w pracy zbadano wpływ różnych kombinacji operatorów selekcji na działanie heurystyk korzystających z tych samych wartości pozostałych parametrów.
+Być może po dostrojeniu każdej heurystyki z osobna otrzymanoby inne wyniki.
+
+Zaproponowane operatory dały dość dobre wyniki, w niektórych przypadkach nawet lepsze od podstawowej wersji algorytmu ewolucyjnego.
+Istnieje możliwość, że wykorzystanie opisanych rozwiązań do problemów optymalizacji wielokryterialnej również przyniosłoby pozytywne skutki.
+
+Warto pamiętać o tym, że algorytmy ewolucyjne to tylko jedna z wielu technik obliczeń ewolucyjnych.
+Pomysł operatora selekcji płciowej można zastosować w dowolnej z tego typu technik w której wykorzystywane jest krzyżowanie.
+Ciekawym pomysłem byłoby zbadanie warunków środowiskowych które zasymulowane w ramach sztucznego życia podtrzymałyby różne strategie selekcji płciowych.
+
+
 \end{document}
