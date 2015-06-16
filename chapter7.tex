@@ -9,15 +9,15 @@ Ponadto, operator haremowy działał równie dobrze, lub gorzej od uogólnionego
 
 W niniejszej pracy nie zbadano wpływu operatora wyboru partnerów na wyniki DSEA z operatorem haremowym.
 Być może użycie czegoś innego niż operator losowy spowodowałoby poprawę wyników.
-Ponadto, być może określając ilość osobników alfa jako procent rozmiaru populacji można osiągnąć lepsze wyniki dla wyższych takich wartości.
+Ponadto, być może określając ilość osobników alfa jako procent rozmiaru populacji można osiągnąć lepsze wyniki dla wyższych wartości.
 Warto również zbadać znacznie wyższe wartości współczynnika beta.
-Nie jest wykluczone, że dla większej liczby osobników beta role się zamienią i to beta będą przyczyniać się do jakości wyników.
+Nie jest wykluczone, że jeśli osobników alfa będzie znacznie mniej, to role się zamienią i to beta będą przyczyniać się do jakości wyników.
 
 Operatory selekcji płciowej przedstawione w tej pracy nie wyczerpują wszystkich strategii dostępnych naturze.
 Potencjalnie dobrym pomysłem mogłoby być dobieranie się osobników w pary tak, aby rodzice byli jak najbardziej odmienni genetycznie od siebie.
 Wymagałoby to okreslenia pewnej miary odległości między rozwiązaniami, wykorzystywanej podczas wyboru.
 
-Innym pomysłem jest rozszerzenie operatora haremowego o przypisaniu roli osobnika alfa aż do wirtualnej ,,śmierci'' tego osobnika.
+Innym pomysłem jest rozszerzenie operatora haremowego o przypisanie roli osobnika alfa aż do wirtualnej ,,śmierci'' tego osobnika.
 Do reprezentacji osobnika należałoby dodać bit oznaczający fakt bycia osobnikiem alfa.
 Bit ten nie byłby dziedziczony i dopóki nie zostałby ręcznie zapalony miałby wartość 0 (fałsz).
 Na etapie selekcji płciowej populacja byłaby przeszukiwana pod kątem osobników z zapalonym bitem alfa.
@@ -27,9 +27,9 @@ Zapalone bity znikałyby stopniowo z populacji z powodu zastosowania selekcji p�
 
 Ponadto, istnieje wiele operatorów wyboru które nie zostały zbadane.
 Przykładem może być prosty operator elitystyczny lub operator turniejowy o większym rozmiarze turnieju.
-W inny sposób można również ważyć prawdopodobieństwa wybrania każdego z osobników w przypadku operatora ruletkowego.
+W inny sposób można również ważyć prawdopodobieństwa wybrania każdego z osobników w przypadku operatora ruletkowego, np. przez kwadrat rangi, lub ocenę rzutowaną na jakiś dodatni przedział.
 
-Ponadto, w pracy zbadano wpływ różnych kombinacji operatorów selekcji na działanie heurystyk korzystających z tych samych wartości pozostałych parametrów.
+Ponadto, w pracy zbadano wpływ różnych kombinacji operatorów selekcji na działanie heurystyk korzystających z tych samych wartości pozostałych parametrów takich jak np. prawdopodobieństwa zastosowania operatorów genetycznych.
 Być może po dostrojeniu każdej heurystyki z osobna otrzymanoby inne wyniki.
 
 Zaproponowane operatory dały dość dobre wyniki, w niektórych przypadkach nawet lepsze od podstawowej wersji algorytmu ewolucyjnego.

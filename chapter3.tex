@@ -14,7 +14,6 @@ Ostatnie dwie opisane prace traktują o optymalizacji wielokryterialnej i stosuj
 
 W pracy \cite{GGA} przedstawiono heurystykę GGA.
 Została ona wykorzystana do rozwiązania problemu partycjonowania grafu.
-Sprowadzono 
 GGA czyli algorytm genetyczny oparty o płeć (\emph{ang. gender-based genetic algorithm}) to algorytm genetyczny w którym każdy osobnik w populacji miał cechę określającą jego płeć.
 Była ona wykorzystywana jedynie podczas krzyżowania.
 Algorytm GGA losował każdego z rodziców z osobnego podzbioru populacji, zawierającego osobniki jednej płci.
@@ -24,7 +23,7 @@ W tej pracy nie badano wyników heurystyki, a ,,ciśnienie selekcyjne'' (\emph{a
 Termin ten oznacza pewną miarę prawdopodobieństwa tego, że pojedynczy osobnik zostanie rodzicem w danym pokoleniu.
 Sama heurystyka SexualGA nie wymagała użycia cechy osobnika mówiącej o jego płci.
 W zamian wykorzystywała operator selekcji do wyboru rodziców zamiast do selekcji naturalnej.
-Ponadto, każdy z rodziców był wybierany za pomocą innego operatorem.
+Ponadto, każdy z rodziców był wybierany za pomocą innego operatora.
 
 W pracy \cite{ansotegui} wykorzystano zmodyfikowany algorytm ewolucyjny do dostrajania innych heurystyk.
 Przedstawiona tutaj heurysyka nazywała się tak samo jak opisana w pracy \cite{GGA} - GGA, rozwijane i tłumaczone w ten sam sposób.
@@ -35,10 +34,11 @@ Dodatkowo, zamiast selekcji naturalnej zasymulowano tutaj starzenie się osobnik
 Jednostki które były w populacji więcej niż określoną liczbę pokoleń były z niej odrzucane.
 
 Praca \cite{sanchez} przedstawia badania nad nienazwanym rozwiązaniem w którym osobnicy mają cechę płci.
-Rodzice jednej z tych płci są wybierana za pomocą operatora selekcji. 
-Drugie z rodzicow sa wybierani tym samym operatorem, jednak ich ocena jest obliczana jako pewna funkcja oceny używanej przy płci pierwszej.
+Rodzice jednej z tych płci są wybierani za pomocą operatora selekcji. 
+Drugie osobniki w każdej parze sa wybierane tym samym operatorem, jednak ich ocena jest obliczana jako pewna funkcja oceny używanej przy płci pierwszej.
 Funkcja ta bierze pod uwagę wiek osobnika oraz pewną miarę tego jak dużą szansę drugi z rodziców ma na poprawienie jakości pierwszego rodzica poprzez krzyżowanie.
-Podejście to zostało zbadane dla problemu komiwojażera oraz dwóch problemach przeznaczonych tylko do testów, opisanych funkcjami.
+Miało to symulować szereg czynników jakie biorą pod uwagę samce wybierając swoje partnerki.
+Podejście to zostało zbadane dla problemu komiwojażera oraz dwóch problemach przeznaczonych tylko do testów, opisanych funkcjami analitycznymi.
 
 Pozycja \cite{simulating} różni się znacząco od wyżej opisanych.
 Nie badano w niej efektywności w rozwiązywaniu problemu przy pomocy heurystyki, a raczej ewolucję pewnego systemu w którym pewne grupy osobników ze sobą współżyją.
@@ -54,16 +54,16 @@ Obie opisywały bardzo podobne podejście do optymalizacji wielokryterialnej.
 Pierwsza z nich opisywała heurystykę MSGA (\emph{ang. Multisexual Genetic Algorithm}, czyli wielopłciowy algorytm genetyczny).
 Przypisywała ona każdemu osobnikowi cechę płci.
 Możliwych wartości tej cechy było tyle ile kryteriów w rozwiązywanym problemie.
-Każda z nich miała do siebie przypisane jedno kryterium.
+Każda z nich miała do siebie przypisane jedną z wielu funkcji oceny.
 Osobniki z tą wartością płci były oceniane przy pomocy tej wybranej funkcji.
 Poza tym, podobnie jak w GGA wymuszano różne płci rodziców, wybierając ich losowo.
-W pracy \cite{msga} zbadano działanie MSGA dla dwóch testowych parach funkcji analitycznych.
+W pracy \cite{msga} zbadano działanie MSGA na dwóch testowych parach funkcji analitycznych.
 
 Praca \cite{allenson} opisuje bardzo podobne podejście, nie nadając mu nazwy.
 Jedyna różnica względem MSGA to zastosowanie atraktorów płciowych (\emph{ang. sexual attractors}).
 Są to czynniki wpływające na prawdopodobieństwo dobrania się w parę z innym osobnikiem.
-W opisywanej pracy zasymulowano to poprzez wykorzystanie dodatkowej cechy atrakcyjności, która dla rozwiązań początkowych jest tożsama z ranga.
-Zbadano różne podejścia do dziedziczenia cechy, decydując się ostatecznie na obliczanie wypadkowej atrakcyjności.
-Taka heurystyka została zastosowana do planowania ścieżki dla rury, oceniając rozwiązanie zarówno po długości rury jak i po szkodliwym wpływie na środowiska.
+W opisywanej pracy zasymulowano to poprzez wykorzystanie dodatkowej cechy atrakcyjności, która dla rozwiązań początkowych jest tożsama z rangą.
+Zbadano różne podejścia do dziedziczenia cechy, decydując się ostatecznie na obliczanie wypadkowej atrakcyjności rodziców.
+Taka heurystyka została zastosowana do planowania ścieżki dla rurociągu, oceniając rozwiązanie zarówno po jego długości jak i po szkodliwym wpływie na środowisko.
 
 \end{document}

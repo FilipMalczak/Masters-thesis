@@ -3,31 +3,32 @@
 \begin{document}
 \chapter{Algorytmy ewolucyjne} \label{chapter:eaDesc}
 
-Ten rozdział ma na celu opisanie zagadnienia algorytmów ewolucyjnych, zaczynając od ogólnych informacji, stopniowo przechodząc do szczegółów.
+Ten rozdział poświęcony jest omówieniu algorytmów ewolucyjnych.
 W pierwszej jego części opisana jest ogólna idea tych heurystyk. 
 Kolejna sekcja skupia się na formalnym opisie poszczególnych pojęć.
-Po niej znajduje się część w której znajdziemy szczegóły idei opisanej na początku, zapisane z użyciem pojęć przedstawionych w sekcji drugiej.
-Całość zostanie zamknięta opisem sposobów oceny i analizy działania algorytmów ewolucyjnych.
+Po niej znajduje się część, w której znajdziemy szczegóły idei opisanej na początku, zapisane z użyciem pojęć przedstawionych w sekcji drugiej.
+Całość zamyka opis sposobów oceny i analizy działania algorytmów ewolucyjnych.
 
 \section{Idea algorytmów ewolucyjnych} \label{section:general_idea}
 
 Podstawowym pojęciem używanym w opisywanej heurystyce jest \emph{osobnik}. 
-Jest to abstrakcja pojedynczego rozwiązania, nawiązująca do pojedynczego żywego stworzenia charakteryzującego się pewnymi cechami które wpływają na prawdopodobieństwo jego przeżycia i wydania potomstwa. 
+Jest to abstrakcja pojedynczego rozwiązania, nawiązująca do pojedynczego żywego stworzenia charakteryzującego się pewnymi cechami, które wpływają na prawdopodobieństwo jego przeżycia i wydania potomstwa. 
 Pojęciem symulującym wpływ cech na prawdopodobieństwo przeżycia jest \emph{funkcja oceny}. 
 Dodatkowo wprowadzamy pojęcie \emph{populacji}, czyli zbioru osobników istniejących w danym momencie w procesie ewolucji.
 
-Realizacją osobnika w heurystyce jest reprezentacja rozwiązania problemu, a realizacją populacji - zbiór rozwiązań, czyli podzbiór przestrzeni rozwiązań.
+Osobnik reprezentuje rozwiązanie problemu, a populacja - zbiór rozwiązań, czyli podzbiór przestrzeni rozwiązań.
 Populację możemy też rozumieć jako zbiór próbek z pewnej podprzestrzeni zbioru rozwiązań.
 
-Przez pojęcie funkcji oceny (nazywanej też kryterium) rozumiemy pewne przyporządkowanie (w idealnej sytuacji - funkcję, jednak nie zawsze jest to możliwe; patrz: rozdział \ref{subsection:specimen_and_foo}) każdemu osobnikowi, czyli rozwiązaniu problemu, jakiejś wartości, na której możemy określić porządek.
+Upraszczając nieco, przez pojęcie funkcji oceny rozumiemy pewne przyporządkowanie (w idealnej sytuacji - funkcję, jednak nie zawsze jest to możliwe) każdemu osobnikowi, czyli rozwiązaniu problemu, jakiejś wartości, na której możemy określić porządek.
 Taka relacja porządku powinna określać czy dane rozwiązanie jest równie dobre lub lepsze niż inne, czy nie.
 
-Standardową realizacją osobnika jest wektor binarny, który sprawdza się w wielu zastosowaniach i jest prosty w realizacji programowej lub sprzętowej. 
+Osobnik najczęściej reprezentwany jest jako wektor binarny.
+Taka postać sprawdza się w wielu zastosowaniach i jest prosty w realizacji programowej lub sprzętowej. 
 Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. 
 Reprezentacja jest jednak uzależniona od rozwiązywanego problemu. 
-Często wykorzystuje się bardziej skomplikowane przedstawienia rozwiązania, jak wektor wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo \cite{gen_prog} (np. dla problemów aproksymacji funkcji, przedstawionych jako zadanie minimalizacji błędu przybliżenia \cite{gen_prog_foo_approx}).
+Często wykorzystuje się bardziej skomplikowane formy, jak na przykład krotka wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo \cite{gen_prog} (np. dla problemów aproksymacji funkcji, przedstawionych jako zadanie minimalizacji błędu przybliżenia \cite{gen_prog_foo_approx}).
 
-Istnieją implementacje i narzędzia do obliczeń ewolucyjnych które rozróżniają pojęcie genotypu osobnika (czyli wewnętrznej reprezentacji rozwiązania, na której stosujemy operatory genetyczne takie jak krzyżowanie i mutacja) i jego fenotypu (czyli reprezentacji zewnętrznej, na podstawie której oceniamy osobnika), jednak jest to jedynie abstrakcja umożliwiająca czytelniejsze zapisanie realizacji odpowiednich pojęć w języku programowania. Niniejsza praca nie wprowadza takiego rozróżnienia, ponieważ nie zmienia ono w żadnym stopniu jakości działania heurystyki i nie jest związane z tematem badań.
+Warto dodać, że istnieją implementacje i narzędzia do obliczeń ewolucyjnych które rozróżniają pojęcie genotypu osobnika (czyli wewnętrznej reprezentacji rozwiązania, na której stosujemy operatory genetyczne takie jak krzyżowanie i mutacja) i jego fenotypu (czyli reprezentacji zewnętrznej, na podstawie której oceniamy osobnika), jednak jest to jedynie abstrakcja umożliwiająca czytelniejsze zapisanie realizacji odpowiednich pojęć w języku programowania. Niniejsza praca nie wprowadza takiego rozróżnienia, ponieważ nie zmienia ono w żadnym stopniu jakości działania heurystyki i nie jest związane z tematem badań.
 
 Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działania algorytmów ewolucyjnych. Formalny opis używanych parametrów i operatorów znajduje się w kolejnej sekcji, wraz z definicją takich pojęć jak np. operator.
 
@@ -40,30 +41,31 @@ Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działani
 \end{figure}
 
 Współczesna nauka dalej nie jest w stanie dać nam odpowiedzi na pytanie ,,skąd wzięło się życie'', a co za tym idzie, nie jesteśmy w stanie zasymulować momentu rozpoczęcia ewolucji.
-Zamiast tego, w heurystykach naśladujących ten proces działanie zaczyna się od wygenerowania losowej populacji, czyli zbioru osobników. 
+Dlatego w heurystykach naśladujących ten proces działanie zaczyna się od wygenerowania losowej populacji. 
 Symuluje to w uproszczony sposób analizę ewolucji od przypadkowego momentu w czasie istnienia gatunku.
-Biorąc pod uwagę, że celem heurystyki nie jest idealnie wierne odtworzenie warunków naturalnych, a optymalizacja, nie wydaje się to być problemem.
 
-Mając zbiór początkowych osobników (czyli rozwiązań naszego problemu) rozpoczynamy proces przeszukiwania ich przestrzeni.
+Po utworzeniu zbioru początkowych osobników (czyli rozwiązań naszego problemu) rozpoczynamy proces przeszukiwania ich przestrzeni.
 Dzieje się to iteracyjnie, co znaczy, że pewien zestaw kroków jest wielokrotnie powtarzany.
 Jedno takie powtórzenie jest nazywane \emph{generacją} lub \emph{pokoleniem}, a składa się na nie kolejno krzyżowanie, mutacja i selekcja naturalna.
-Moment w którym należy przerwać proces optymalizacji jest wybierany przez kryterium przerwania. 
-Nie ma to przełożenia na naturę (jako, że ewolucja teoretycznie nigdy się nie kończy) i jest jedynie narzędziem które ma sprawić, że heurystyka nie będzie działać wiecznie, tylko w skończonym czasie zwróci interesujące nas wyniki.
+Moment w którym należy przerwać proces optymalizacji jest określany przez kryterium zatrzymania. 
+Trudno tu znaleźć analogię do natury.
+Kryterium stopu zapewnia, że heurystyka nie będzie działać wiecznie, tylko w skończonym czasie zwróci interesujące nas wyniki.
 
 Na pojedyncze pokolenie składają się 3 główne kroki: krzyżowanie, mutacja i selekcja. 
 Mają one symulować odpowiednie zjawiska występujące w przyrodzie - kolejno dziedziczenie, mutację i przetrwanie lepiej dopasowanych osobników.
 Pierwsze dwa z nich kontrolują tempo przeszukiwania przestrzeni rozwiązań, a ostatnie steruje przeszukiwaniem tak, aby odnajdywać jak najlepsze rozwiązania. 
 
-Krzyżowanie odbywa się przy pomocy dedykowanego operatora, z częstością określoną odpowiednim prawdopodobieństwem.
-Polega ono na wybraniu losowych par osobników nazywanych rodzicami i dołączeniu do populacji nowych rozwiązań (nazywanych potomstwem), o reprezentacji zbliżonej do reprezentacji rodziców.
+Krzyżowanie odbywa się przy użyciu dedykowanego operatora, z częstością określoną odpowiednim prawdopodobieństwem.
+Polega ono na wybraniu losowych par osobników nazywanych rodzicami.
+Stosuje się na nich operator krzyżowania, którego wyniki są dołączane do populacji.
 Ma to symulować dziedziczenie cech rodziców przez ich potomków.
-Zadaniem krzyżowania jest eksploatacja przestrzeni rozwiązań, poprzez zbadanie punktów, które znajdują się pomiędzy znanymi nam już rozwiązaniami.
-Dzięki temu zagęszczamy próbkowanie podprzestrzeni, którą już zbadaliśmy, czyli dotychczasowej populacji, co ma na celu znalezienie potencjalnych optimów, które mogły zostać przeoczone przez zbyt rzadkie próbkowanie.
+W algorytmach ewolucyjnych zadaniem krzyżowania jest eksploatacja przestrzeni rozwiązań, poprzez zbadanie punktów, które znajdują się pomiędzy znanymi już rozwiązaniami.
+Dzięki temu zagęszcza się próbkowanie podprzestrzeni, co ma na celu znalezienie potencjalnych optimów, które mogły zostać przeoczone przez zbyt rzadkie próbkowanie.
 
-Jedną z popularnych realizacji operatora krzyżowania dla osobnika reprezentowanego jako wektor jest wybranie losowej pozycji w wektorach opisujących rodziców (tzw. punktu przecięcia) i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż. 
+Jedną z popularnych realizacji operatora krzyżowania dla osobnika reprezentowanego jako wektor jest wybranie losowego punktu przecięcia w wektorach opisujących rodziców i zwrócenie 2 osobników powstałych przez zamianę podwektorów od wylosowanej pozycji wzwyż. 
 Na rysunku \ref{vector:example_crossover} zobrazowano działanie takiego podejścia. 
 Wektory $(x_0, \ldots, x_9)$ i $(y_0, \ldots, y_9)$ to przykładowi rodzice. 
-Grubą linią zaznaczono wylosowany punkt przecięcia, wyznaczający podwektory które zostają zamienione. 
+Grubą linią zaznaczono wylosowany punkt przecięcia, wyznaczający zamieniane części wektorów. 
 Wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots x_9)$ są wtedy traktowane jako potomstwo.
 
 \begin{figure}[h]
@@ -91,7 +93,7 @@ Wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots 
 	
 	%operator arrow
 	\draw [->, thick] (4.5, -2.5)  -- (4.5, -4.5); 
-	\node[right] at (4.5, -3.5) {$\param{opKrzyzowania}$};
+	\node[right] at (4.5, -3.5) {operator krzyżowania};
 	
 	%first output
 	\foreach \x in {0,1,...,3}
@@ -110,14 +112,14 @@ Wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots 
 	\end{tikzpicture} 
 \end{figure}
 
-Kolejnym krokiem w każdym pokoleniu jest mutacja, czyli wprowadzenie losowych zmian w losowo wybranych osobnikach. 
-Jest to wykonywane przy pomocy odpowiedniego operatora, z prawdopodobieństwem określającym szansę osobnika na zmutowanie.
+Innym operatorem jest mutacja, czyli wprowadzenie losowych zmian w losowo wybranych osobnikach. 
+peracja ta jest wykonywana z pewnym prawdopodobieństwem określającym szansę osobnika na zmutowanie.
 Zmodyfikowane osobniki w zależności od implementacji są dołączane do populacji, albo zastępują niezmodyfikowane rozwiązania.
-W tej pracy wykorzystano pierwszą z tych opcji, aby nie doprowadzić do sytuacji, w której mutacja pogorszy znane rozwiązanie, które zostanie odrzucone z populacji (ponieważ na jego miejsce wejdzie rozwiązanie zmodyfikowane).
+W tej pracy wykorzystano pierwszą z tych opcji, aby nie doprowadzić do sytuacji, w której mutacja pogorszy znalezione wcześniej rozwiązanie.
 Zadaniem tego kroku jest eksploracja przestrzeni rozwiązań, czyli zbadanie rozwiązań spoza dotychczas spróbkowanej podprzestrzeni.
-W ten sposób heurystyka przeszukuje nowe obszary, które potencjalnie zawierają optimum globalne, a przynajmniej optima lokalne lepsze od dotychczas znalezionych. 
+W ten sposób heurystyka przeszukuje nowe obszary. 
 
-Jedną z popularnych realizacji operatora mutacji dla osobnika reprezentowanego jako wektor bitów jest negacja losowych wartości, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami. Na rysunku \ref{vector:example_mutation} zobrazowano działanie takiego podejścia. Wektor $(1, 0, 0, 1, 1, 1, 0, 0, 1, 0)$ to argument operatora. Kolorem zaznaczono losowe pozycje w wektorze, które zostaną zanegowane, w wyniku czego powstanie wektor wyjściowy $(1, \textbf{1}, 0, 1, \textbf{0}, 1, 0, 0, 1, \textbf{1})$.
+Jedną z najczęstszych realizacji operatora mutacji dla osobnika reprezentowanego jako wektor bitów jest negacja losowych wartości, w wyniku czego otrzymujemy osobniki różniące się od argumentu operatora tylko kilkoma elementami. Na rysunku \ref{vector:example_mutation} zobrazowano działanie takiego podejścia. Wektor $(1, 0, 0, 1, 1, 1, 0, 0, 1, 0)$ to argument operatora. Kolorem zaznaczono losowe pozycje w wektorze, które zostaną zanegowane, w wyniku czego powstanie wektor wyjściowy $(1, \textbf{1}, 0, 1, \textbf{0}, 1, 0, 0, 1, \textbf{1})$.
 
 \begin{figure}[h]
 	\caption{Działanie przykładowej realizacji operatora mutacji \label{vector:example_mutation}}
@@ -140,7 +142,7 @@ Jedną z popularnych realizacji operatora mutacji dla osobnika reprezentowanego 
 	
 	%operator arrow
 	\draw [->, thick] (4.5, -1)  -- (4.5, -3); 
-	\node[right] at (4.5, -2) {$\param{opMutacji}$};
+	\node[right] at (4.5, -2) {operator mutacji};
 	
 	%mutated
 	\node[cellStyle] at(0, -4) {$1$};
@@ -157,34 +159,28 @@ Jedną z popularnych realizacji operatora mutacji dla osobnika reprezentowanego 
 	\end{tikzpicture} 
 \end{figure}
 
-Zmiany zachodzące w jednym osobniku nie powinny być zbyt drastyczne (tak, aby był on zbliżony w reprezentacji do pierwotnego osobnika), ale też nie mogą być zbyt mało znaczące, ponieważ znacząco spowolniłoby to proces eksploracji, a co za tym idzie, obniżyłoby efektywność heurystyki.
-Gdyby przykładowy operator mutacji (z rysunku \ref{vector:example_mutation})) operował na wektorach o długości rzędu kilku tysięcy, to zamiana pojedynczego bitu byłaby zbyt mało znacząca, ponieważ rozwiązania przed i po jego zastosowaniu praktycznie by się od siebie nie różniły.
-Jeśli jednak operator zmieniałby około połowy bitów, to nowe rozwiązanie byłoby zbyt dalekie od pierwotnego, przez co heurystyka sprowadziłaby się do kompletnie losowego przeszukiwania przestrzeni rozwiązań.
+Zmiany zachodzące w jednym osobniku nie powinny być zbyt drastyczne, ale też nie mogą być zbyt mało znaczące, ponieważ znacząco spowolniłoby to proces eksploracji.
+Gdyby operator mutacji pokazany na rysunku \ref{vector:example_mutation} operował na wektorach o długości rzędu kilku tysięcy, to zamiana pojedynczego bitu byłaby zbyt mało znacząca, ponieważ rozwiązania przed i po jego zastosowaniu praktycznie by się od siebie nie różniły.
+Jeśli jednak operator zmieniałby około połowy bitów, to nowe rozwiązanie byłoby zbyt dalekie od pierwotnego, przez co przeszukiwanie przestrzeni rozwiązań odbywałoby się kompletnie losowo.
 
 W zależności od implementacji oba operatory opisane powyżej mogą być stosowane w różnej kolejności.
 Ponadto, od realizacji zależy to, czy mutacja jest stosowana jedynie na populacji z poprzedniego pokolenia, czy również na potomstwie.
 W tej pracy przyjmuje się, że krzyżowanie zostaje wykonane przed mutacją, a jego wyniki również mogą być przez nią modyfikowane.
 Dzięki temu próbkowanie przestrzeni rozwiązań jest gęstsze, niż gdybyśmy postępowali w inny sposób.
 
-Te dwa kroki mają na celu losowe przeszukiwanie przestrzeni rozwiązań.
-Gdyby ograniczyć się jedynie do nich, to heurystyka nie dawałaby pożądanych wyników.
-W celu dojścia do optimów należy tą losowość jakoś ukierunkować.
-Jest to powód, dla którego na końcu każdego pokolenia do całej populacji (a więc osobników z początku pokolenia, potomstwa i osobników zmutowanych) stosuje się operator selekcji naturalnej.
-Jego zadaniem jest wybranie ze znanych rozwiązań tych, które są lepsze w sensie rozwiązywanego problemu.
-Zostaną one wykorzystane jako populacja używana w kolejnym pokoleniu. 
-Intuicyjnie, operator ten pełni rolę negatywnych czynników środowiskowych, które sprawiają, że nie wszystkie osobniki danego gatunku przeżywają.
 Zgodnie z prawami rządzącymi naturą, większe prawdopodobieństwo przeżycia powinny mieć jednostki lepiej dopasowane do swojego środowiska, co w heurystyce przekłada się na lepszą (mniejszą, lub większą, w zależności od rozwiązywanego zadania) funkcję oceny.
 
-Najprostszym operatorem selekcji jest tzw. operator elitarny (nazywany też elitystycznym), którego działanie polega na zwróceniu określonej liczby bezwzględnie najlepszych osobników z dotychczasowej populacji.
+Najprostszym operatorem selekcji jest tzw. operator elitarny, którego działanie polega na zwróceniu określonej liczby bezwzględnie najlepszych osobników z dotychczasowej populacji.
 Mimo, że wydaje się to intuicyjne, to nie jest to rozwiązanie idealne.
 Praktyka pokazuje, że rozwiązania gorsze często mają cechy, które w dalszych pokoleniach, po kolejnych modyfikacjach, dają rozwiązania lepsze od dotychczasowych.
-Jest to powodem istnienia takich realizacji jak np. selekcja turniejowa, czy ruletkowa (opisane w rozdziale \ref{chapter:experiments} w ramach opisu implementacji).
+Jest to powodem istnienia takich realizacji jak np. selekcja turniejowa, czy ruletkowa.
 
-Tak sformułowany proces służy do efektywnego przeszukiwania przestrzeni rozwiązań, tymczasem zadanie optymalizacji ma na celu znalezienie jak najlepszego z nich.
+Proces selekcji służy do efektywnego przeszukiwania przestrzeni rozwiązań.
+Zadanie optymalizacji ma na celu znalezienie jak najlepszego z nich.
 Oznacza to, że jedno z rozwiązań, które zostanie zbadane w trakcie działania heurystyki musi być zapamiętane i zwrócone jako wynik. 
 Naiwnym podejściem jest analiza populacji po ostatnim pokoleniu i zwrócenie najlepszego z osobników. 
 Jako, że operator selekcji nie gwarantuje tego, że w zbiorze wynikowym znajdzie się najlepszy osobnik ze zbioru wejściowego, to istnieje szansa, że najlepsze rozwiązanie z ostatniej populacji nie jest najlepszym rozwiązaniem znalezionym w trakcie działania heurystyki. 
-Zamiast tego w trakcie symulacji zapamiętujemy globalnie najlepsze rozwiązanie na jakie trafiliśmy i właśnie je traktujemy jako rozwiązanie problemu optymalizacji.
+Zamiast tego w trakcie symulacji zapamiętujemy globalnie najlepsze rozwiązanie, na jakie trafiliśmy i to rozwiązanie traktujemy jako rozwiązanie problemu optymalizacji.
 Zazwyczaj realizuje się to w ten sposób, że definiuje się zmienną przechowującą globalne optimum\footnote{
 	W tym kontekście optima globalne i lokalne oznaczają najlepsze dotychczas znalezione rozwiązanie i najlepsze rozwiązanie w danej populacji.
 }, która początkowa ma wartość pustą.
@@ -194,23 +190,17 @@ Jeśli optimum globalne jest gorsze niż lokalne, to zostaje nim zastąpione.
 
 \section{Formalny opis operatorów i parametrów}
 
-Niniejsza sekcja jest przeznaczona na formalny opis elementów algorytmu ewolucyjnego.
-Jak zostało zaznaczone w poprzedniej sekcji, sam schemat działania heurystyki zależy od implementacji, jednak pokazane tu definicje i sygnatury powinny być zgodne z większością istniejących rozwiązań.
-Każde z opisywanych pojęć niesie ze sobą nie tylko znaczenie i zastosowanie wzorowane na przyrodzie, ale również ograniczenia nałożone na realizację danego elementu, również wynikające z natury.
-Wszystkie te aspekty zostaną podane i zapisane w formie, która ma zapobiec występowaniu nieścisłości.
+Niniejszy podrozdział przedstawia formalny opis algorytmu ewolucyjnego.
+Z założenia ma on być na tyle ogólny, aby możliwe było jego użycie niezależnie od implementacji.
 
-W pierwszej podsekcji zajduje się zestaw konwencji związanych z diagramami, czcionkami, itd. używanymi w tej pracy. Normy te obowiązują w całym dokumencie, również w poprzednich sekcjach i rozdziałach.
+W pierwszej kolejności przedstawiony zostanie zbiór zasad oznaczania pojęć i diagramów używany w tej pracy.
 
-Druga podsekcja opisuje pojęcie operatora, które jest często stosowane przy formalnych opisach elementu heurystyki. Dodatkowo, znajdziemy tam definicję operatora $random(X)$, który jest bardzo przydatny w dalszych opisach.
-
-Kolejne pięć podsekcji skupia się już na konkretnych częściach heurystyki, które należy określić w celu jej wykorzystania.
-
-\subsection{Konwencje} \label{subsection:conventions}
+\subsection{Przyjęte zasady oznaczania} \label{subsection:conventions}
 
 W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotyczące znaczenia czcionek używane w tej pracy.
 
 \begin{table}[b]
-	\caption{Konwencje dotyczące czcionek \label{table:signature_conventions}}
+	\caption{Przyjęte zasady oznaczania czcionek. W lewej kolumnie znajduje się przykładowy tekst zapisany odpowiednią czcionką, której znaczenie jest opisane w prawej kolumnie. \label{table:signature_conventions}}
 	\centering
 	\begin{tabular}{cl}
 		$\param{operator}, \param{n}$ & operatory i parametry heurystyki \\
@@ -222,6 +212,7 @@ W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotycząc
 	\end{tabular}
 \end{table}
 
+\todo{tabela}
 Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pracy, opisane w tabeli \ref{table:flowchart_conventions}.
 
 \begin{figure}
@@ -256,23 +247,30 @@ Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne eleme
 	\end{tabularx}
 \end{table}
 
-Na rysunku \ref{plot:conventions} przedstawiono konwencje dotyczące rysowania wykresów przyjęte w tym dokumencie.
+Przyjęty w pracy sposób rysowania wykresów pokazano na rysunku \ref{plot:conventions}.
 
 \begin{figure}
-	\caption{Konwencje dotyczące rysowania wykresów \label{plot:conventions}}
 	\centering
 	\graph{example_whiskers.tex}
+	\caption{Konwencje dotyczące rysowania wykresów \label{plot:conventions}}
 \end{figure}
 
-Ponadto, w sygnaturach operatorów i funkcji będą często wykorzystywane klasy zbiorów o konkretnym rozmiarze. Jako, że nie istnieje powszechnie przyjęta konwencja zapisu takiego bytu, w niniejszej pracy przyjęto, że zapis $\withSize{A}{n}$ oznacza klasę zbiorów $n$elementowych, w której każdy element należy do zbioru $A$. Zapis $A^n$, zgodnie ze standardową konwencją oznacza $n$krotny iloczyn kartezjański zbioru $A$, czyli klasę wektorów o długości $n$, których składowe pochodzą ze zbioru $A$.
+W celu formalnego opisu operatorów i funkcji wykorzystuje się pojęcie klasy zbiorów o konkretnym rozmiarze. W niniejszej pracy przyjęto, że zapis $\withSize{A}{n}$ oznacza klasę zbiorów $n$elementowych, w której każdy element należy do zbioru $A$. Zapis $A^n$, zgodnie ze standardową konwencją oznacza $n$krotny iloczyn kartezjański zbioru $A$, czyli klasę wektorów o długości $n$, których składowe pochodzą ze zbioru $A$. Oznaczenia $A^{n}$ i $\withSize{A}{n}$ mają różne znaczenie.
 
 \begin{align}
-	\withSize{A}{n} \equiv &\{ a: a \subset A, |a|=n  \} \\
+	\withSize{A}{n} \equiv &\{ A': A' \subset A, |A'|=n  \} \\
 	\withSize{A}{0} \equiv &\emptyset \\
 	A^n \equiv &\underbrace{A \times A \times \ldots \times A}_{n} \\
 	A^0 \equiv &\emptyset \\
 	A \times B \equiv &\{ (a, b): a \in A, b \in B \}
 \end{align}
+
+$A$ i $B$ to oznaczenia na dowolne przykładowe zbiory. 
+$A'$ to oznaczenie na podzbiór zbioru $A$.
+$n$ to pewna liczba naturalna.
+
+$\withSize{A}{n}$ oznacza zbiór wszystkich podzbiorów $A'$ zbioru $A$, których rozmiar wynosi $n$.
+$A^n$ natomiast oznacza zbiór wszystkich krotek o długości $n$ których wszystkie elementy pochodzą ze zbioru $A$.
 
 \subsection{Pojęcie operatora} \label{subsection:operator}
 
@@ -361,10 +359,10 @@ Z operatorem mutacji ściśle związany jest jeden z parametrów algorytmu ewolu
 \begin{signature}
 	\caption{Operator mutacji \label{signature:mutation}}
 	\begin{align}
-		\param{opMutacji}: & \important{S} \rightarrow \withSize{\important{S}}{\variable{m}} \\
+		\param{opMutacji}: & \important{S} \rightarrow \important{S} \\
 		\param{prawdMutacji} \in & \range{0}{1}
 	\end{align}
-	$\variable{m}$ to liczba zwracanych wyników mutacji.
+	$\param{opMutacji}$ to operator mutacji, a $\param{prawdMutacji}$ to prawdopodobieństwo jego zastosowania.
 \end{signature}	
 
 \subsection{Operator krzyżowania} \label{subsection:crossover}
@@ -398,7 +396,7 @@ Dodatkowo na operator nakłada się wymóg opisany w liniach \ref{line:constrain
 		\param{opSelekcji}: &\withSize{\important{S}}{p} \rightarrow \withSize{\important{S}}{\param{rozmiarPopulacji}} \\
 		\param{rozmiarPopulacji} \in &\numberSet{N}_{+} \\
 		\label{line:p_start} 
-		p \approx &(1 + \param{prawdMutacji} \times \variable{m} \\
+		p \approx &(1 + \param{prawdMutacji} \\
 		&+ \param{prawdKrzyzowania} \times \outputVar{c}) \\
 		\label{line:p_stop} 
 		&\times \param{rozmiarPopulacji} \\
@@ -432,7 +430,7 @@ Warunek zatrzymania możemy traktować jako dodatkowy operator, jednak trudno je
 	Wartość $g$ oznacza numer obecnego pokolenia (zaczynając od 1), a $\overline{\variable{g}}$ - maksymalną dopuszczalną liczbę pokoleń w ramach jednego przebiegu algorytmu ewolucyjnego.
 \end{signature}	
 
-\section{Szczegóły działania heurystyki} \label{section:ea_details}
+\section{Szczegóły działania algorytmu ewolucyjnego} \label{section:ea_details}
 
 Ogólny schemat działania algorytmu ewolucyjnego został przedstawiony w sekcji \ref{section:general_idea}. Kolejne kroki przedstawionego tam diagramu zostaną opisane ze szczegółami w kolejnych akapitach.
 
@@ -557,7 +555,7 @@ W tej pracy do analizy wykorzystano tylko 4 z wyżej wymienionych statystyk: śr
 %\clearpage
 
 \begin{figure}[H]
-	\caption{Przykładowy wykres przebiegu \label{plot:random_example}}
+	\caption{Przykładowy \emph{wykres przebiegu} pokazujący zależność między  najlepszą, najgorszą i średnią oceną oraz jej wariancją od liczby pokoleń które minęły. \label{plot:random_example}}
 	\centering
 	\graph{random_example.tex}
 \end{figure}
