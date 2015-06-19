@@ -60,6 +60,16 @@
 \usepackage[labelsep=period]{caption}
 
 \usepackage{tikz}
+\let\clipbox\relax
+
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.symbols}
+
+\usetikzlibrary{positioning, calc, matrix}
+
+
 \usetikzlibrary{arrows}
 \usetikzlibrary{decorations.pathreplacing}
 
@@ -71,6 +81,10 @@
 \usepackage{tablefootnote}
 \usepackage{tabu}
 \usepackage{gnuplot-lua-tikz}
+
+\usepackage{array}
+
+\usepackage{adjustbox}
 
 \algnewcommand\Var{\State\textbf{var\ }}
 \algnewcommand\To{\textbf{ to }}
@@ -201,6 +215,7 @@ Bardzo krótkie streszczenie w którym powinno się znaleźć omówienie tematu 
 \subfile{chapter7.tex}
 %\subfile{stubs/chapter7.tex}
 
+\clearpage
 \pagestyle{plain}
 
 \todo{wywalić listy (?)}

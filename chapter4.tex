@@ -86,14 +86,15 @@ Zostało to zapisane za pomocą równania \ref{line:gender_resistant}, korzystaj
 	&+ \param{prawdKrzyzowania} \times \outputVar{c}) \\
 	&\times \param{rozmiarPopulacji} \\
 	S' \gets &\left\{ s_1, \ldots s_p \right\} \\
-	s \in \param{opSelNat}(S') &\Rightarrow \exists_{s_i \in S'}  s_i = s \\
+	%s \in \param{opSelNat}(S') &\Rightarrow \exists_{s_i \in S'}  s_i = s \\
+	\param{opSelNat}(S') \subset & S' \\
 	P(i) \gets &P(s_i \in \param{opSelNat}(S')) \\
 	\forall_{i = 1 \ldots p}P(i) < P(j) &\Leftrightarrow (s_i, s_j) \in \minoritySpecimenRel \\
 	\label{line:gender_resistant}
 	\forall_{i = 1 \ldots p, g \in \important{G}} P(s_i \in \param{opSelNat}(S') \wedge & plec(t) = g) = P(i) \times P(plec(s_i) = g)
 	\end{align}
 	$\param{opSelNat}$ to operator selekcji naturalnej.
-	Jako wejście przyjmuje on populację na końcu każdego pokolenia, a zwraca populację używaną w kolejnym pokoleniu.
+	Jako wejście przyjmuje on populację na końcu każdego pokolenia, a zwraca populację używaną w kolejnym pokoleniu. \\
 	$p$ to przybliżenie rozmiaru zbioru wejściowego za pomocą prawdopodobieństw zastosowania operatorów oraz rozmiaru populacji.\\
 	$S'$ to pomocniczy zbiór przedstawiający przykładową populację na końcu pokolenia, zawierający osobniki $s_i$. \\
 	$P()$ to funkcja prawdopodobieństwa. 
