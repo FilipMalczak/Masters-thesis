@@ -31,7 +31,7 @@ Oznacza to, że reprezentację rozwiązania musimy powiększyć o odpowiednią c
 	$\important{S}$ to przestrzeń rozwiązań, czyli zbiór wszystkich możliwych osobników $osobnik$.
 	$osobnik_{DSEA}$ oznacza reprezentację wykorzystywaną w metaheurystyce DSEA, a $osobnik_{EA}$ - wykorzystywaną w klasycznych algorytmach ewolucyjnych. $g \in \important{G}$ to cecha określająca płeć. \\
 	$\important{G}$ t zbiór możliwych płci.\\
-	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$. Symbol $\odot$ to arbitralne oznaczenie na płeć w sytuacji, w której nie jest ona ważna do działania metahuerystyki.
+	W niniejszej pracy przyjęto istnienie co najwyżej 2 płci, ze zbiorem płci określonym jako $\important{G} = \{ \odot \}$ lub $\important{G} = \{ \female, \male \}$. Symbol $\odot$ to arbitralne oznaczenie na płeć w sytuacji, w której nie jest ona ważna do działania metaheurystyki.
 \end{signature}
 
 \begin{signature}
@@ -39,7 +39,7 @@ Oznacza to, że reprezentację rozwiązania musimy powiększyć o odpowiednią c
 	\begin{align}
 	plec: & \important{S} \rightarrow \important{G}
 	\end{align}
-	Funkcja $plec(osobnik)$ przyporządkowywuje swojemu argumentowi jego płeć ze zbioru $\important{G}$.
+	Funkcja $plec(osobnik)$ przyporządkowuje swojemu argumentowi jego płeć ze zbioru $\important{G}$.
 \end{signature}
 
 \newpage
@@ -47,7 +47,7 @@ Oznacza to, że reprezentację rozwiązania musimy powiększyć o odpowiednią c
 \section{Algorytm DSEA w szczegółach} \label{section:dsea}
 
 Jak zostało pokazane w rozdziale \ref{chapter:literature}, istnieją rozwiązania które nie ignorują podziału populacji na płcie. 
-Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania metaheurystki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on opisany aspekt płci organizmów w ramach nowego operatora selekcji. 
+Aby skutecznie je porównać i zaproponować nowe podejście, zdefiniowano schemat działania metaheurystyki, opisany schematem blokowym znajdującym się na rysunku \ref{figure:dsea}. Ujmuje on opisany aspekt płci organizmów w ramach nowego operatora selekcji. 
 W dalszej części pracy tak zdefiniowaną metaheurystykę nazywać będziemy \textbf{algorytmem ewolucyjnym o podwójnej selekcji} (ang. \emph{double selection evolutionary algorithm}) i odnosić się do niej za pomocą skrótu \textbf{DSEA}, będącego akronimem nazwy angielskiej.
 
 Na rysunku \ref{figure:dsea} przedstawiono schemat działania metaheurystyki DSEA w postaci schematu blokowego. 
@@ -70,7 +70,7 @@ Całość zamknięta jest opisem związku między DSEA, a innymi odmianami algor
 
 \subsection{Operator selekcji naturalnej} \label{subsection:new_natSel}
 
-Algorytm DSEA, jak sugeruje nazwa w języku angielskim, korzysta z dwóch operatorów selekcji, które należy rózróżnić. 
+Algorytm DSEA, jak sugeruje nazwa w języku angielskim, korzysta z dwóch operatorów selekcji, które należy rozróżnić. 
 Z tego powodu dotychczasowy operator selekcji zmienił nazwę na \textbf{operator selekcji naturalnej}. 
 Zachowuje on to samo znaczenie i zastosowanie, jak zostało opisane w rozdziale \ref{subsection:natSel}. 
 
@@ -168,7 +168,7 @@ Jest on opisany w algorytmie \ref{algorithm:natSel_choose}.
 
 Działanie takiego operatora zaczyna się od inicjalizacji zmiennej $wynik$, zwracanej jako efekt końcowy algorytmu (linia \ref{line:natSelChoose_return}). 
 Początkowa jej wartość to zbiór pusty (linia \ref{line:natSelChoose_init}), jednak w kolejnym kroku rozpoczyna się pętla, powtarzana tak długo, aż zbiór ten będzie miał odpowiedni rozmiar (linia \ref{line:natSelChoose_while}).
-W ciele tej pętli za pomocą operatora wyboru $\param{opWyboru}$ dokonuje się selekcji jednego nie wybranego jeszcze rozwiązania i dołącza sie je do zbioru $wynik$ (linia \ref{line:natSelChoose_choose}).
+W ciele tej pętli za pomocą operatora wyboru $\param{opWyboru}$ dokonuje się selekcji jednego nie wybranego jeszcze rozwiązania i dołącza się je do zbioru $wynik$ (linia \ref{line:natSelChoose_choose}).
 
 \subsection{Operator selekcji płciowej} \label{subsection:new_genSel}
 
@@ -203,7 +203,7 @@ Jest to ściśle związane z liczbą potomków tworzonych w jednej generacji, je
 	\end{align}	
 	$\param{opSelPlciowej}$ to operator selekcji płciowej.
 	Zwraca on zbiór $q$ zbiorów, z których każdy zawiera $\inputVar{c}$ osobników. \\
-	$\inputVar{c}$ to ilość osobników potrzebna do wykonania krzyżowania (patrz: definicja \ref{signature:crossover} w rozdziale \ref{subsection:crossover}). \\
+	$\inputVar{c}$ to liczba osobników potrzebna do wykonania krzyżowania (patrz: definicja \ref{signature:crossover} w rozdziale \ref{subsection:crossover}). \\
 	$S'$ to pomocniczy zbiór osobników $s_i$, a $P$ to oznaczenie jednego ze zbiorów rodziców.
 \end{signature}
 
@@ -314,7 +314,7 @@ Oba te podejścia można opisać za pomocą tego samego schematu, jednak odmienn
 Działanie operatora rozpoczyna się od deklaracji i inicjalizacji zmiennych pomocniczych.
 Zbiór $rodzice$ początkowo jest pusty (linia \ref{line:stdGenSelChoose_init_parent}).
 Dodatkowo, deklarujemy dwa zbiory przechowujące kandydatów na każdego z rodziców (linie \ref{line:stdGenSelChoose_init_candidates_begin}-\ref{line:stdGenSelChoose_init_candidates_end}).
-W zależności od parametru $\param{plecMaZnaczenie}$ przechowują one albo całą populację (jeżeli zachodzi $\param{plecMaZnaczenie} = \bot$, czyli rodzice mogą być tej samej płci), albo odflitrowane osobniki odpowiedniej płci (jeżeli $\param{plecMaZnaczenie} = \top$, czyli wymagane jest, aby rodzice byli różnych płci).
+W zależności od parametru $\param{plecMaZnaczenie}$ przechowują one albo całą populację (jeżeli zachodzi $\param{plecMaZnaczenie} = \bot$, czyli rodzice mogą być tej samej płci), albo odfiltrowane osobniki odpowiedniej płci (jeżeli $\param{plecMaZnaczenie} = \top$, czyli wymagane jest, aby rodzice byli różnych płci).
 
 Następnie, póki nie zostanie wybrana odpowiednia liczba par rodziców (linia \ref{line:stdGenSelChoose_while}) powtarzany jest zestaw operacji określający kolejną z nich.
 Za pomocą operatora $\param{opWyboru1}$ ze zbioru $\param{kandydaci1}$ wybierany jest pierwszy rodzic (linia \ref{line:stdGenSelChoose_choose_begin}).
@@ -331,8 +331,8 @@ Algorytm można dość łatwo uogólnić do postaci, w której liczby te są wi�
 \newpage
 
 Metaheurystyka DSEA jest w pewien sposób ogólniejsza od zwykłych algorytmów ewolucyjnych.
-Jeżeli dobierze się odpowiednie operatory i parametry, to można za jej pomocą zasymulowanie istniejących rozwiązań.
-Następne 3 podrozdziały opisują sposoby parametryzacji DSEA potrzebne do odtworzenia innych metageurystyk znanych z literatury.
+Jeżeli dobierze się odpowiednie operatory i parametry, to można za jej pomocą zasymulować istniejących rozwiązań.
+Następne 3 podrozdziały opisują sposoby parametryzacji DSEA potrzebne do odtworzenia innych metaheurystyk znanych z literatury.
 
 \subsubsection{Standardowe algorytmy ewolucyjne}
 
@@ -388,7 +388,7 @@ Według autorów najlepsze wyniki osiągano używając operatora losowego w poł
 U wielu gatunków występujących w przyrodzie (np. u większości płetwonogich\cite{pletwonogiMajaHaremy}, w tym morsów i fok) występuje zjawisko formowania się haremów.
 Polega ono na tym, że tylko mała liczba osobników jednej z płci (zazwyczaj samców\footnote{
 	Mimo, że nie zawsze osobniki alfa są płci męskiej, to przyjęte zostanie takie uproszczenie. 
-	Osobniki alfa i beta będą nazywane samcami, a ich parterki - samicami.
+	Osobniki alfa i beta będą nazywane samcami, a ich partnerki - samicami.
 }) nazywanych dalej \emph{osobnikami alfa}, przyczynia się do wydania na świat potomstwa.
 Oznacza to, że dostęp do grupy samic nazywanej \emph{haremem} ma bardzo ograniczona grupa samców.
 Dzieje się tak, ponieważ osobniki alfa są w ogólności silniejsze od pozostałych i bronią dostępu do samic przed resztą samców.
@@ -508,5 +508,5 @@ W implementacji wykonanej w niniejszej pracy nie zastosowano tej modyfikacji.
 Umotywowane było to małą różnicą między zakładanym i rzeczywistym rozmiarem zbioru par rodziców, oraz faktem, że \defacto generowanie nadmiarowych par powoduje minimalnie lepszą eksploatację przestrzeni rozwiązań (ponieważ jest ona gęściej próbkowana).
 
 Jeżeli w populacji występuje więcej niż 2 płcie ($|\important{G}| > 2$), to jedną z nich należy wyróżnić jako tą, z której pochodzą osobniki alfa i beta. 
-Ponadto, operator ma wtedy więcej parametrów (tyle operatorów wyboru partnerów ile jest niewyróznionych płci), a zamiast jednego partnera (linie \ref{line:harem_alfa_partner_choose} i \ref{line:harem_beta_partner}) wybiera się ich odpowiednio więcej, każdego z wykorzystaniem przeznaczonego do tego operatora wyboru.
+Ponadto, operator ma wtedy więcej parametrów (tyle operatorów wyboru partnerów ile jest niewyróżnionych płci), a zamiast jednego partnera (linie \ref{line:harem_alfa_partner_choose} i \ref{line:harem_beta_partner}) wybiera się ich odpowiednio więcej, każdego z wykorzystaniem przeznaczonego do tego operatora wyboru.
 \end{document}

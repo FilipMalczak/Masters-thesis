@@ -23,9 +23,9 @@ Populację możemy też rozumieć jako zbiór próbek z pewnej podprzestrzeni zb
 Upraszczając nieco, przez pojęcie funkcji oceny rozumiemy pewne przyporządkowanie (w idealnej sytuacji - funkcję, jednak nie zawsze jest to możliwe) każdemu osobnikowi, czyli rozwiązaniu problemu, jakiejś wartości, na której możemy określić porządek.
 Taka relacja porządku powinna określać czy dane rozwiązanie jest równie dobre lub lepsze niż inne, czy nie.
 
-Osobnik najczęściej reprezentwany jest jako wektor binarny.
+Osobnik najczęściej reprezentowany jest jako wektor binarny.
 Taka postać sprawdza się w wielu zastosowaniach i jest prosty w realizacji programowej lub sprzętowej. 
-Algorytmy ewolucyjne korzytające z takiej reprezentacji nazywane są algorytmami genetycznymi. 
+Algorytmy ewolucyjne korzystające z takiej reprezentacji nazywane są algorytmami genetycznymi. 
 Reprezentacja jest jednak uzależniona od rozwiązywanego problemu. 
 Często wykorzystuje się bardziej skomplikowane formy, jak na przykład krotka wartości z pewnego zbioru (skończonego, lub nieskończonego, jak liczby), czy drzewo \cite{gen_prog} (np. dla problemów aproksymacji funkcji, przedstawionych jako zadanie minimalizacji błędu przybliżenia \cite{gen_prog_foo_approx}).
 
@@ -33,15 +33,15 @@ Warto dodać, że istnieją implementacje i narzędzia do obliczeń ewolucyjnych
 
 Na rysunku \ref{figure:ea_general} zobrazowany został ogólny schemat działania algorytmów ewolucyjnych. Formalny opis używanych parametrów i operatorów znajduje się w kolejnej sekcji, wraz z definicją takich pojęć jak np. operator.
 
-%\begin{figure}
-%	\caption{Ogólny schemat działania algorytmów ewolucyjnych
-%		\label{figure:ea_general}
-%	}
-%	\img{ea_general.png}
-%	Konwencje dotyczące rysowania schematów blokowych zostały wyjaśnione w podsekcji \ref{subsection:conventions}.
-%\end{figure}
-
-\subfile{ea_general_tikz.tex}
+\begin{figure}
+	
+	\img{ea_general.png}
+	\caption{Ogólny schemat działania algorytmów ewolucyjnych
+		\label{figure:ea_general}
+	Oznaczenia wykorzystane do rysowania schematów blokowych zostały wyjaśnione w tabeli \ref{table:flowchart_conventions}.}
+\end{figure}
+%
+%\subfile{ea_general_tikz.tex}
 
 Współczesna nauka dalej nie jest w stanie dać nam odpowiedzi na pytanie ,,skąd wzięło się życie'', a co za tym idzie, nie jesteśmy w stanie zasymulować momentu rozpoczęcia ewolucji.
 Dlatego w heurystykach naśladujących ten proces działanie zaczyna się od wygenerowania losowej populacji. 
@@ -116,7 +116,7 @@ Wektory $(x_0, \ldots, x_3, y_4, \ldots y_9)$ i $(y_0, \ldots, y_3, x_4, \ldots 
 \end{figure}
 
 Innym operatorem jest mutacja, czyli wprowadzenie losowych zmian w losowo wybranych osobnikach. 
-peracja ta jest wykonywana z pewnym prawdopodobieństwem określającym szansę osobnika na zmutowanie.
+Operacja ta jest wykonywana z pewnym prawdopodobieństwem określającym szansę osobnika na zmutowanie.
 Zmodyfikowane osobniki w zależności od implementacji są dołączane do populacji, albo zastępują niezmodyfikowane rozwiązania.
 W tej pracy wykorzystano pierwszą z tych opcji, aby nie doprowadzić do sytuacji, w której mutacja pogorszy znalezione wcześniej rozwiązanie.
 Zadaniem tego kroku jest eksploracja przestrzeni rozwiązań, czyli zbadanie rozwiązań spoza dotychczas spróbkowanej podprzestrzeni.
@@ -202,7 +202,7 @@ W pierwszej kolejności przedstawiony zostanie zbiór zasad oznaczania pojęć i
 
 W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotyczące znaczenia czcionek używane w tej pracy.
 
-\begin{table}[b]
+\begin{table}[h]
 	\caption{Przyjęte zasady oznaczania czcionek. W lewej kolumnie znajduje się przykładowy tekst zapisany odpowiednią czcionką, której znaczenie jest opisane w prawej kolumnie. \label{table:signature_conventions}}
 	\centering
 	\begin{tabular}{cl}
@@ -215,37 +215,39 @@ W tabeli \ref{table:signature_conventions} zostały pokazane konwencje dotycząc
 	\end{tabular}
 \end{table}
 
-\todo{tabela}
-Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pracy, opisane w tabeli \ref{table:flowchart_conventions}.
+W tabeli \ref{table:flowchart_conventions} pokazane i opisane zostały różne elementy schematów blokowych, używane w tej pracy.
+%
+%Na rysunku \ref{figure:flowchart_conventions} zobrazowane zostały różne elementy schematów blokowych używane w tej pracy, opisane w tabeli \ref{table:flowchart_conventions}.
 
-\begin{figure}
-	\caption{Konwencje dotyczące elementów schematów blokowych \label{figure:flowchart_conventions}}
-	\img{conventions.png}
-\end{figure}
+%\begin{figure}
+%	\caption{Konwencje dotyczące elementów schematów blokowych \label{figure:flowchart_conventions}}
+%	\img{conventions.png}
+%\end{figure}
 
 \begin{table}
 	\caption{Opis konwencji dotyczących elementów schematów blokowych \label{table:flowchart_conventions}}
 	\begin{tabularx}{\linewidth}{|c|X|}
+%	\begin{tabularx}{\linewidth}{|>{\centering\arraybackslash}p{\diagramPartColumnWidth}|X|}
 		\hline 
-		\circled{1} & Symbol rozpoczęcia heurystyki. \\
+		\inlineImg{parts/start.png} & Symbol rozpoczęcia heurystyki. \\
 		\hline
-		\circled{2} & Symbol rozpoczęcia heurystyki. \\
+		\inlineImg{parts/stop.png} & Symbol rozpoczęcia heurystyki. \\
 		\hline
-		\circled{3} & Symbol oznaczający ewaluację warunku C i kontynuację procesu zgodnie z jego wynikiem. \\
+		\inlineImg{parts/cond.png} & Symbol oznaczający ewaluację warunku C i kontynuację procesu zgodnie z jego wynikiem. \\
 		\hline
-		\circled{4} & Symbol oznaczający wykonanie kroku opisanego przez S. \\
+		\inlineImg{parts/statement.png} & Symbol oznaczający wykonanie kroku opisanego przez S. \\
 		\hline
-		\circled{5} & Symbol tożsamy z symbolem \circled{4}, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter:proposed}).\\
+		\inlineImg{parts/changed.png} & Symbol tożsamy z powyższym, jednak stosowany w opisie proponowanego podejścia dla zaznaczenia różnic ze standardowym schematem (używane w rozdziale \ref{chapter:proposed}).\\
 		\hline
-		\circled{6} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest operator O. \\
+		\inlineImg{parts/operator.png} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest operator O. \\
 		\hline
-		\circled{7} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest parametr P. \\
+		\inlineImg{parts/param.png} & Kombinacja symboli oznaczająca, że podczas wykonywania kroku S używany jest parametr P. \\
 		\hline
-		\circled{8} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D. \\
+		\inlineImg{parts/desc.png} & Symbol oznaczający, że dany schemat wyjaśnia szczegółowe działanie kroku D. \\
 		\hline
-		\circled{9} & Symbol oznaczający rozpoczęcie lub zakończenie szczegółowo opisywanego kroku. \\
+		\inlineImg{parts/substep.png} & Symbol oznaczający rozpoczęcie lub zakończenie szczegółowo opisywanego kroku. \\
 		\hline
-		\circled{10} & Symbol oznaczający wykonanie kolejnego symbolu dla każdego z elementów opisanych przez E. \\
+		\inlineImg{parts/iterate.png} & Symbol oznaczający wykonanie kolejnego symbolu dla każdego z elementów opisanych przez E. \\
 		\hline
 	\end{tabularx}
 \end{table}
@@ -258,7 +260,7 @@ Przyjęty w pracy sposób rysowania wykresów pokazano na rysunku \ref{plot:conv
 	\caption{Konwencje dotyczące rysowania wykresów \label{plot:conventions}}
 \end{figure}
 
-W celu formalnego opisu operatorów i funkcji wykorzystuje się pojęcie klasy zbiorów o konkretnym rozmiarze. W niniejszej pracy przyjęto, że zapis $\withSize{A}{n}$ oznacza klasę zbiorów $n$elementowych, w której każdy element należy do zbioru $A$. Zapis $A^n$, zgodnie ze standardową konwencją oznacza $n$krotny iloczyn kartezjański zbioru $A$, czyli klasę wektorów o długości $n$, których składowe pochodzą ze zbioru $A$. Oznaczenia $A^{n}$ i $\withSize{A}{n}$ mają różne znaczenie.
+W celu formalnego opisu operatorów i funkcji wykorzystuje się pojęcie klasy zbiorów o konkretnym rozmiarze. W niniejszej pracy przyjęto, że zapis $\withSize{A}{n}$ oznacza klasę zbiorów $n$-elementowych, w której każdy element należy do zbioru $A$. Zapis $A^n$, zgodnie ze standardową konwencją oznacza $n$krotny iloczyn kartezjański zbioru $A$, czyli klasę wektorów o długości $n$, których składowe pochodzą ze zbioru $A$. Oznaczenia $A^{n}$ i $\withSize{A}{n}$ mają różne znaczenie.
 
 \begin{align}
 	\withSize{A}{n} \equiv &\{ A': A' \subset A, |A'|=n  \} \\
@@ -344,7 +346,7 @@ Podstawowym pojęciem w dziedzinie algorytmów ewolucyjnych jest osobnik, czyli 
 Definiujemy go jako element przestrzeni rozwiązań, którą również musimy określić. 
 Na te pojęcia nie ma nałożonych żadnych ograniczeń.
 
-Istotnym pojęciem w akgorytmach ewolucyjnych jest funkcja oceny. 
+Istotnym pojęciem w algorytmach ewolucyjnych jest funkcja oceny. 
 Wbrew nazwie nie musi być to funkcja w rozumieniu matematycznym, a operator\footnote{
 	Stochastyczną funkcję oceny możemy zastosować na przykład w sytuacji, w której za pomocą algorytmu ewolucyjnego szukamy konfiguracji innej heurystyki. 
 	Osobnikiem w takiej sytuacji może być zestaw parametrów konfigurowanej heurystyki, a oceną - średnia jakość działania dla kilku uruchomień.
@@ -375,7 +377,7 @@ Relacja ta odpowiada relacji bycia lepiej przystosowanym do środowiska w rzeczy
 \subsection{Operator mutacji}
 
 Operator mutacji przyjmuje i zwraca pojedynczego osobnika.
-Wynik działania operatora powinien być podobny, ale nie identyczny do argumentuz.
+Wynik działania operatora powinien być podobny, ale nie identyczny do argumentu.
 Ma to na celu symulację mutacji występującej w naturze.
 
 Formalniej, dziedziną i przeciwdziedziną operatora mutacji jest przestrzeń rozwiązań.
@@ -413,9 +415,9 @@ Z operatorem krzyżowania ściśle związany jest jeden z parametrów algorytmu 
 
 \subsection{Operator selekcji} \label{subsection:natSel}
 
-Zadaniem operatora selekcji jest symulacja zjawiska przeżycia silniejszych (czyli lepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu. Zmniejsza on różnorodność genetyczną w obrębie populacji, co w ogólności jest negatywnym efektem, ponieważ zahamowywuje  eksplorację przestrzeni rozwiązań. Operator mutacji powinien eksplorować ją na tyle efektywnie, żeby operator selekcji odrzucał mało obiecujące kierunki eksploracji zamiast całkiem zatrzymywać jej proces.
+Zadaniem operatora selekcji jest symulacja zjawiska przeżycia silniejszych (czyli lepiej dopasowanych) osobników. Jest on stosowany pod koniec każdego pokolenia w celu usunięcia z niej osobników gorzej dopasowanych, poprzez wykorzystanie populacji wyjściowej jako używanej w kolejnym pokoleniu. Zmniejsza on różnorodność genetyczną w obrębie populacji, co w ogólności jest negatywnym efektem, ponieważ zahamowuje  eksplorację przestrzeni rozwiązań. Operator mutacji powinien eksplorować ją na tyle efektywnie, żeby operator selekcji odrzucał mało obiecujące kierunki eksploracji zamiast całkiem zatrzymywać jej proces.
 
-Dziedziną tego operatora jest klasa $p$-elementowych pozdbiorów przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. 
+Dziedziną tego operatora jest klasa $p$-elementowych podzbiorów przestrzeni rozwiązań, co oznacza, że przyjmuje on populację $p$ osobników. 
 Wartość $p$ to liczba osobników w populacji pod koniec danej generacji, więc można ją przybliżać za pomocą równań \ref{line:p_start}-\ref{line:p_stop} definicji \ref{signature:selection}, ponieważ w populacji znajdą się osobniki z populacji początkowej tego pokolenia oraz wyniki operatorów mutacji i krzyżowania. 
 
 Przeciwdziedziną operatora selekcji jest klasa podzbiorów zbioru wejściowego, o rozmiarze $\param{rozmiarPopulacji}$.

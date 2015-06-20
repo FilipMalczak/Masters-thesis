@@ -11,7 +11,7 @@ Ten rozdział zaczyna się od prezentacji wybranych problemów optymalizacji, na
 \section{Wybrane problemy testowe}
 
 Aby zbadać jakość działania wybranych metod zaimplementowano i podjęto próbę rozwiązania dwóch problemów optymalizacji. 
-Były to problem komiwojażera (\emph{ang. traveling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
+Były to problem komiwojażera (\emph{ang. travelling salesman problem}, w skrócie \emph{TSP}) oraz binarny problem plecakowy.
 
 Problem komiwojażera to zadanie znalezienia minimalnego cyklu Hamiltona w pełnym grafie ważonym. 
 Cykl Hamiltona to cykl, w którym każdy wierzchołek jest odwiedzany tylko raz (z pominięciem pierwszego wierzchołka, który jest taki sam jak ostatni). 
@@ -26,9 +26,9 @@ Problem ten można przełożyć na rzeczywistą sytuację, w której mamy zbiór
 Rozwiązanie problemu komiwojażera sprowadza się do minimalizacji długości drogi przechodzącej przez wszystkie punkty. 
 Wynik optymalizacji jest cenny w rzeczywistych zastosowaniach, ponieważ pozwala m.in. zaoszczędzić zasoby w firmach zajmujących się transportem.
 
-Binarny problem plecakowy (nazywany czasem dyskretnym problemem plecakowym) to zadanie optymalizacji, w którym ze zbioru $n$ par $\{ (k_1, w_1),  (k_2, w_2), \ldots, (k_n, w_n)\}$ należy wybrać pozdbiór, dla którego suma pierwszych elementów z pary będzie jak największa, a suma drugich elementów nie przekroczy zadanej wartości $W$.
+Binarny problem plecakowy (nazywany czasem dyskretnym problemem plecakowym) to zadanie optymalizacji, w którym ze zbioru $n$ par $\{ (k_1, w_1),  (k_2, w_2), \ldots, (k_n, w_n)\}$ należy wybrać podzbiór, dla którego suma pierwszych elementów z pary będzie jak największa, a suma drugich elementów nie przekroczy zadanej wartości $W$.
 Problem ten przekłada się na sytuację, w której mamy pewien pojemnik (popularnie nazywany plecakiem, skąd bierze się nazwa problemu) o określonej pojemności $W$ i zestaw przedmiotów, które możemy do niego włożyć. 
-Każdy przedmiot jest opisamy parą $(k, w)$, gdzie $k$ reprezentuje jego wartość, a $w$ jego rozmiar, czy też objętość. 
+Każdy przedmiot jest opisany parą $(k, w)$, gdzie $k$ reprezentuje jego wartość, a $w$ jego rozmiar, czy też objętość. 
 Rozwiązaniem problemu jest taki zestaw przedmiotów jaki zmieści się w plecaku i będzie miał jak największą wartość. 
 
 Ogólna wersja problemu plecakowego polega na przypisaniu każdemu z przedmiotów (par) liczby naturalnej, określającej ile jego egzemplarzy wkładamy do plecaka, jednak w ramach niniejszej pracy zdecydowano się na binarną wariację tego problemu, która dopuszcza wykorzystanie co najwyżej jednego egzemplarza każdego obiektu.
@@ -42,8 +42,8 @@ Ponadto, problem plecakowy to zadanie optymalizacji z ograniczeniami, których n
 Aby zbadać skuteczność wybranych metod potrzebna była ich implementacja.
 Metaheurystyka DSEA pozwala na zasymulowanie pozostałych wybranych metod, więc to ją właśnie zaimplementowano.
 W wyniku tego powstała biblioteka programistyczna w języku Groovy 2.3. Jest to język działający w oparciu o maszynę wirtualną Java, a biblioteki w nim pisane są automatycznie dostępne dla wszystkich języków działających w tej technologii, łącznie z samym językiem Java.
-Poza samym algorytmem zamplementowano również reprezentacje i operatory genetyczne dla dwóch opisanych wyżej problemów.
-Ponadto, powstał zestaw operatorow selekcji płciowej, naturalnej oraz operatorów wyboru opisanych w kolejnych podrozdziałach.
+Poza samym algorytmem zaimplementowano również reprezentacje i operatory genetyczne dla dwóch opisanych wyżej problemów.
+Ponadto, powstał zestaw operatorów selekcji płciowej, naturalnej oraz operatorów wyboru opisanych w kolejnych podrozdziałach.
 
 Dodatkowo, prócz biblioteki powstał zestaw skryptów w języku Groovy pozwalających na utrwalanie wyników i powracanie do przerwanych badań, oraz opisujących wykonanie i analizę wyników wszystkich eksperymentów potrzebnych w tej pracy.
 
@@ -56,7 +56,7 @@ Są one kolejno nazywane uogólnionym i haremowym operatorem selekcji płciowej.
 Ponadto, niezależnie od eksperymentu wykorzystano kryterium zatrzymania przerywające działanie algorytmu po określonej liczbie pokoleń. 
 
 Tabela \ref{table:op_symbols} przedstawia oznaczenia różnych elementów wraz z ich opisem.
-Przykładowo, zapis \opName{stdGenSel}($\top$, \opName{R}, \opName{TS}(2)) oznacza standardowy operator selekcji naturanej, parametryzowany przez $\param{plecMaZnaczenie}=\top$, wykorzystujący operator losowy jako $\param{opWyboru1}$ i operator turniejowy (z rozmiarem turnieju równym 2) jako $\param{opWyboru2}$.
+Przykładowo, zapis \opName{stdGenSel}($\top$, \opName{R}, \opName{TS}(2)) oznacza standardowy operator selekcji naturalnej, parametryzowany przez $\param{plecMaZnaczenie}=\top$, wykorzystujący operator losowy jako $\param{opWyboru1}$ i operator turniejowy (z rozmiarem turnieju równym 2) jako $\param{opWyboru2}$.
 
 \begin{table}
 	\caption{Oznaczenia operatorów \label{table:op_symbols}}
@@ -79,7 +79,7 @@ Przykładowo, zapis \opName{stdGenSel}($\top$, \opName{R}, \opName{TS}(2)) oznac
 	\end{tabularx}
 \end{table}
 
-W pracy przyjęto co najwyżej 2 płcie osobników. Jeżeli płec była tylko jedna, to $\important{G} = \{ \odot \}$, w przeciwnym wypadku $\important{G} = \{ \male, \female \}$. 
+W pracy przyjęto co najwyżej 2 płcie osobników. Jeżeli płeć była tylko jedna, to $\important{G} = \{ \odot \}$, w przeciwnym wypadku $\important{G} = \{ \male, \female \}$. 
 Symbol $\odot$ to umowne oznaczenie na wartość cechy płci, jeżeli może ona przyjmować tylko jedną wartość.
 
 

@@ -6,7 +6,7 @@
 	\todo{section, etc - ogółem proof-read}
 	
 	W tej sekcji opisane są operatory i ich implementacje wykorzystywane podczas przeprowadzania eksperymentów. 
-	Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zarzymania, a kolejne dwie - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
+	Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zatrzymania, a kolejne dwie - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
 	
 	\subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
 	
@@ -19,7 +19,7 @@
 	W standardowych algorytmach ewolucyjnych powszechnie używane są operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}, korzystające z tego operatora w celu wybrania każdego ze zwracanych osobników.
 	Ponadto, operatory wykorzystywane w heurystyce DSEA również korzystają z tej abstrakcji.
 	
-	Jedną z popularnych implementacji operatora wyboru jest \textbf{operator ruletkowy} (\emph{ang. roulette select}), wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
+	Jedną z popularnych implementacji operatora wyboru jest \textbf{operator ruletkowy} (\emph{ang. roulette selection}), wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
 	Zwraca on rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
 	Działanie tego operatora standardowo tłumaczy się w następujący sposób:
 	Wyobraźmy sobie koło ruletki. 
@@ -35,7 +35,7 @@
 		Alternatywne podejście, polegające na użyciu odwrotności wartości kryterium również nie zawsze jest możliwe do użycia, ponieważ wartość oceny może wynosić 0.
 	}.
 	W takiej sytuacji, osobniki możemy ważyć za pomocą ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
-	Dzięki temu najgorszy osobnik zajmuje jedną jednostke obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
+	Dzięki temu najgorszy osobnik zajmuje jedną jednostkę obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
 	Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczny zarówno w problemach minimalizacji, jak i maksymalizacji.
 	
 	\begin{algorithm}[h]
@@ -78,7 +78,7 @@
 	
 	Pierwszym krokiem działania operatora jest posortowanie populacji wejściowej tak, aby osobniki o większej wadze (czyli o większym prawdopodobieństwie wyboru) znalazły się bliżej początku posortowanego wektora $posortowane$ (w linii \ref{line:roulette_sort}).
 	Następnie, obliczana jest suma wag wszystkich osobników, przechowywana w zmiennej $sumaWag$ (linia \ref{line:roulette_sum}).
-	W kolejnych krokach wybierana jest losowa wartość $wybrane$ z przedziału $\range{0}{sumaWag}$ (w linii \ref{line:roulette_random}) i inicjalizowana jest zmienna pomocniczna $k=0$ (w linii \ref{line:roulette_k}).
+	W kolejnych krokach wybierana jest losowa wartość $wybrane$ z przedziału $\range{0}{sumaWag}$ (w linii \ref{line:roulette_random}) i inicjalizowana jest zmienna pomocnicza $k=0$ (w linii \ref{line:roulette_k}).
 	W pętli, rozpoczynającej się w linii \ref{line:roulette_loop} przeszukiwany jest wektor $posortowane$, w poszukiwaniu takiego osobnika, którego waga jest mniejsza niż $wybrane-k$, ale większa lub równa $k$ (warunek w linii \ref{line:roulette_if}). 
 	Jeżeli taki osobnik zostanie znaleziony, to zostaje on zwrócony jako wynik działania operatora (linia \ref{line:roulette_return_loop}), a w przeciwnym wypadku jego waga zostaje dodana do wartości $k$ (w linii \ref{line:roulette_incr}).
 	Jeśli żaden z osobników nie spełnia tych warunków, to zwracany jest ostatni osobnik, z najmniejszą wagą (linia \ref{line:roulette_return_last}).
@@ -129,8 +129,8 @@
 	Jeżeli jednak $wybrane=e$, to $k$ przyjmie kolejno wartości $\param{waga}(s_0) + \param{waga}(s_1)$ i $\param{waga}(s_0) + \param{waga}(s_1) + \param{waga}(s_2)$.
 	W takiej sytuacji warunek sprawdzany w pętli nie zostanie spełniony, więc zwrócony zostanie osobnik $s_2$.
 	
-	Drugą powszechnie stosowaną metodą selekcji jest \textbf{operator turniejowy} (\emph{ang. tourney select}).
-	Jego działąnie polega na wylosowaniu z równym pradopodobieństwem pewnej ilości osobników i zwróceniu najlepszego spośród nich.
+	Drugą powszechnie stosowaną metodą selekcji jest \textbf{operator turniejowy} (\emph{ang. tourney selection}).
+	Jego działanie polega na wylosowaniu z równym prawdopodobieństwem pewnej ilości osobników i zwróceniu najlepszego spośród nich.
 	Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (czyli ilość rozwiązań które są między sobą porównywane) nazywany jest \emph{rozmiarem turnieju} i jest parametrem operatora.
 	
 	\begin{algorithm}[h]
@@ -230,7 +230,7 @@
 	
 	Wartość $m_{x, y}$ oznacza wagę krawędzi łączącej $x$ty i $y$ty wierzchołek grafu, czyli odległość między punktami o numerach $x$ i $y$.
 	
-	Wykorzystano reprezentację osobnika przez $p$elementowy wektor wartości ze zbioru $\{ 1, 2, \ldots, p \}$.
+	Wykorzystano reprezentację osobnika przez $p$-elementowy wektor wartości ze zbioru $\{ 1, 2, \ldots, p \}$.
 	Interpretacja tego, że na $i$tej pozycji w wektorze znajduje się wartość $j$ jest taka, że jako numer $i$tego odwiedzanego punktu wynosi $j$.
 	
 	Przykładowo, dla punktów rozmieszczonych w sposób przedstawiony na rysunku \ref{figure:tsp_example}, osobnik reprezentowany przez wektor $[1, 6, 4, 5, 3, 2]$ oznacza ścieżkę zaznaczoną na tym samym rysunku przerywaną linią, rozpoczynającą i kończącą się w punkcie 1.
@@ -313,7 +313,7 @@
 		\end{tikzpicture}
 	\end{figure}
 	
-	Operator mutacji wykorzystany w tej pracy nosi angielską nazwę \emph{Reverse Sequence Mutation} \cite{tsp_mutations}, co można przetłumaczyć na \emph{mutację przez zamianę podciągów}.
+	Operator mutacji wykorzystany w tej pracy nosi angielską nazwę \emph{reverse sequence mutation} \cite{tsp_mutations}, co można przetłumaczyć na \emph{mutację przez zamianę podciągów}.
 	Jego działanie polega na wybraniu dwóch losowych punktów przecięcia, przez co dzielimy cały wektor na 3 części.
 	Osobnik zmutowany powstaje poprzez zachowanie kolejności elementów w pierwszej i trzeciej części oraz odwrócenie kolejności elementów w drugiej części.
 	Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
@@ -374,14 +374,14 @@
 	
 	Wartość $k_i$ oznacza koszt $i$tego przedmiotu, a $w_i$ - jego wagę.
 	
-	Wykorzystano reprezentację osobnika przez $p$elementowy wektor binarny (czyli taki, którego wartości to elementy zbioru $\{0, 1\}$).
+	Wykorzystano reprezentację osobnika przez $p$-elementowy wektor binarny (czyli taki, którego wartości to elementy zbioru $\{0, 1\}$).
 	Interpretacja tego, że na $i$tej pozycji w wektorze występuje 1 jest taka, że $i$ty przedmiot zostaje zapakowany do plecaka, podczas gdy wartość 0 wskazuje na sytuację przeciwną.
 	
 	Funkcja oceny dla tego problemu jest bardziej skomplikowana niż dla problemu komiwojażera. Główną jej składową jest łączy koszt wszystkich wybranych przedmiotów.
 	Aby sprowadzić problem do problemu minimalizacji\footnote{
 		Zdecydowany się na problem minimalizacji, aby uprościć implementację.
 	} jest ona mnożona przez -1.
-	Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich obiętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
+	Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich objętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
 	W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
 	Zostało to zapisane za pomocą równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
 	
@@ -422,7 +422,7 @@
 	Prawdopodobieństwo odwrócenia bitu jest zależne od tego, czy jest on równy 0, czy 1, oraz od tego, czy ograniczenie zostało przekroczone, czy też łączny rozmiar wybranych przedmiotów jest mniejszy niż rozmiar plecaka.
 	Pierwsza z tych sytuacji jest umownie nazywana nadmiarem, a druga - niedomiarem.
 	
-	W ogólności prawdopodbieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref{line:inverse}.
+	W ogólności prawdopodobieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref{line:inverse}.
 	
 	\begin{align}
 	\label{line:inverse}
@@ -436,7 +436,7 @@
 	
 	Sposób określania wartości $przedzial$ również jest zależny od sytuacji. 
 	W tabeli \ref{table:range_choose} przedstawiony jest sposób wyboru odpowiedniego przedziału. 
-	Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmiaru z większym prawdopodbieństwem odrzucać wybrane przedmioty, a w sytuacji niedomiaru - częściej dobierać nowe.
+	Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmiaru z większym prawdopodobieństwem odrzucać wybrane przedmioty, a w sytuacji niedomiaru - częściej dobierać nowe.
 	
 	\begin{table}
 		\caption{Tablica wyboru wartości $przedzial$ \label{table:range_choose}}

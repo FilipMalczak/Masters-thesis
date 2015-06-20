@@ -1,6 +1,7 @@
 % compile with XeLaTeX
 % !TeX spellcheck = pl_PL
 % !TeX encoding = UTF-8
+% Review iteration: look for todo, "ilość", "przy pomocy"
 \documentclass[twoside]{iisthesis}
 % ---
 \usepackage[MeX]{polski}
@@ -152,11 +153,19 @@
 %\newcommand{\circled}[1]{\tikz \node[anchor=south west, draw,circle, inner sep=0pt, minimum size=7mm, pos=0.5]{#1};}
 \newcommand{\circled}[1]{ \textcircled{\scriptsize{#1}} } 
 
-
 \newcommand{\img}[1]{\centering \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{pictures/#1}}
+
+\newcommand{\inlineScale}{0.5}
+\newcommand{\inlineHeight}{40pt}
+
+\newcommand{\inlineImg}[1]{\centering \raisebox{-\height}{\includegraphics[trim=0 70 0 0, clip,height=\inlineHeight,scale=\inlineScale,keepaspectratio]{pictures/#1}}}
+
 \newcommand{\customImg}[1]{\centering \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{#1}}
+
 \newcommand{\graph}[1]{\centering \input{graphs/#1}}
+
 %\newcommand{\vectorGraphics}[1]{\input{vector/#1}}
+
 \newcommand{\insertData}[1]{\input{exp_csv/tex/#1.tex}}
 
 \newcolumntype{s}{>{\hsize=.5\hsize}c}
@@ -218,16 +227,7 @@ Bardzo krótkie streszczenie w którym powinno się znaleźć omówienie tematu 
 \clearpage
 \pagestyle{plain}
 
-\todo{wywalić listy (?)}
-
 \todo{zmienić styl bibliografii, URL z online resource, uzupełnić linki}
-
-\todo{znormalizować referencje figure: i vector:}
-
-\listoffigures
-\listoftables
-\listof{signature}{Spis sygnatur}
-\listof{algorithm}{Spis algorytmów}
 
 \bibliographystyle{iisthesis}
 \bibliography{bibliografia}
