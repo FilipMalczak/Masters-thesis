@@ -1,456 +1,467 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-	\section{Implementacja operatorów i problemów użytych w badaniach} \label{appendix:impl_det}
-	
-	\todo{section, etc - ogółem proof-read}
-	
-	W tej sekcji opisane są operatory i ich implementacje wykorzystywane podczas przeprowadzania eksperymentów. 
-	Pierwsza podsekcja zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zatrzymania, a kolejne dwie - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
-	
-	\subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
-	
-	Niezależnie od tego jaki problem jest rozwiązywany za pomocą algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
-	W tym rozdziale opisane zostaną operatory wyboru oraz kryterium stopu, oraz zestawienie oznaczeń wykorzystywanych w dalszych rozdziałach.
-	
-	\subsubsection{Operatory wyboru}
-	
-	Jak zostało zdefiniowane w podrozdziale \ref{subsection:new_natSel}, zadaniem operatora wyboru jest zwrócenie pojedynczego elementu ze zbioru osobników.
-	W standardowych algorytmach ewolucyjnych powszechnie używane są operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}, korzystające z tego operatora w celu wybrania każdego ze zwracanych osobników.
-	Ponadto, operatory wykorzystywane w heurystyce DSEA również korzystają z tej abstrakcji.
-	
-	Jedną z popularnych implementacji operatora wyboru jest \textbf{operator ruletkowy} (\emph{ang. roulette selection}), wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
-	Zwraca on rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
-	Działanie tego operatora standardowo tłumaczy się w następujący sposób:
+\section{Implementacja operatorów i problemów użytych w badaniach} \label{appendix:impl_det}
+
+\todo{section, etc - ogółem proof-read}
+Niniejszy dodatek poświęcony jest opisowi operatorów i ich implementacji.
+Szczegółowo przedstawione zostały komponenty niezbędne do przeprowadzenia eksperymentów zaplanowanych w ramach niniejszej pracy.
+
+Pierwszy podrozdział zawiera opis elementów heurystyki niezależnych od problemu, czyli operatorów wyboru i kryterium zatrzymania, a kolejne dwie części - reprezentacji osobników i operatorów genetycznych wykorzystanych w badaniu wybranych problemów.
+
+\subsection{Komponenty niezależne od problemu} \label{subsection:independent_impl}
+
+Niezależnie od tego jaki problem jest rozwiązywany za pomocą algorytmów ewolucyjnych, pewne elementy są niemalże uniwersalne. 
+W tym rozdziale opisane zostaną operatory wyboru oraz kryterium stopu, oraz zestawienie oznaczeń wykorzystywanych w dalszych rozdziałach.
+
+\subsubsection{Operatory wyboru}
+
+Jak zostało zdefiniowane w podrozdziale \ref{subsection:new_natSel}, zadaniem operatora wyboru jest zwrócenie pojedynczego elementu ze zbioru osobników.
+W standardowych algorytmach ewolucyjnych powszechnie używane są operatory selekcji, które można zaimplementować zgodnie z algorytmem \ref{algorithm:natSel_choose}, korzystające z tego operatora w celu wybrania każdego ze zwracanych osobników.
+Ponadto, operatory wykorzystywane w metaheurystyce DSEA również korzystają z tej abstrakcji.
+
+Jedną z popularnych implementacji operatora wyboru jest \textbf{operator ruletkowy} (\emph{ang. roulette selection}), wykorzystujący pewną dodatnią funkcję (lub operator) przypisującą każdemu osobnikowi tzw. ,,wagę''.
+Zwraca on rozwiązanie z prawdopodobieństwem wprost proporcjonalnym do wartości tej funkcji.
+Działanie tego operatora standardowo tłumaczy się w następujący sposób:
+\begin{quotation}
 	Wyobraźmy sobie koło ruletki. 
 	Na całym tym kole zaznaczmy obszary (wycinki koła) przypisane do osobników, w taki sposób, że odpowiedni obszar ma rozmiar wprost proporcjonalny do wagi rozwiązania. 
-	Następnie zakręćmy tym kołem, a osobnika, do którego obszar będzie tym, na którym zatrzyma się kulka ruletki, zwróćmy.
-	
-	Istnieją co najmniej dwie standardowe wersje tego operatora, różniące się funkcją przypisującą wagę osobnikom. 
-	Jedną z nich jest ważenie osobników ich oceną.
-	W przypadku problemu maksymalizacji przekłada się to bezpośrednio na wymóg nałożony na standardowy operator selekcji, mówiący o tym, że osobniki ,,lepsze'' mają większą szanse na zostanie wylosowanymi.
-	Odmiana ta jest jednak problematyczna w przypadku problemów minimalizacji, ponieważ ,,lepsze'' osobniki mają wtedy niższą ocenę, a co za tym idzie - zajmują mniej miejsca na wirtualnym kole ruletki, co przekłada się na mniejszą szansę wylosowania.
-	Jeżeli dla danego problemu znana jest górne ograniczenie funkcji oceny (czyli największa wartość pochodząca z jej przeciwdziedziny), to problem minimalizacji możemy przekształcić do problemu maksymalizacji, poprzez zdefiniowanie nowej funkcji oceny, zwracającą wartość oryginalnego kryterium odjętą od jego górnego ograniczenia\footnote{
-		Prosta zmiana znaku kryterium również sprowadza problem minimalizacji do problemu maksymalizacji, jednak nie pozwala na zastosowanie operatora ruletkowego, ponieważ waga osobnika musi być dodatnia. 
-		Alternatywne podejście, polegające na użyciu odwrotności wartości kryterium również nie zawsze jest możliwe do użycia, ponieważ wartość oceny może wynosić 0.
-	}.
-	W takiej sytuacji, osobniki możemy ważyć za pomocą ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
-	Dzięki temu najgorszy osobnik zajmuje jedną jednostkę obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
-	Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczny zarówno w problemach minimalizacji, jak i maksymalizacji.
-	
-	\begin{algorithm}[h]
-		\caption{Schemat działania ruletkowego operatora wyboru \label{algorithm:roulette}}
-		\begin{algorithmic}[1]
-			\Input{
-				$populacja$ \Comment{Populacja z której wybierany jest osobnik}
-			}
-			\Output{
-				wybrany osobnik
-			}
-			\Params{
-				$\param{waga}$ \Comment{Funkcja wagi, np. funkcja oceny lub ranga}
-			}
-			\Start
-			\Operator{opRuletkowy}{$populacja$}
-			\Var \label{line:roulette_sort} 
-			$posortowane \gets$ $populacja$ posortowana malejąco po wartości funkcji $\param{waga}$
-			\Var \label{line:roulette_sum} 
-			$sumaWag \gets \sum_{s \in populacja} \param{waga}(s)$
-			\Var \label{line:roulette_random} 
-			$wybrane \gets random(\range{0}{sumaWag})$
-			\Var \label{line:roulette_k} 
-			$k \gets 0$
-			\For{$s \in posortowane$} \label{line:roulette_loop} 
-			\Comment{w kolejności określonej w linii \ref{line:roulette_sort}}
-			\If{$wybrane \geq k \wedge wybrane < k + \param{waga}(s)$}
-			\label{line:roulette_if} 
-			\State \Return $s$ \label{line:roulette_return_loop} 
-			\Else
-			\State $k \gets k + \param{waga}(s)$ \label{line:roulette_incr} 
-			\EndIf
-			\EndFor
-			\State \Return ostatni element $posortowane$ \label{line:roulette_return_last} 
-			\EndOperator
-		\end{algorithmic}
-	\end{algorithm}
-	
-	Schemat działania operatora ruletkowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
-	
-	Pierwszym krokiem działania operatora jest posortowanie populacji wejściowej tak, aby osobniki o większej wadze (czyli o większym prawdopodobieństwie wyboru) znalazły się bliżej początku posortowanego wektora $posortowane$ (w linii \ref{line:roulette_sort}).
-	Następnie, obliczana jest suma wag wszystkich osobników, przechowywana w zmiennej $sumaWag$ (linia \ref{line:roulette_sum}).
-	W kolejnych krokach wybierana jest losowa wartość $wybrane$ z przedziału $\range{0}{sumaWag}$ (w linii \ref{line:roulette_random}) i inicjalizowana jest zmienna pomocnicza $k=0$ (w linii \ref{line:roulette_k}).
-	W pętli, rozpoczynającej się w linii \ref{line:roulette_loop} przeszukiwany jest wektor $posortowane$, w poszukiwaniu takiego osobnika, którego waga jest mniejsza niż $wybrane-k$, ale większa lub równa $k$ (warunek w linii \ref{line:roulette_if}). 
-	Jeżeli taki osobnik zostanie znaleziony, to zostaje on zwrócony jako wynik działania operatora (linia \ref{line:roulette_return_loop}), a w przeciwnym wypadku jego waga zostaje dodana do wartości $k$ (w linii \ref{line:roulette_incr}).
-	Jeśli żaden z osobników nie spełnia tych warunków, to zwracany jest ostatni osobnik, z najmniejszą wagą (linia \ref{line:roulette_return_last}).
-	
-	\begin{figure}[h]
-		\caption{Działanie ruletkowego operatora wyboru \label{figure:roulette_example}}
-		\centering
-		\begin{tikzpicture}[>=triangle 60]
-		
-		%axis
-		\draw[->] (-1, 0) -- (13, 0);
-		
-		\draw (0, 0.25) -- (0, -0.25) node [below] {$0$};
-		
-		\draw (6, 0.25) -- (6, -0.25);
-		\draw (10, 0.25) -- (10, -0.25);
-		
-		\draw (12, 0.25) -- (12, -0.25) node [below] {$sumaWag$};
-		
-		%braces
-		\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (0, 0) -- (6, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_0)$};
-		
-		\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (6, 0) -- (10, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_1)$};
-		
-		\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (10, 0) -- (12, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_2)$};
-		
-		%size arrows
-		%\draw[<->] (0, 0.3) -- (6, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_0)$};
-		
-		%\draw[<->] (6, 0.3) -- (10, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_1)$};
-		
-		%\draw[<->] (10, 0.3) -- (12, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_2)$};
-		
-		%randoms
-		\draw[->] (0, -1.5) node[below,anchor=south,yshift=-20pt] {$a$} -- (0, -0.75) ;
-		\draw[->] (1, -1.5) node[below,anchor=south,yshift=-20pt] {$b$} -- (1, -0.75) ;
-		\draw[->] (6, -1.5) node[below,anchor=south,yshift=-20pt] {$c$} -- (6, -0.75) ;
-		\draw[->] (8, -1.5) node[below,anchor=south,yshift=-20pt] {$d$} -- (8, -0.75) ;
-		\draw[->] (12, -1.5) node[below,anchor=south,yshift=-20pt] {$e$} -- (12, -0.75) ;
-		\end{tikzpicture}
-	\end{figure}
-	
-	Działanie tak opisanego operatora obrazuje rysunek \ref{figure:roulette_example}. 
-	Na osi zaznaczono przykładowe wagi 3 osobników, w sytuacji w której $posortowane = [ s_0, s_1, s_2 ]$ oraz kilka przykładowych wartości ($a$, $b$, $c$, $d$, $e$) jakie może przyjąć $wybrane$ .
-	Jeżeli $wybrane=a$ lub $wybrane=b$, to zwrócony zostanie osobnik $s_0$, ponieważ $k$ będzie równe $0$ i $wybrane$ znajdzie się w odpowiednim przedziale.
-	W przeciwnym wypadku $k$ zostanie zwiększone do wartości $\param{waga}(s_0)$.
-	Wtedy, jeżeli $wybrane=c$ lub $wybrane=d$, to zwrócony zostanie osobnik $s_1$, z tego samego powodu.
-	Jeżeli jednak $wybrane=e$, to $k$ przyjmie kolejno wartości $\param{waga}(s_0) + \param{waga}(s_1)$ i $\param{waga}(s_0) + \param{waga}(s_1) + \param{waga}(s_2)$.
-	W takiej sytuacji warunek sprawdzany w pętli nie zostanie spełniony, więc zwrócony zostanie osobnik $s_2$.
-	
-	Drugą powszechnie stosowaną metodą selekcji jest \textbf{operator turniejowy} (\emph{ang. tourney selection}).
-	Jego działanie polega na wylosowaniu z równym prawdopodobieństwem pewnej ilości osobników i zwróceniu najlepszego spośród nich.
-	Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (czyli ilość rozwiązań które są między sobą porównywane) nazywany jest \emph{rozmiarem turnieju} i jest parametrem operatora.
-	
-	\begin{algorithm}[h]
-		\caption{Schemat działania turniejowego operatora wyboru \label{algorithm:tourney}}
-		\begin{algorithmic}[1]
-			\Input{
-				$populacja$ \Comment{Populacja z której wybierany jest osobnik}
-			}
-			\Output{
-				$wynik$ \Comment{Wybrany osobnik}
-			}
-			\Params{
-				$\param{n}$ \Comment{Rozmiar turnieju}
-			}
-			\Start
-			\Operator{opTurniejowy}{$populacja$}
-			\Var $turniej \gets \emptyset$
-			\label{line:tourney_init}
-			\While{$|turniej|<\param{n}$}
-			\label{line:tourney_while}
-			\State $turniej \gets turniej \cup random(populacja \setminus turniej)$
-			\label{line:tourney_fill}
-			\EndWhile
-			\Var $wynik \gets NULL$
-			\label{line:tourney_find_init}
-			\For{$s \in turniej$}
-			\label{line:tourney_for}
-			\If{$wynik = NULL \vee (wynik, s) \in \minoritySpecimenRel$}
-			\label{line:tourney_if}
-			\State $wynik \gets s$
-			\label{line:tourney_overwrite}
-			\EndIf
-			\EndFor
-			\State \Return $wynik$
-			\label{line:tourney_return}
-			\EndOperator
-		\end{algorithmic}
-	\end{algorithm}
-	
-	Schemat działania operatora turniejowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
-	
-	Działanie operatora rozpoczyna się od inicjalizacji zbioru $turniej$ na zbiór pusty (w linii \ref{line:tourney_init}).
-	Następnie, póki zbiór ten nie osiągnie rozmiaru $n$ (linia \ref{line:tourney_while}) dodawane są do niego osobniki losowo wybierane (bez powtórzeń) z populacji (w linii \ref{line:tourney_fill}).
-	W kolejnym kroku $turniej$ jest przeszukiwany pod kątem rozwiązania lepszego od pozostałych.
-	Polega to na zainicjalizowaniu pomocniczej zmiennej $wynik$ na wartość $NULL$ (czyli abstrakcyjną, pustą wartość, linia \ref{line:tourney_find_init}) i sprawdzeniu każdego z osobników ze zbioru $turniej$ (linia \ref{line:tourney_for}). 
-	Jeżeli zmienna $wynik$ ma wartość $NULL$ (czyli pętla dopiero się rozpoczęła) lub rozwiązanie $s$ sprawdzane w danym momencie jest lepsze od wartości tej zmiennej (co sprowadza się do sprawdzenia, czy dana para osobników jest w relacji lepszego dopasowania $\minoritySpecimenRel$), to wartość $wynik$ jest nadpisywana przez $s$ (linie \ref{line:tourney_if} i \ref{line:tourney_overwrite}).
-	Wynikiem działania operatora jest znaleziony w ten sposób najlepszy osobnik spośród losowo wybranych, czyli wartość $wynik$, zwracana w linii \ref{line:tourney_return}.
-	
-	\subsubsection{Kryterium stopu}
-	
-	Zadaniem kryterium stopu jest przerwanie działania heurystyki w wybranym momencie.
-	Ma to na celu ograniczenie czasu działania procesu do skończonej wartości.
-	
-	Najprostszą implementacją tego warunku jest zatrzymanie heurystyki po przetworzeniu określonej liczby pokoleń.
-	Działanie takiego operatora opisane jest za pomocą algorytmu \ref{algorithm:stdStop}
-	
-	\begin{algorithm}
-		\caption{Warunek zatrzymania po określonej liczbie pokoleń \label{algorithm:stdStop}}
-		\begin{algorithmic}[1]
-			\Context{
-				$pokolenie$ \Comment{Numer obecnego pokolenia, liczony od 1}
-			}
-			\Params{
-				$\param{max}$ \Comment{Liczba pokoleń które należy przetworzyć}
-			}
-			\Output{
-				1 oznaczające, że należy przerwać działanie heurystyki, lub 0 w przeciwnym wypadku
-			}
-			\Start
-			\Operator{krytStopu}{}
-			\If{$pokolenie \leq \param{max}$}
-			\label{line:stop_if}
-			\State \Return 1
-			\label{line:stop_true}
-			\Else
-			\State \Return 0
-			\label{line:stop_false}
-			\EndIf
-			\EndOperator
-		\end{algorithmic}
-	\end{algorithm}
-	
-	Jego działanie jest trywialne i sprowadza się do sprawdzenia odpowiedniego warunku (w linii \ref{line:stop_if}) i zwrócenia 1 (linia \ref{line:stop_true}) lub 0 (linia \ref{line:stop_false}) w zależności od jego prawdziwości.
-	
-	\subsection{Implementacja problemu komiwojażera} \label{subsection:tsp_impl}
-	
-	Model problemu komiwojażera może zostać przedstawiony w postaci macierzy incydencji grafu reprezentującego rozkład punktów na mapie. Macierz ta (oznaczana jako $\important{M}_{TSP}$) ma wymiary $p \times p$ gdzie $p$ to liczba punktów.
-	
-	\begin{displaymath}
-	\important{M}_{TSP} = \begin{pmatrix}
-	m_{1,1} & m_{1,2} & \cdots & m_{1,p} \\
-	m_{2,1} & m_{2,2} & \cdots & m_{2,p} \\
-	\vdots  & \vdots  & \ddots & \vdots  \\
-	m_{p,1} & m_{p,2} & \cdots & m_{p,p}
-	\end{pmatrix}
-	\end{displaymath}
-	
-	Wartość $m_{x, y}$ oznacza wagę krawędzi łączącej $x$ty i $y$ty wierzchołek grafu, czyli odległość między punktami o numerach $x$ i $y$.
-	
-	Wykorzystano reprezentację osobnika przez $p$-elementowy wektor wartości ze zbioru $\{ 1, 2, \ldots, p \}$.
-	Interpretacja tego, że na $i$tej pozycji w wektorze znajduje się wartość $j$ jest taka, że jako numer $i$tego odwiedzanego punktu wynosi $j$.
-	
-	Przykładowo, dla punktów rozmieszczonych w sposób przedstawiony na rysunku \ref{figure:tsp_example}, osobnik reprezentowany przez wektor $[1, 6, 4, 5, 3, 2]$ oznacza ścieżkę zaznaczoną na tym samym rysunku przerywaną linią, rozpoczynającą i kończącą się w punkcie 1.
-	
-	\begin{figure} [H]
-		\caption{Przykładowe rozwiązanie problemu komiwojażera \label{figure:tsp_example}}
-		\centering
-		\begin{tikzpicture}
-		\node (1) at (2, 2) {1};
-		\node (2) at (2, 5) {2};
-		\node (3) at (4, 6) {3};
-		\node (4) at (4, 3) {4};
-		\node (5) at (7, 4) {5};
-		\node (6) at (5, 1) {6};
-		\draw[dashed] (1) -- (6) -- (4) -- (5) -- (3) -- (2) -- (1) ;
-		\end{tikzpicture}
-	\end{figure}
-	
-	Funkcją oceny w tym problemie jest długość ścieżki. 
-	Formalnie, $\param{funkcjaOceny}_{TSP}$ jest wyrażona jako suma wag krawędzi łączących punkty w kolejności określonej wektorem, co można zapisać w postaci równania \ref{line:tsp_eval}. 
-	Pierwsza część równania, występująca przed sumowaniem po odpowiednich indeksach oznacza długość krawędzi między ostatnim, a pierwszym punktem zapisanym w wektorze, dzięki czemu rozwiązania opisujące ścieżki z tą samą kolejnością, ale rozpoczynające się w różnych punktach, np. $[1, 6, 4, 5, 3, 2]$ i $[5, 3, 2, 1, 6, 4]$ mają tą samą ocenę.
-	
-	\begin{align}
-	\param{funkcjaOceny}_{TSP}([x_1, x_2, \ldots, x_p]) = p_{x_p, x_1} + \sum_{i=1}^{p-1} m_{x_i, x_{i+1}} \label{line:tsp_eval}
-	\end{align}
-	
-	W niniejszej pracy wykorzystano zbiór punktów \emph{sahara} \cite{sahara_points} opisujących położenie 29 miast leżących na zachodniej Saharze. 
-	Znane jest globalne optimum dla tego zadania, wynoszące 27603.
-	
-	Wykorzystany operator krzyżowania jest zbliżony do tego opisanego w sekcji \ref{section:general_idea}. 
-	Polega na wybraniu losowego punktu przecięcia wektorów i wymianie ich podwektorów. 
-	Różni się on podanego przykładu tym, że elementy wektorów nie powinny się w nich powtarzać.
-	Aby spełnić to ograniczenie operator tworzy potomków poprzez wykorzystanie pierwszych części wektorów-rodziców i dołączenie do nich niewykorzystanych punktów.
-	Punkty te dołączane są najpierw z podwektora drugiego rodzica za punktem przecięcia, a jeżeli po tym dalej brakuje niektórych z nich, są wybierane od jego początku.
-	Zostało to zobrazowane na rysunku \ref{figure:tsp_crossover}, gdzie na górze pokazano wektory wejściowe (rodziców), grubą linią zaznaczono punkt przecięcia, a na dole przedstawiono wynik krzyżowania (potomków).
-	
-	\begin{figure}
-		\caption{Przykład działania operatora krzyżowania dla problemu komiwojażera\label{figure:tsp_crossover}}
-		\centering
-		\begin{tikzpicture}[>=triangle 60]
-		\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
-		
-		%first input
-		\node[cellStyle, fill=gray!00] at (0, 0) {1};
-		\node[cellStyle, fill=gray!10] at (1, 0) {4};
-		\node[cellStyle, fill=gray!20] at (2, 0) {2};
-		\node[cellStyle, fill=gray!30] at (3, 0) {3};
-		\node[cellStyle, fill=gray!40] at (4, 0) {5};
-		
-		%second input
-		\node[cellStyle, fill=gray!50] at (0, -1) {2};
-		\node[cellStyle, fill=gray!60] at (1, -1) {4};
-		\node[cellStyle, fill=gray!70] at (2, -1) {5};
-		\node[cellStyle, fill=gray!80] at (3, -1) {3};
-		\node[cellStyle, fill=gray!90] at (4, -1) {1};
-		
-		%input cutpoint
-		\draw[ultra thick] (1.5, 1) -- (1.5, -2);
-		
-		%first output
-		\node[cellStyle, fill=gray!0] at (0, -5) {1};
-		\node[cellStyle, fill=gray!10] at (1, -5) {4};
-		\node[cellStyle, fill=gray!70] at (2, -5) {5};
-		\node[cellStyle, fill=gray!80] at (3, -5) {3};
-		\node[cellStyle, fill=gray!50] at (4, -5) {2};
-		
-		%second input
-		\node[cellStyle, fill=gray!50] at (0, -6) {2};
-		\node[cellStyle, fill=gray!60] at (1, -6) {4};
-		\node[cellStyle, fill=gray!30] at (2, -6) {3};
-		\node[cellStyle, fill=gray!40] at (3, -6) {5};
-		\node[cellStyle, fill=gray!00] at (4, -6) {1};
-		
-		%input cutpoint
-		\draw[ultra thick] (1.5, -4) -- (1.5, -7);
-		
-		% operator arrow
-		\draw [->, thick] (2, -2)  -- (2, -4) node[right, midway]{operator krzyżowania};
-		
-		\end{tikzpicture}
-	\end{figure}
-	
-	Operator mutacji wykorzystany w tej pracy nosi angielską nazwę \emph{reverse sequence mutation} \cite{tsp_mutations}, co można przetłumaczyć na \emph{mutację przez zamianę podciągów}.
-	Jego działanie polega na wybraniu dwóch losowych punktów przecięcia, przez co dzielimy cały wektor na 3 części.
-	Osobnik zmutowany powstaje poprzez zachowanie kolejności elementów w pierwszej i trzeciej części oraz odwrócenie kolejności elementów w drugiej części.
-	Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
-	
-	
-	\begin{figure}
-		\caption{Przykład działania operatora mutacji dla problemu komiwojażera\label{figure:tsp_mutation}}
-		\centering
-		\begin{tikzpicture}[>=triangle 60]
-		\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
-		
-		%input
-		\foreach \x in {1, ..., 8} {
-			\node[cellStyle, fill=gray!\x0] at (\x, 0) {\x};
+	Następnie zakręćmy tym kołem i zwróćmy osobnika do którego przypisany będzie obszar na którym zatrzyma się kulka ruletki.
+\end{quotation}
+
+
+Istnieją co najmniej dwie standardowe wersje tego operatora, różniące się funkcją przypisującą wagę osobnikom. 
+Jedną z nich jest ważenie osobników ich oceną.
+W przypadku problemu maksymalizacji przekłada się to bezpośrednio na wymóg nałożony na standardowy operator selekcji, mówiący o tym, że osobniki ,,lepsze'' mają większą szanse na zostanie wylosowanymi.
+Odmiana ta jest jednak problematyczna w przypadku problemów minimalizacji, ponieważ ,,lepsze'' osobniki mają wtedy niższą ocenę, a co za tym idzie - zajmują mniej miejsca na wirtualnym kole ruletki, co przekłada się na mniejszą szansę wylosowania.
+Jeżeli dla danego problemu znane jest dowolne górne ograniczenie\footnote{
+	Ograniczenie górne funkcji lub operatora to dowolna wartość większa lub równa każdemu z elementów jego przeciwdziedziny. 
+	Najmniejsze ograniczenie górne nazywa się kresem górnym.
+	Często jest to największa wartość przeciwdziedziny, ale nie zawsze.
+	Na przykład, w przypadku funkcji rosnących i zbieżnych, to granica funkcji będzie kresem górnym.
+} funkcji oceny, to problem minimalizacji możemy przekształcić do problemu maksymalizacji, poprzez zdefiniowanie nowej funkcji oceny, zwracającą wartość oryginalnego kryterium odjętą od jego górnego ograniczenia\footnote{
+	Prosta zmiana znaku kryterium również sprowadza problem minimalizacji do problemu maksymalizacji, jednak nie pozwala na zastosowanie operatora ruletkowego, ponieważ waga osobnika musi być dodatnia. 
+	Alternatywne podejście, polegające na użyciu odwrotności wartości kryterium również nie zawsze jest możliwe do użycia, ponieważ wartość oceny może wynosić 0.
+}.
+Jeżeli jednak funkcja oceny może przyjmować wartości ujemne, to nie może być ona wykorzystana jako funkcja wagi (ponieważ waga musi być dodatnia).
+W takiej sytuacji, osobniki możemy ważyć za pomocą ich ,,rangi'', czyli pozycji po posortowaniu od najgorszych do najlepszych.
+Dzięki temu najgorszy osobnik zajmuje jedną jednostkę obszaru koła ruletki, drugi - dwie jednostki, a najlepszy - $n$ jednostek, gdzie $n$ to rozmiar zbioru na którym stosuje się operator selekcji.
+Dzięki temu, że operator korzysta jedynie z relacji porządku między osobnikami $\minoritySpecimenRel$ (wynikającej z relacji porządku określonej na ich ocenach $\minorityEvalRel$) nie występuje tu wcześniej opisany problem, więc operator jest użyteczny zarówno w problemach minimalizacji, jak i maksymalizacji.
+
+\begin{algorithm}[h]
+	\caption{Schemat działania ruletkowego operatora wyboru \label{algorithm:roulette}}
+	\begin{algorithmic}[1]
+		\Input{
+			$populacja$ \Comment{Populacja z której wybierany jest osobnik}
 		}
-		
-		%input cupoints
-		\draw[ultra thick] (2.5, 1) -- (2.5, -1);
-		\draw[ultra thick] (6.5, 1) -- (6.5, -1);
-		
-		%output
-		\foreach \x in {1, ..., 2} {
-			\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+		\Output{
+			wybrany osobnik
 		}
-		
-		\node[cellStyle, fill=gray!60] at (3, -4) {6};
-		\node[cellStyle, fill=gray!50] at (4, -4) {5};
-		\node[cellStyle, fill=gray!40] at (5, -4) {4};
-		\node[cellStyle, fill=gray!30] at (6, -4) {3};
-		
-		\foreach \x in {7, ..., 8} {
-			\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+		\Params{
+			$\param{waga}$ \Comment{Funkcja wagi, np. funkcja oceny lub ranga}
 		}
-		
-		%output cupoints
-		\draw[ultra thick] (2.5, -3) -- (2.5, -5);
-		\draw[ultra thick] (6.5, -3) -- (6.5, -5);
-		
-		% operator arrow
-		\draw [->, thick] (4.5, -1)  -- (4.5, -3) node[right, midway]{operator mutacji};
-		
-		%swap
-		\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
-		(3, -0.5) to (6, -0.5);
-		\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
-		(4, -0.5) to (5, -0.5);
-		
-		\end{tikzpicture}
-	\end{figure}
+		\Start
+		\Operator{opRuletkowy}{$populacja$}
+		\Var \label{line:roulette_sort} 
+		$posortowane \gets$ $populacja$ posortowana malejąco po wartości funkcji $\param{waga}$
+		\Var \label{line:roulette_sum} 
+		$sumaWag \gets \sum_{s \in populacja} \param{waga}(s)$
+		\Var \label{line:roulette_random} 
+		$wybrane \gets random(\range{0}{sumaWag})$
+		\Var \label{line:roulette_k} 
+		$k \gets 0$
+		\For{$s \in posortowane$} \label{line:roulette_loop} 
+		\Comment{w kolejności określonej w linii \ref{line:roulette_sort}}
+		\If{$wybrane \geq k \wedge wybrane < k + \param{waga}(s)$}
+		\label{line:roulette_if} 
+		\State \Return $s$ \label{line:roulette_return_loop} 
+		\Else
+		\State $k \gets k + \param{waga}(s)$ \label{line:roulette_incr} 
+		\EndIf
+		\EndFor
+		\State \Return ostatni element $posortowane$ \label{line:roulette_return_last} 
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+Schemat działania operatora ruletkowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
+
+Pierwszym krokiem działania operatora jest posortowanie populacji wejściowej tak, aby osobniki o większej wadze (czyli o większym prawdopodobieństwie wyboru) znalazły się bliżej początku posortowanego wektora $posortowane$ (w linii \ref{line:roulette_sort}).
+Następnie, obliczana jest suma wag wszystkich osobników, przechowywana w zmiennej $sumaWag$ (linia \ref{line:roulette_sum}).
+W kolejnych krokach wybierana jest losowa wartość $wybrane$ z przedziału $\range{0}{sumaWag}$ (w linii \ref{line:roulette_random}) i inicjalizowana jest zmienna pomocnicza $k=0$ (w linii \ref{line:roulette_k}).
+W pętli, rozpoczynającej się w linii \ref{line:roulette_loop} przeszukiwany jest wektor $posortowane$, w poszukiwaniu takiego osobnika, którego waga jest mniejsza niż $wybrane-k$, ale większa lub równa $k$ (warunek w linii \ref{line:roulette_if}). 
+Jeżeli taki osobnik zostanie znaleziony, to zostaje on zwrócony jako wynik działania operatora (linia \ref{line:roulette_return_loop}), a w przeciwnym wypadku jego waga zostaje dodana do wartości $k$ (w linii \ref{line:roulette_incr}).
+Jeśli żaden z osobników nie spełnia tych warunków, to zwracany jest ostatni osobnik, z najmniejszą wagą (linia \ref{line:roulette_return_last}).
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
 	
-	\subsection{Implementacja problemu plecakowego}
+	%axis
+	\draw[->] (-1, 0) -- (13, 0);
 	
-	Model binarnego problemu plecakowego można przedstawić w postaci ciągu $\important{M}_{PLECAK}$ $p$ par $(k, w)$ oraz wartości $W$ określającej maksymalny rozmiar plecaka.
+	\draw (0, 0.25) -- (0, -0.25) node [below] {$0$};
 	
-	\begin{displaymath}
-	\important{M}_{PLECAK} = ( ((k_1, w_1), (k_2, w_2), \ldots, (k_p, w_p)), W)
-	\end{displaymath}
+	\draw (6, 0.25) -- (6, -0.25);
+	\draw (10, 0.25) -- (10, -0.25);
 	
-	Wartość $k_i$ oznacza koszt $i$tego przedmiotu, a $w_i$ - jego wagę.
+	\draw (12, 0.25) -- (12, -0.25) node [below] {$sumaWag$};
 	
-	Wykorzystano reprezentację osobnika przez $p$-elementowy wektor binarny (czyli taki, którego wartości to elementy zbioru $\{0, 1\}$).
-	Interpretacja tego, że na $i$tej pozycji w wektorze występuje 1 jest taka, że $i$ty przedmiot zostaje zapakowany do plecaka, podczas gdy wartość 0 wskazuje na sytuację przeciwną.
+	%braces
+	\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (0, 0) -- (6, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_0)$};
 	
-	Funkcja oceny dla tego problemu jest bardziej skomplikowana niż dla problemu komiwojażera. Główną jej składową jest łączy koszt wszystkich wybranych przedmiotów.
-	Aby sprowadzić problem do problemu minimalizacji\footnote{
-		Zdecydowany się na problem minimalizacji, aby uprościć implementację.
-	} jest ona mnożona przez -1.
-	Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich objętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
-	W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
-	Zostało to zapisane za pomocą równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
+	\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (6, 0) -- (10, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_1)$};
 	
+	\draw [decorate,decoration={brace,amplitude=15pt},xshift=0pt,yshift=0pt] (10, 0) -- (12, 0) node [black,midway,yshift=20pt] {$\param{waga}(s_2)$};
+	
+	%size arrows
+	%\draw[<->] (0, 0.3) -- (6, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_0)$};
+	
+	%\draw[<->] (6, 0.3) -- (10, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_1)$};
+	
+	%\draw[<->] (10, 0.3) -- (12, 0.3) node [black,midway,yshift=10pt] {$\param{waga}(s_2)$};
+	
+	%randoms
+	\draw[->] (0, -1.5) node[below,anchor=south,yshift=-20pt] {$a$} -- (0, -0.75) ;
+	\draw[->] (1, -1.5) node[below,anchor=south,yshift=-20pt] {$b$} -- (1, -0.75) ;
+	\draw[->] (6, -1.5) node[below,anchor=south,yshift=-20pt] {$c$} -- (6, -0.75) ;
+	\draw[->] (8, -1.5) node[below,anchor=south,yshift=-20pt] {$d$} -- (8, -0.75) ;
+	\draw[->] (12, -1.5) node[below,anchor=south,yshift=-20pt] {$e$} -- (12, -0.75) ;
+	\end{tikzpicture}
+	\caption{Działanie ruletkowego operatora wyboru \label{figure:roulette_example}}
+\end{figure}
+
+Działanie tak opisanego operatora obrazuje rysunek \ref{figure:roulette_example}. 
+Na osi zaznaczono przykładowe wagi 3 osobników, w sytuacji w której $posortowane = [ s_0, s_1, s_2 ]$ oraz kilka przykładowych wartości ($a$, $b$, $c$, $d$, $e$) jakie może przyjąć $wybrane$ .
+Jeżeli $wybrane=a$ lub $wybrane=b$, to zwrócony zostanie osobnik $s_0$, ponieważ $k$ będzie równe $0$ i $wybrane$ znajdzie się w odpowiednim przedziale.
+W przeciwnym wypadku $k$ zostanie zwiększone do wartości $\param{waga}(s_0)$.
+Wtedy, jeżeli $wybrane=c$ lub $wybrane=d$, to zwrócony zostanie osobnik $s_1$, z tego samego powodu.
+Jeżeli jednak $wybrane=e$, to $k$ przyjmie kolejno wartości $\param{waga}(s_0) + \param{waga}(s_1)$ i $\param{waga}(s_0) + \param{waga}(s_1) + \param{waga}(s_2)$.
+W takiej sytuacji warunek sprawdzany w pętli nie zostanie spełniony, więc zwrócony zostanie osobnik $s_2$.
+
+Drugą powszechnie stosowaną metodą selekcji jest \textbf{operator turniejowy} (\emph{ang. tourney selection}).
+Jego działanie polega na wylosowaniu z równym prawdopodobieństwem pewnej ilości osobników i zwróceniu najlepszego spośród nich.
+Zbiór kandydatów do zwrócenia nazywa się \emph{turniejem}, a jego rozmiar (czyli liczba rozwiązań które są między sobą porównywane) nazywany jest \emph{rozmiarem turnieju} i jest parametrem operatora.
+
+\begin{algorithm}[h]
+	\caption{Schemat działania turniejowego operatora wyboru \label{algorithm:tourney}}
+	\begin{algorithmic}[1]
+		\Input{
+			$populacja$ \Comment{Populacja z której wybierany jest osobnik}
+		}
+		\Output{
+			$wynik$ \Comment{Wybrany osobnik}
+		}
+		\Params{
+			$\param{n}$ \Comment{Rozmiar turnieju}
+		}
+		\Start
+		\Operator{opTurniejowy}{$populacja$}
+		\Var $turniej \gets \emptyset$
+		\label{line:tourney_init}
+		\While{$|turniej|<\param{n}$}
+		\label{line:tourney_while}
+		\State $turniej \gets turniej \cup random(populacja \setminus turniej)$
+		\label{line:tourney_fill}
+		\EndWhile
+		\Var $wynik \gets NULL$
+		\label{line:tourney_find_init}
+		\For{$s \in turniej$}
+		\label{line:tourney_for}
+		\If{$wynik = NULL \vee (wynik, s) \in \minoritySpecimenRel$}
+		\label{line:tourney_if}
+		\State $wynik \gets s$
+		\label{line:tourney_overwrite}
+		\EndIf
+		\EndFor
+		\State \Return $wynik$
+		\label{line:tourney_return}
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+Schemat działania operatora turniejowego jest opisany za pomocą algorytmu \ref{algorithm:roulette}.
+
+Działanie operatora rozpoczyna się od inicjalizacji zbioru $turniej$ na zbiór pusty (w linii \ref{line:tourney_init}).
+Następnie, póki zbiór ten nie osiągnie rozmiaru $n$ (linia \ref{line:tourney_while}) dodawane są do niego osobniki losowo wybierane (bez powtórzeń) z populacji (w linii \ref{line:tourney_fill}).
+W kolejnym kroku $turniej$ jest przeszukiwany pod kątem rozwiązania lepszego od pozostałych.
+Polega to na zainicjalizowaniu pomocniczej zmiennej $wynik$ na wartość $NULL$ (czyli abstrakcyjną, pustą wartość, linia \ref{line:tourney_find_init}) i sprawdzeniu każdego z osobników ze zbioru $turniej$ (linia \ref{line:tourney_for}). 
+Jeżeli zmienna $wynik$ ma wartość $NULL$ (czyli pętla dopiero się rozpoczęła) lub rozwiązanie $s$ sprawdzane w danym momencie jest lepsze od wartości tej zmiennej (co sprowadza się do sprawdzenia, czy dana para osobników jest w relacji lepszego dopasowania $\minoritySpecimenRel$), to wartość $wynik$ jest nadpisywana przez $s$ (linie \ref{line:tourney_if} i \ref{line:tourney_overwrite}).
+Wynikiem działania operatora jest znaleziony w ten sposób najlepszy osobnik spośród losowo wybranych, czyli wartość $wynik$, zwracana w linii \ref{line:tourney_return}.
+
+\subsubsection{Kryterium stopu}
+
+Zadaniem kryterium stopu jest przerwanie działania heurystyki w wybranym momencie.
+Ma to na celu ograniczenie czasu działania procesu do skończonej wartości.
+
+Najprostszą implementacją tego warunku jest zatrzymanie heurystyki po przetworzeniu określonej liczby pokoleń.
+Działanie takiego operatora opisane jest za pomocą algorytmu \ref{algorithm:stdStop}
+
+\begin{algorithm}
+	\caption{Warunek zatrzymania po określonej liczbie pokoleń \label{algorithm:stdStop}}
+	\begin{algorithmic}[1]
+		\Context{
+			$pokolenie$ \Comment{Numer obecnego pokolenia, liczony od 1}
+		}
+		\Params{
+			$\param{max}$ \Comment{Liczba pokoleń które należy przetworzyć}
+		}
+		\Output{
+			1 oznaczające, że należy przerwać działanie heurystyki, lub 0 w przeciwnym wypadku
+		}
+		\Start
+		\Operator{krytStopu}{}
+		\If{$pokolenie \leq \param{max}$}
+		\label{line:stop_if}
+		\State \Return 1
+		\label{line:stop_true}
+		\Else
+		\State \Return 0
+		\label{line:stop_false}
+		\EndIf
+		\EndOperator
+	\end{algorithmic}
+\end{algorithm}
+
+Jego działanie jest trywialne i sprowadza się do sprawdzenia odpowiedniego warunku (w linii \ref{line:stop_if}) i zwrócenia 1 (linia \ref{line:stop_true}) lub 0 (linia \ref{line:stop_false}) w zależności od jego prawdziwości.
+
+\subsection{Implementacja elementów problemu komiwojażera} \label{subsection:tsp_impl}
+
+Model problemu komiwojażera może zostać przedstawiony w postaci macierzy incydencji grafu reprezentującego rozkład punktów na mapie. Macierz ta (oznaczana jako $\important{M}_{TSP}$) ma wymiary $p \times p$ gdzie $p$ to liczba punktów.
+
+\begin{displaymath}
+\important{M}_{TSP} = \begin{pmatrix}
+m_{1,1} & m_{1,2} & \cdots & m_{1,p} \\
+m_{2,1} & m_{2,2} & \cdots & m_{2,p} \\
+\vdots  & \vdots  & \ddots & \vdots  \\
+m_{p,1} & m_{p,2} & \cdots & m_{p,p}
+\end{pmatrix}
+\end{displaymath}
+
+Wartość $m_{x, y}$ oznacza wagę krawędzi łączącej $x$ty i $y$ty wierzchołek grafu, czyli odległość między punktami o numerach $x$ i $y$.
+
+Wykorzystano reprezentację osobnika przez $p$-elementowy wektor wartości ze zbioru $\{ 1, 2, \ldots, p \}$.
+Interpretacja tego, że na $i$tej pozycji w wektorze znajduje się wartość $j$ jest taka, że jako numer $i$tego odwiedzanego punktu wynosi $j$.
+
+Przykładowo, dla punktów rozmieszczonych w sposób przedstawiony na rysunku \ref{figure:tsp_example}, osobnik reprezentowany przez wektor $[1, 6, 4, 5, 3, 2]$ oznacza ścieżkę zaznaczoną na tym samym rysunku przerywaną linią, rozpoczynającą i kończącą się w punkcie 1.
+
+\begin{figure} [H]
+	\caption{Przykładowe rozwiązanie problemu komiwojażera \label{figure:tsp_example}}
+	\centering
+	\begin{tikzpicture}
+	\node (1) at (2, 2) {1};
+	\node (2) at (2, 5) {2};
+	\node (3) at (4, 6) {3};
+	\node (4) at (4, 3) {4};
+	\node (5) at (7, 4) {5};
+	\node (6) at (5, 1) {6};
+	\draw[dashed] (1) -- (6) -- (4) -- (5) -- (3) -- (2) -- (1) ;
+	\end{tikzpicture}
+\end{figure}
+
+Funkcją oceny w tym problemie jest długość ścieżki. 
+Formalnie, $\param{funkcjaOceny}_{TSP}$ jest wyrażona jako suma wag krawędzi łączących punkty w kolejności określonej wektorem, co można zapisać w postaci równania \ref{line:tsp_eval}. 
+Pierwsza część równania, występująca przed sumowaniem po odpowiednich indeksach oznacza długość krawędzi między ostatnim, a pierwszym punktem zapisanym w wektorze, dzięki czemu rozwiązania opisujące ścieżki z tą samą kolejnością, ale rozpoczynające się w różnych punktach, np. $[1, 6, 4, 5, 3, 2]$ i $[5, 3, 2, 1, 6, 4]$ mają tą samą ocenę.
+
+\begin{align}
+\param{funkcjaOceny}_{TSP}([x_1, x_2, \ldots, x_p]) = p_{x_p, x_1} + \sum_{i=1}^{p-1} m_{x_i, x_{i+1}} \label{line:tsp_eval}
+\end{align}
+
+W niniejszej pracy wykorzystano zbiór punktów \emph{sahara} \cite{sahara_points} opisujących położenie 29 miast leżących na zachodniej Saharze. 
+Znane jest globalne optimum dla tego zadania, wynoszące 27603.
+
+Wykorzystany operator krzyżowania jest zbliżony do tego opisanego w sekcji \ref{section:general_idea}. 
+Polega na wybraniu losowego punktu przecięcia wektorów i wymianie ich podwektorów. 
+Różni się on podanego przykładu tym, że elementy wektorów nie powinny się w nich powtarzać.
+Aby spełnić to ograniczenie operator tworzy potomków poprzez wykorzystanie pierwszych części wektorów-rodziców i dołączenie do nich niewykorzystanych punktów.
+Punkty te dołączane są najpierw z podwektora drugiego rodzica za punktem przecięcia, a jeżeli po tym dalej brakuje niektórych z nich, są wybierane od jego początku.
+Zostało to zobrazowane na rysunku \ref{figure:tsp_crossover}, gdzie na górze pokazano wektory wejściowe (rodziców), grubą linią zaznaczono punkt przecięcia, a na dole przedstawiono wynik krzyżowania (potomków).
+
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
+	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
+	
+	%first input
+	\node[cellStyle, fill=gray!00] at (0, 0) {1};
+	\node[cellStyle, fill=gray!10] at (1, 0) {4};
+	\node[cellStyle, fill=gray!20] at (2, 0) {2};
+	\node[cellStyle, fill=gray!30] at (3, 0) {3};
+	\node[cellStyle, fill=gray!40] at (4, 0) {5};
+	
+	%second input
+	\node[cellStyle, fill=gray!50] at (0, -1) {2};
+	\node[cellStyle, fill=gray!60] at (1, -1) {4};
+	\node[cellStyle, fill=gray!70] at (2, -1) {5};
+	\node[cellStyle, fill=gray!80] at (3, -1) {3};
+	\node[cellStyle, fill=gray!90] at (4, -1) {1};
+	
+	%input cutpoint
+	\draw[ultra thick] (1.5, 1) -- (1.5, -2);
+	
+	%first output
+	\node[cellStyle, fill=gray!0] at (0, -5) {1};
+	\node[cellStyle, fill=gray!10] at (1, -5) {4};
+	\node[cellStyle, fill=gray!70] at (2, -5) {5};
+	\node[cellStyle, fill=gray!80] at (3, -5) {3};
+	\node[cellStyle, fill=gray!50] at (4, -5) {2};
+	
+	%second input
+	\node[cellStyle, fill=gray!50] at (0, -6) {2};
+	\node[cellStyle, fill=gray!60] at (1, -6) {4};
+	\node[cellStyle, fill=gray!30] at (2, -6) {3};
+	\node[cellStyle, fill=gray!40] at (3, -6) {5};
+	\node[cellStyle, fill=gray!00] at (4, -6) {1};
+	
+	%input cutpoint
+	\draw[ultra thick] (1.5, -4) -- (1.5, -7);
+	
+	% operator arrow
+	\draw [->, thick] (2, -2)  -- (2, -4) node[right, midway]{operator krzyżowania};
+	
+	\end{tikzpicture}
+	\caption{Przykład działania operatora krzyżowania dla problemu komiwojażera\label{figure:tsp_crossover}}
+\end{figure}
+
+Operator mutacji wykorzystany w tej pracy nosi angielską nazwę \emph{reverse sequence mutation} \cite{tsp_mutations}, co można przetłumaczyć na \emph{mutację przez zamianę podciągów}.
+Jego działanie polega na wybraniu dwóch losowych punktów przecięcia, przez co dzielimy cały wektor na 3 części.
+Osobnik zmutowany powstaje poprzez zachowanie kolejności elementów w pierwszej i trzeciej części oraz odwrócenie kolejności elementów w drugiej części.
+Jest to zobrazowane na rysunku \ref{figure:tsp_mutation}.
+
+
+\begin{figure}
+	
+	\centering
+	\begin{tikzpicture}[>=triangle 60]
+	\tikzstyle{cellStyle}=[draw, rectangle, minimum width=1cm, minimum height=1cm, text centered, draw=black]
+	
+	%input
+	\foreach \x in {1, ..., 8} {
+		\node[cellStyle, fill=gray!\x0] at (\x, 0) {\x};
+	}
+	
+	%input cupoints
+	\draw[ultra thick] (2.5, 1) -- (2.5, -1);
+	\draw[ultra thick] (6.5, 1) -- (6.5, -1);
+	
+	%output
+	\foreach \x in {1, ..., 2} {
+		\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+	}
+	
+	\node[cellStyle, fill=gray!60] at (3, -4) {6};
+	\node[cellStyle, fill=gray!50] at (4, -4) {5};
+	\node[cellStyle, fill=gray!40] at (5, -4) {4};
+	\node[cellStyle, fill=gray!30] at (6, -4) {3};
+	
+	\foreach \x in {7, ..., 8} {
+		\node[cellStyle, fill=gray!\x0] at (\x, -4) {\x};
+	}
+	
+	%output cupoints
+	\draw[ultra thick] (2.5, -3) -- (2.5, -5);
+	\draw[ultra thick] (6.5, -3) -- (6.5, -5);
+	
+	% operator arrow
+	\draw [->, thick] (4.5, -1)  -- (4.5, -3) node[right, midway]{operator mutacji};
+	
+	%swap
+	\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
+	(3, -0.5) to (6, -0.5);
+	\draw[<->, >=latex', shorten >=2pt, shorten <=2pt, bend right=25, ultra thick] 
+	(4, -0.5) to (5, -0.5);
+	
+	\end{tikzpicture}
+	\caption{Przykład działania operatora mutacji dla problemu komiwojażera\label{figure:tsp_mutation}}
+\end{figure}
+
+\subsection{Implementacja elementów problemu plecakowego}
+
+Model binarnego problemu plecakowego można przedstawić w postaci krotki $\important{M}_{PLECAK}$ na którą składa się ciąg $p$ par $(k, w)$ oraz wartość $W$ określająca maksymalny rozmiar plecaka.
+
+\begin{displaymath}
+\important{M}_{PLECAK} = ( ((k_1, w_1), (k_2, w_2), \ldots, (k_p, w_p)), W)
+\end{displaymath}
+
+Wartość $k_i$ oznacza koszt $i$-tego przedmiotu, a $w_i$ - jego wagę.
+
+Wykorzystano reprezentację osobnika przez $p$-elementowy wektor binarny (czyli taki, którego elementy należą do zbioru $\{0, 1\}$).
+Interpretacja tego, że na $i$-tej pozycji w wektorze występuje 1 jest taka, że $i$-ty przedmiot zostaje zapakowany do plecaka, podczas gdy wartość 0 wskazuje na sytuację przeciwną.
+
+Funkcja oceny dla tego problemu jest bardziej skomplikowana niż dla problemu komiwojażera. Główną jej składową jest łączy koszt wszystkich wybranych przedmiotów.
+Aby sprowadzić problem do problemu minimalizacji\footnote{
+	Zdecydowany się na problem minimalizacji, aby uprościć implementację.
+} jest ona mnożona przez -1.
+Dodatkowo, aby pokierować heurystyką tak, żeby ograniczenie na łączny rozmiar wybranych przedmiotów było spełnione, wprowadzono funkcję kary, polegającą na dodaniu do funkcji oceny iloczynu łącznego kosztu przedmiotów i różnicy między sumą ich objętości, a maksymalnym rozmiarem plecaka (jeżeli ta różnica jest dodatnia).
+W ten sposób rozwiązania spełniające ograniczenia mają ocenę równą łącznemu kosztowi z ujemnym znakiem, te, które przekroczyły ograniczenie o 1 mają ocenę równą 0, itd.
+Zostało to zapisane za pomocą równań \ref{line:knapsack_eval_start}-\ref{line:knapsack_eval_stop}.
+
+\begin{align}
+\label{line:knapsack_eval_start}
+x = &[x_1, x_2, \ldots, x_p] \\
+\param{funkcjaOceny}_{PLECAK}(x) = &(nadmiar(x)-1) \times \sum_{i=1}^{p} (x_i \times k_i) \\
+nadmiar(x) = &\begin{cases}
+0 &: \sum_{i=1}^{p} (x_i \times w_i) \leq W \\
+(\sum_{i=1}^{p} (x_i \times w_i)) - W &: \sum_{i=1}^{p} (x_i \times w_i) > W
+\end{cases}
+\label{line:knapsack_eval_stop}
+\end{align}
+
+W tej pracy wykorzystano zbiór \emph{medium} \cite{knapsack_data}, opisujący 100 przedmiotów i maksymalny rozmiar plecaka wynoszący 27.
+Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1173, co oznacza, że wybrane przedmioty mają łączny koszt 1173 i ograniczenie na rozmiar nie jest przekroczone.
+
+Zastosowano standardowy operator krzyżowania dla wektorów binarnych, opisany w rozdziale \ref{section:general_idea}, zobrazowany rysunkiem \ref{vector:example_crossover}.
+Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamianie ich drugich części w celu uzyskania potomków.
+
+Wykorzystany operator mutacji to adaptacyjna\footnote{
+	Określenie ,,adaptacyjny'' oznacza w tym kontekście, że szczegóły działania operatora zmieniają się w zależności od sytuacji, w której jest wykorzystywany, dopasowując się do napotkanych warunków.
+} wariacja na temat operatora przedstawionego w rozdziale \ref{section:general_idea} na rysunku \ref{vector:example_mutation}.
+W zależności od tego, czy łączna objętość wybranych przedmiotów była większa, czy mniejsza, niż rozmiar plecaka, prawdopodobieństwa tego, że bit zostanie odwrócony (tzn. 0 zostanie zamienione na 1 lub na odwrót) były różne.
+
+Zanim działanie tego operatora zostanie zdefiniowane formalnie, należy opisać pomocniczą funkcję $rzutuj(x, \range{a}{b})$, zwracającą punkt leżący w przedziale $\range{a}{b}$ w odległości od obu punktów określonej przez argument $x$.
+Jest ona opisana za pomocą definicji \ref{signature:rzutuj}.
+
+\begin{signature}
+	\caption{Funkcja $rzutuj(\range{a}{b}, x)$ \label{signature:rzutuj}}
 	\begin{align}
-	\label{line:knapsack_eval_start}
-	x = &[x_1, x_2, \ldots, x_p] \\
-	\param{funkcjaOceny}_{PLECAK}(x) = &(nadmiar(x)-1) \times \sum_{i=1}^{p} (x_i \times k_i) \\
-	nadmiar(x) = &\begin{cases}
-	0 &: \sum_{i=1}^{p} (x_i \times w_i) \leq W \\
-	(\sum_{i=1}^{p} (x_i \times w_i)) - W &: \sum_{i=1}^{p} (x_i \times w_i) > W
-	\end{cases}
-	\label{line:knapsack_eval_stop}
+	rzutuj: &\range{0}{1} \times \numberSet{R}^2 \rightarrow \numberSet{R} \\
+	rzutuj(x, \range{a}{b}) =& a + (b-a) \times x
 	\end{align}
-	
-	W tej pracy wykorzystano zbiór \emph{medium} \cite{knapsack_data}, opisujący 100 przedmiotów i maksymalny rozmiar plecaka wynoszący 27.
-	Dla tak przedstawionego zagadnienia znane jest optimum, wynoszące -1173, co oznacza, że wybrane przedmioty mają łączny koszt 1173 i ograniczenie na rozmiar nie jest przekroczone.
-	
-	Zastosowano standardowy operator krzyżowania dla wektorów binarnych, opisany w rozdziale \ref{section:general_idea}, zobrazowany rysunkiem \ref{vector:example_crossover}.
-	Działa on na zasadzie losowego rozcięcia wektorów na dwa podwektory i zamianie ich drugich części w celu uzyskania potomków.
-	
-	Wykorzystany operator mutacji to adaptacyjna\footnote{
-		Określenie ,,adaptacyjny'' oznacza w tym kontekście, że szczegóły działania operatora zmieniają się w zależności od sytuacji, w której jest wykorzystywany, dopasowując się do napotkanych warunków.
-	} wariacja na temat operatora przedstawionego w rozdziale \ref{section:general_idea} na rysunku \ref{vector:example_mutation}.
-	W zależności od tego, czy łączna objętość wybranych przedmiotów była większa, czy mniejsza, niż rozmiar plecaka, prawdopodobieństwa tego, że bit zostanie odwrócony (tzn. 0 zostanie zamienione na 1 lub na odwrót) były różne.
-	
-	Zanim działanie tego operatora zostanie zdefiniowane formalnie, należy opisać pomocniczą funkcję $rzutuj(x, \range{a}{b})$, zwracającą punkt leżący w przedziale $\range{a}{b}$ w odległości od obu punktów określonej przez argument $x$.
-	Jej definicja jest zapisana w sygnaturze \ref{signature:rzutuj}.
-	
-	\begin{signature}
-		\caption{Funkcja $rzutuj(\range{a}{b}, x)$ \label{signature:rzutuj}}
-		\begin{align}
-		rzutuj: &\range{0}{1} \times \numberSet{R}^2 \rightarrow \numberSet{R} \\
-		rzutuj(x, \range{a}{b}) =& a + (b-a) \times x
-		\end{align}
-	\end{signature}
-	
-	Działanie operatora jest zasadniczo podobne do tego opisanego we wcześniejszym rozdziale - każdy z bitów wektora wejściowego może zostać odwrócony.
-	Prawdopodobieństwo odwrócenia bitu jest zależne od tego, czy jest on równy 0, czy 1, oraz od tego, czy ograniczenie zostało przekroczone, czy też łączny rozmiar wybranych przedmiotów jest mniejszy niż rozmiar plecaka.
-	Pierwsza z tych sytuacji jest umownie nazywana nadmiarem, a druga - niedomiarem.
-	
-	W ogólności prawdopodobieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref{line:inverse}.
-	
-	\begin{align}
-	\label{line:inverse}
-	P = rzutuj(czynnik, przedzial)
-	\end{align}
-	
-	Sposób obliczania wartości $czynnik$ jest zależny od sytuacji. 
-	Jeżeli obserwowany jest niedomiar, to jego wartość jest różnicą rozmiaru plecaka i sumy rozmiarów wybranych przedmiotów podzieloną przez rozmiar plecaka ($\frac{W - \sum_{i=1}^p (x_i \times w_i)}{W}$), czyli relatywną ilością niewykorzystanego miejsca. Wartość mianownika dla zbadanego problemu to 27 (ponieważ tyle wynosi rozmiar plecaka dla wykorzystanego zbioru danych).
-	Jeżeli natomiast występuje nadmiar, to jest on tożsamy z wartością funkcji $nadmiar(x)$ (patrz: linia \ref{line:knapsack_eval_stop}) podzieloną przez sumę różnicę sumy wszystkich wag i rozmiaru plecaka ($\frac{nadmiar(x)}{(\sum_{i=1}^p w_i) - W}$), czyli wartością nadmiaru znormalizowaną do przedziału $\range{0}{1}$.
-	W tym przypadku wartość pod kreską ułamkową wynosi 1333, ponieważ suma wag przedmiotów w wybranym zbiorze danych wynosi 1360.
-	
-	Sposób określania wartości $przedzial$ również jest zależny od sytuacji. 
-	W tabeli \ref{table:range_choose} przedstawiony jest sposób wyboru odpowiedniego przedziału. 
-	Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmiaru z większym prawdopodobieństwem odrzucać wybrane przedmioty, a w sytuacji niedomiaru - częściej dobierać nowe.
-	
-	\begin{table}
-		\caption{Tablica wyboru wartości $przedzial$ \label{table:range_choose}}
-		\centering
-		\begin{tabular}{cc|c|c|}
-			\cline{3-4}
-			\multicolumn{2}{c|}{\multirow{2}{*}{}}                   & \multicolumn{2}{c|}{Sytuacja}              \\ \cline{3-4} 
-			\multicolumn{2}{c|}{}                                    & Niedomiar           & Nadmiar              \\ \hline
-			\multicolumn{1}{|c|}{\multirow{2}{*}{Wartość bitu}} & 0 & $\range{0.06}{0.1}$ & $\range{0.05}{0.15}$ \\ \cline{2-4} 
-			\multicolumn{1}{|c|}{}                              & 1 & $\range{0.05}{0.2}$ & $\range{0.2}{0.7}$   \\ \hline
-		\end{tabular}
-	\end{table}
-	%maxOverflow = 1333
-	
-	Intuicyjnie, tak zdefiniowany operator powinien z dużym prawdopodobieństwem zamieniać sytuacje nadmiaru na takie, które spełniają ograniczenia, a przynajmniej powodują znacznie mniejszy nadmiar, a w sytuacji niedomiaru powinien ,,dopełniać'' plecak losowymi przedmiotami, aby uzyskać jak największy zysk (tzn. sumę kosztów przedmiotów).
+\end{signature}
+
+Działanie operatora mutacji jest zasadniczo podobne do tego opisanego we wcześniejszym rozdziale - każdy z bitów wektora wejściowego może zostać odwrócony.
+Prawdopodobieństwo odwrócenia bitu jest zależne od tego, czy jest on równy 0, czy 1, oraz od tego, czy ograniczenie zostało przekroczone, czy też łączny rozmiar wybranych przedmiotów jest mniejszy niż rozmiar plecaka.
+Pierwsza z tych sytuacji jest umownie nazywana nadmiarem, a druga - niedomiarem.
+
+W ogólności prawdopodobieństwo $P$ odwrócenia bitu jest wyrażone wzorem \ref{line:inverse}.
+
+\begin{align}
+\label{line:inverse}
+P = rzutuj(czynnik, przedzial)
+\end{align}
+
+Sposób obliczania wartości $czynnik$ jest zależny od sytuacji. 
+Jeżeli obserwowany jest niedomiar, to jego wartość jest różnicą rozmiaru plecaka i sumy rozmiarów wybranych przedmiotów podzieloną przez rozmiar plecaka ($\frac{W - \sum_{i=1}^p (x_i \times w_i)}{W}$), czyli relatywną ilością niewykorzystanego miejsca. Wartość mianownika dla zbadanego problemu to 27 (ponieważ tyle wynosi rozmiar plecaka dla wykorzystanego zbioru danych).
+Jeżeli natomiast występuje nadmiar, to jest on tożsamy z wartością funkcji $nadmiar(x)$ (patrz: linia \ref{line:knapsack_eval_stop}) podzieloną przez sumę różnicę sumy wszystkich wag i rozmiaru plecaka ($\frac{nadmiar(x)}{(\sum_{i=1}^p w_i) - W}$), czyli wartością nadmiaru znormalizowaną do przedziału $\range{0}{1}$.
+W tym przypadku wartość pod kreską ułamkową wynosi 1333, ponieważ suma wag przedmiotów w wybranym zbiorze danych wynosi 1360.
+
+Sposób określania wartości $przedzial$ również jest zależny od sytuacji. 
+W tabeli \ref{table:range_choose} przedstawiony jest sposób wyboru odpowiedniego przedziału. 
+Wartości w niej zawarte zostały arbitralnie dobrane tak, aby w sytuacji nadmiaru z większym prawdopodobieństwem odrzucać wybrane przedmioty, a w sytuacji niedomiaru - częściej dobierać nowe.
+
+\begin{table}
+	\caption{Tablica wyboru wartości $przedzial$ \label{table:range_choose}}
+	\centering
+	\begin{tabular}{cc|c|c|}
+		\cline{3-4}
+		\multicolumn{2}{c|}{\multirow{2}{*}{}}                   & \multicolumn{2}{c|}{Sytuacja}              \\ \cline{3-4} 
+		\multicolumn{2}{c|}{}                                    & Niedomiar           & Nadmiar              \\ \hline
+		\multicolumn{1}{|c|}{\multirow{2}{*}{Wartość bitu}} & 0 & $\range{0.06}{0.1}$ & $\range{0.05}{0.15}$ \\ \cline{2-4} 
+		\multicolumn{1}{|c|}{}                              & 1 & $\range{0.05}{0.2}$ & $\range{0.2}{0.7}$   \\ \hline
+	\end{tabular}
+\end{table}
+%maxOverflow = 1333
+
+Intuicyjnie, tak zdefiniowany operator powinien z dużym prawdopodobieństwem zamieniać sytuacje nadmiaru na takie, które spełniają ograniczenia, a przynajmniej powodują znacznie mniejszy nadmiar, a w sytuacji niedomiaru powinien ,,dopełniać'' plecak losowymi przedmiotami, aby uzyskać jak największy zysk (tzn. sumę kosztów przedmiotów).
 	
 \end{document}

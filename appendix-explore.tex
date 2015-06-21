@@ -3,18 +3,20 @@
 \begin{document}
 \section{Procedura eksploracji} \label{appendix:explore}
 
-\todo{poprawić}
-W ramach pierwszej części badań wykorzystano procedurę eksperymentalną, nazywaną procedurą eksploracji (lub krócej, eksploracją).
+W pierwszej części przeprowadzonych eksperymentów badano wrażliwość algorytmu ewolucyjnego na wartości parametrów nie związanych z tematem niniejszej pracy.
+Wynikiem tych badań były domyślne zestawy parametrów dla obu problemów, używane w kolejnych etapach.
 
-Jest ona wykorzystywana w sytuacji, w której pojawia się potrzeba przeszukania dużej przestrzeni parametrów.
-Jest to często niemożliwe, ponieważ pojedyncza ewaluacja zestawu parametrów trwa relatywnie długo, a ilość kombinacji wartości parametrów jest zbyt duża.
+Sprawdzenie wszystkich kombinacji wybranych wartości byłoby zbyt czasochłonne.
+Ich łączna liczba wynosiła 972, co przy 5 powtórzeniach dla każdego zestawu i dwóch badanych problemach dawało około 10 tysięcy powtórzeń które należy wykonać.
+Ponadto, po wybraniu którejś z kombinacji jako najlepszej, badano jej lokalne sąsiedztwo (modyfikując wartości liczbowe o małe kroki, tj. $\pm0,02$ i $\pm0,05$ dla wartości z przedziału $\range{0}{1}$ i $\pm5$ oraz $\pm10$ dla wartości całkowitych).
+Mimo, że w tej części nie zmieniano operatora selekcji naturalnej, to liczba kombinacji wynosiła około 320, co dla 3 powtórzeń i 2 problemów dawało prawie 2 tysiące dodatkowych uruchomień heurystyki.
 
-Aby obejść ten problem, w tej pracy zdecydowano się na iteracyjne podejście przeszukujące przestrzeń konfiguracji wzdłuż wymiarów.
-Zostało ono wyjaśnione za pomocą algorytmu \ref{algorithm:explore}.
+Aby przyspieszyć ten etap eksperymentów określono iteracyjną procedurę przeszukiwania przestrzeni parametrów, nazywaną procedurą eksploracji (lub krócej, eksploracją).
+Polega ona na zmienianiu tylko jednego parametru na raz, co zostało wyjaśnione za pomocą algorytmu \ref{algorithm:explore}.
 
-\clearpage
+%\clearpage
 
-\begin{algorithm}[H]
+\begin{algorithm}[h]
 	\caption{Procedura eksploracji \label{algorithm:explore}}
 	\begin{algorithmic}[1]
 		\Params{

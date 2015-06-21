@@ -3,9 +3,27 @@
 \begin{document}
 \section{Przebieg procedury eksploracji} \label{appendix:explore_flow}
 
+Niniejszy dodatek poświęcony jest na opis i analizę przebiegu pierwszego etapu eksperymentów.
+Poświęcony on był na badania wrażliwości heurystyki na wartości parametrów.
+Eksperymenty wykonano dla obu problemów oddzielnie, dodatkowo dzieląc je na dwa kroki.
+
+W obu z nich wykorzystano procedurę eksploracji, opisaną w dodatku \ref{appendix:explore_flow}.
+W pierwszym kroku badano zbiory wartości parametrów określone w tabeli \ref{table:init_params}.
+W ten sposób określano jak najlepszą kombinację parametrów.
+W drugim kroku badano lokalne sąsiedztwo tej kombinacji, przez małą zmianę wartości parametrów liczbowych.
+
+Kolejne podrozdziały opisują przebieg tego etapu eksperymentów, osobno dla każdego problemu, z podziałem na oba opisane wyżej kroki.
+W dalszej części dodatku będzie używane pojęcie \emph{konfiguracja}, oznaczające kombinację wartości parametrów.
+
+Podczas opisywanych eksperymentów wykorzystano losowy operator selekcji płciowej \opName{stdGenSel}($\bot$, R, R) oraz jednoelementowy zbiór płci $\important{G}=\{ \odot \}$.
+
 \subsection{Problem komiwojażera}
 
-\subsubsection{Znalezienie konfiguracji początkowej}
+\subsubsection{Badania początkowych zbiorów parametrów}
+
+\paragraph{Założenia} Wykonano 5 powtórzeń dla każdej konfiguracji.
+Przez najlepszą konfigurację rozumiano taką, która dawała najniższy (czyli najlepszy) wynik.
+Wykorzystano zbiory parametrów przedstawione w tabeli \ref{table:init_params}.
 
 \paragraph{Przebieg}
 
@@ -17,7 +35,7 @@ Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację.
 W drugim, udało się odnaleźć prawdopodobieństwa mutacji i krzyżowania które dawały lepsze wyniki.
 Trzeci nawrót potwierdził, że znaleziona konfiguracja jest najlepsza z przeszukiwanych.
 
-\begin{table}[H]
+\begin{table}[h]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_init_flow}}
 	\centering
 	\begin{tabular}{c|c|c|}
@@ -97,13 +115,8 @@ Oznacza to, że znajdowane rozwiązania były około półtora raza gorsze niż 
 Heurystyka zachowywała się dość stabilnie, tzn. za każdym uruchomieniem zwracała podobny wynik.
 Odchylenie standardowe wyniosło około 2 tysiące, czyli mniej więcej 5\% średniej.
 
-Na rysunku \ref{figure:tsp_init_example} przedstawiono wykres trzeciego z pięciu wykonanych przebiegów.
-Można zaobserwować, że zarówno średnia, jak i najlepsze i najgorsze rozwiązanie spadają na przestrzeni wszystkich populacji, co oznacza, że wyniki sukcesywnie się polepszały.
-
-Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na dość stałym poziomie, z czego można wnioskować, że różnorodność genetyczna była zachowana.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:tsp_init_results}}
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej najlepszą zbadaną konfiguracją \label{table:tsp_init_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -119,13 +132,46 @@ Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na d
 	\end{tabular}
 \end{table}
 
+Na rysunku \ref{figure:tsp_init_example} przedstawiono wykres trzeciego z pięciu wykonanych przebiegów.
+Można zaobserwować, że zarówno średnia, jak i najlepsze i najgorsze rozwiązanie spadają na przestrzeni wszystkich populacji, co oznacza, że wyniki sukcesywnie się polepszały.
+
+Jednocześnie da się zauważyć, że wariancja wariancja utrzymywała się na dość stałym poziomie, z czego można wnioskować, że różnorodność genetyczna była zachowana.
+
 \begin{figure}[H]
-	\caption{Wykres przebiegu trzeciego powtórzenia znalezionej konfiguracji \label{figure:tsp_init_example}}
 	\centering
 	\graph{tsp_init_example.tex}
+	\caption{Wykres przebiegu trzeciego powtórzenia znalezionej konfiguracji \label{figure:tsp_init_example}}
 \end{figure}
 
-\subsubsection{Poprawa konfiguracji początkowej}
+\subsubsection{Badania lokalnego sąsiedztwa najlepszej kombinacji parametrów}
+
+\paragraph{Założenia} Wykonano 3 powtórzenia dla każdej konfiguracji.
+Przez najlepszą konfigurację rozumiano taką, której średnia wyników była najniższa.
+Jeżeli dwie konfiguracje dałyby te same średnie (co się nie zdarzyło), za lepszą uznano by tą o niższym odchyleniu standardowym.
+Badano wartości parametrów uzyskane przez zmianę wartości parametrów z przedziału $\range{0}{1}$ o $\pm0,02$ i $\pm0,05$, a parametrów o wartościach całkowitych o $\pm5$ i $\pm10$. 
+Odrzucono wartości nie należące do odpowiednich przedziałów (czyli mniejsze od 0, lub większe od 1 - w przypadku parametrów o wartościach rzeczywistych).
+
+Zostały one przedstawione w tabeli \ref{config:tsp_tweak_params}.
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów \label{config:tsp_tweak_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,05, 0,1]\\
+		\hline
+		\multirow{2}{*}{$(\param{prawdKrzyzowania}, \param{prawdMutacji})$} & [0,55, 0,58, 0,6, 0,62, 0,65] $\times$ \\
+		& [0,05, 0,08, 0,1 0,12, 0,15]  \\
+		\hline
+		$\param{max}$ & [90, 95, 100, 105, 110] \\
+		\hline		
+	\end{tabular}
+\end{table}
 
 \paragraph{Przebieg}
 
@@ -135,7 +181,7 @@ Rozmiar populacji i współczynnik domieszek nie zmienił się względem konfigu
 W pierwszym nawrocie określono, że nieznacznie mniejsze (0,58) prawdopodobieństwo krzyżowania i większa liczba pokoleń dają lepsze wyniki.
 Drugi nawrót wykazał, że pierwotne prawdopodobieństwo krzyżowania daje lepsze wyniki, za to zwiększone zostało prawdopodobieństwo mutacji. 
 
-\begin{table}[H]
+\begin{table}[h]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:tsp_tweak_flow}}
 	\centering
 	\begin{tabular}{c|c|c|}
@@ -154,15 +200,8 @@ Drugi nawrót wykazał, że pierwotne prawdopodobieństwo krzyżowania daje leps
 
 \paragraph{Wyniki}
 
-W tabeli \ref{table:tsp_tweak_results} przedstawiono wyniki działania heurystyki dla konfiguracji \ref{config:tsp_base} znalezionej w tym etapie.
-
-Średnia ocena jest niższa (a więc lepsza) od średniej z poprzedniego etapu.
-Przeciętna różnica między znalezionym rozwiązaniem, a optimum spadła do około 9,5 tysiąca, a odchylenie standardowe nieznacznie (o około pół tysiąca) wzrosło.
-
-Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorszenia stabilności heurystyki.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{table:tsp_tweak_results}}
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej najlepszą zbadaną konfiguracją \label{table:tsp_tweak_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -176,12 +215,22 @@ Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorsze
 	\end{tabular}
 \end{table}
 
+W tabeli \ref{table:tsp_tweak_results} przedstawiono wyniki działania heurystyki dla konfiguracji \ref{config:tsp_base} znalezionej w tym etapie.
+
+Średnia ocena jest niższa (a więc lepsza) od średniej z poprzedniego etapu.
+Przeciętna różnica między znalezionym rozwiązaniem, a optimum spadła do około 9,5 tysiąca, a odchylenie standardowe nieznacznie (o około pół tysiąca) wzrosło.
+
+Oznacza to, że udało się uzyskać lepsze wyniki kosztem nieznacznego pogorszenia stabilności heurystyki.
+
 \subsection{Problem plecakowy}
 
-\subsubsection{Znalezienie konfiguracji początkowej}
+\subsubsection{Badania początkowych zbiorów parametrów}
+
+\paragraph{Założenia} Wykonano 5 powtórzeń dla każdej konfiguracji.
+Przez najlepszą konfigurację rozumiano taką, która dawała najniższy (czyli najlepszy) wynik.
+Wykorzystano zbiory parametrów przedstawione w tabeli \ref{table:init_params}.
 
 \paragraph{Przebieg}
-
 
 Tabela \ref{table:knapsack_init_flow} przedstawia przebieg wykorzystanej procedury.
 
@@ -189,7 +238,7 @@ Jak widać, w pierwszym nawrocie znaleziono prawie najlepszą konfigurację, kt�
 Zmiany obejmowały prawdopodobieństwo krzyżowania oraz współczynnik domieszek.
 Trzeci nawrót nie zmienił odnalezionej konfiguracji.
 
-\begin{table}[H]
+\begin{table}[h]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_init_flow}}
 	\centering
 	\begin{tabular}{c|c|c|}
@@ -218,14 +267,8 @@ Trzeci nawrót nie zmienił odnalezionej konfiguracji.
 
 \paragraph{Wyniki}
 
-Jak zostało pokazane w tabeli \ref{table:knapsack_init_results}, wyniki dla tak określonego zestawu parametrów są bardzo dobre - najgorszy z nich był większy od optimum o niecałe 6 \%.
-W ostatnim z przebiegów udało się znaleźć optimum globalne.
-
-Na rysunku \ref{figure:knapsack_init_example} pokazany został wykres tego przebiegu.
-Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze działanie heurystyki przeszukiwało przestrzeń rozwiązań, często pogarszając wyniki.
-
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej znalezioną konfiguracją \label{table:knapsack_init_results}}
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej najlepszą zbadaną konfiguracją \label{table:knapsack_init_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -241,19 +284,58 @@ Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze dz
 	\end{tabular}
 \end{table}
 
-\begin{figure}[H]
-	\caption{Wykres przebiegu piątego powtórzenia znalezionej konfiguracji \label{figure:knapsack_init_example}}
+Jak zostało pokazane w tabeli \ref{table:knapsack_init_results}, wyniki dla tak określonego zestawu parametrów są bardzo dobre - najgorszy z nich był większy od optimum o niecałe 6 \%.
+W ostatnim z przebiegów udało się znaleźć optimum globalne.
+
+\begin{figure}[h]
 	\centering
 	\graph{knapsack_init_example.tex}
+	\caption{Wykres przebiegu piątego powtórzenia znalezionej konfiguracji \label{figure:knapsack_init_example}}
 \end{figure}
 
-\subsubsection{Poprawa konfiguracji początkowej}
+Na rysunku \ref{figure:knapsack_init_example} pokazany został wykres tego przebiegu.
+Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze działanie heurystyki przeszukiwało przestrzeń rozwiązań, często pogarszając wyniki.
+
+
+\subsubsection{Badania lokalnego sąsiedztwa najlepszej kombinacji parametrów}
+
+\paragraph{Założenia} Wykonano 3 powtórzenia dla każdej konfiguracji.
+Przez najlepszą konfigurację rozumiano taką, której średnia wyników była najniższa.
+Jeżeli dwie konfiguracje dałyby te same średnie (co się nie zdarzyło), za lepszą uznano by tą o niższym odchyleniu standardowym.
+Badano wartości parametrów uzyskane przez zmianę wartości parametrów z przedziału $\range{0}{1}$ o $\pm0,02$ i $\pm0,05$, a parametrów o wartościach całkowitych o $\pm5$ i $\pm10$. 
+Odrzucono wartości nie należące do odpowiednich przedziałów (czyli mniejsze od 0, lub większe od 1 - w przypadku parametrów o wartościach rzeczywistych).
+
+Zostały one przedstawione w tabeli \ref{config:knapsack_tweak_params}.
+
+\begin{table}
+	\caption{Założenia dot. wartości parametrów \label{config:knapsack_tweak_params}}
+	\centering
+	\begin{tabular}{|c|l|}
+		\hline
+		\textbf{Parametr} & \multicolumn{1}{c|}{\textbf{Zbiór wartości}} \\
+		\hline
+		\hline
+		$\param{rozmiarPopulacji}$ & [40, 45, 50, 55, 60] \\
+		\hline
+		$\param{wspDomieszek}$ & [0, 0,05, 0,1, 0,15, 0,2]\\
+		\hline
+		\multirow{2}{*}{$(\param{prawdKrzyzowania}, \param{prawdMutacji})$} & [0,75, 0,78, 0,8, 0,82, 0,85] $\times$ \\ 
+		& [0,05, 0,08, 0,1 0,12, 0,15]  \\
+		\hline
+		$\param{max}$ & [40, 45, 50, 55, 60] \\
+		\hline		
+	\end{tabular}
+\end{table}
 
 \paragraph{Przebieg}
 
-\todo{skomentuj}
+Tabela \ref{table:knapsack_tweak_flow} przedstawia przebieg procedury eksploracji w tym kroku.
+Już na początku określono najwyższy możliwy rozmiar populacji.
+Ponadto, zmniejszono prawdopodobieństwo krzyżowania.
+Pozostałe parametry nie zmieniły się.
+Kolejny nawrót poskutkował zwiększeniem prawdopodobieństwa mutacji i maksymalnej liczby pokoleń.
 
-\begin{table}[H]
+\begin{table}[h]
 	\caption{Przebieg procedury eksploracji poszukującej parametrów początkowych \label{table:knapsack_tweak_flow}}
 	\centering
 	\begin{tabular}{c|c|c|}
@@ -271,10 +353,9 @@ Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze dz
 \end{table}	
 
 \paragraph{Wyniki}
-\todo{Blah, blah, here go results}
 
-\begin{table}[H]
-	\caption{Wyniki heurystyki parametryzowanej poprawioną konfiguracją \label{knapsack_tweak_results}}
+\begin{table}[h]
+	\caption{Wyniki heurystyki parametryzowanej najlepszą zbadaną konfiguracją \label{knapsack_tweak_results}}
 	\centering
 	\begin{tabular}{|l|r|r}
 		\hline
@@ -288,7 +369,8 @@ Można zaobserwować, że minimum zostało znalezione dość szybko, a dalsze dz
 	\end{tabular}
 \end{table}
 
-\todo{poszło lepiej niż init}
-
+Tabela \ref{knapsack_tweak_results} przedstawia wyniki dla najlepszej zbadanej konfiguracji.
+Mimo, że tym razem nie udało się znaleźć optimum globalnego, to średnie wyniki nieznacznie się poprawiły, a odchylenie standardowe spadło o około połowę.
+Są to pozytywne skutki, z czego można wnioskować, że znaleziono lepszą konfigurację niż w poprzednim kroku.
 
 \end{document}
