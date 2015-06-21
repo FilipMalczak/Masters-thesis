@@ -198,6 +198,7 @@
 %}
 
 \def\advisor#1{\gdef\@advisor{#1}}
+\def\major#1{\gdef\@major{#1}}
 \def\abstractPL#1{\gdef\@abstractPL{#1}}
 \def\abstractSH#1{\gdef\@abstractSH{#1}}
 \def\abstractEN#1{\gdef\@abstractEN{#1}}
@@ -219,11 +220,12 @@
 	\hline
 	 & &\large{\bfseries{\rule{0pt}{0.5cm}\ Wydział Informatyki\ i\ Zarządzania}} \\[3pt]
 	 & &\ \ \large{Kierunek studiów: Informatyka}\\
-	 & &\ \ Specjalność: Inteligentne Systemy Informatyczne\\
-	 & &\multicolumn{1}{c}{\rule{0pt}{2.5cm} \Large{Praca dyplomowa - magisterska}} \\
-	 & &\multicolumn{1}{p{13.5cm}}{\rule{0pt}{2cm}\centering\bfseries\sc\Large{\@title}} \\
-	 & &\multicolumn{1}{c}{\rule{0pt}{1.5cm}\large\@author} \\
-	 & &\multicolumn{1}{p{13.5cm}}{\rule{0pt}{2cm}\small\begin{flushright}\noindent słowa kluczowe:\\ \@slowaKluczowe\end{flushright}} \\
+	 %& &\ \ Specjalność: Inteligentne Systemy Informatyczne\\
+	 & &\ \ Specjalność: \@major\\
+	 & &\multicolumn{1}{c}{\hspace{1cm}\rule{0pt}{1.5cm} \large{Praca dyplomowa - magisterska}} \\
+	 & &\multicolumn{1}{p{13.5cm}}{\hspace{1cm}\rule{0pt}{2.5cm} \centering\bfseries\sc\large{\@title}} \\
+	 & &\multicolumn{1}{c}{\hspace{1cm}\rule{0pt}{1cm}\@author} \\
+	 & &\multicolumn{1}{p{13.5cm}}{\rule{0pt}{1.5cm}\small\begin{flushright}\noindent słowa kluczowe:\\ \@slowaKluczowe\end{flushright}} \\
 	 & & \multicolumn{1}{p{13.5cm}}{
 		\begin{flushright}
 					\begin{tabular}{p{12.0cm}}
@@ -236,14 +238,19 @@
 		\begin{center}
 					\begin{tabular}{|c|c|c|c|}
 							 \hline
-							 \multirow{2}{*}{\small{Promotor:}}& \scriptsize{ } & \scriptsize{ } & \scriptsize{ } \\
-							  & \small{............................................} & \small{......................} & \small{.......................} \\
+							% \multirow{2}{*}{\small{Promotor:}}& \multirow{2}{*}{Dr inż. Mariusz Paradowski} & \scriptsize{ } & \scriptsize{ } \\
+							\multirow{2}{*}{\small{Promotor:}}& \multirow{2}{*}{\@advisor} & \scriptsize{ } & \scriptsize{ } \\
+							  &  & \small{......................} & \small{.......................} \\
 							 \hline
 							 \ & \scriptsize\textit{imię i nazwisko} & \scriptsize\textit{ocena} & \scriptsize\textit{podpis} \\
 							 \hline
 					\end{tabular}
 		\end{center}
 		} \\
+		& & \textit{\small Do celów archiwalnych pracę dyplomową zakwalifikowano do:*} \\
+		& & \textit{\small \hspace{1cm} a) kategorii A (akta wieczyste)  } \\
+		& & \textit{\small \hspace{1cm} b) kategorii BE 50 (po 50 latach podlegające ekspertyzie)} \\
+		& & \textit{\small *niepotrzebne skreślić} \\
 	& & \rule{0pt}{0.7cm} \\
 	&\multicolumn{1}{>{\columncolor[gray]{0.0}}p{0.57cm}|}{} & \multicolumn{1}{c}{\rule{0pt}{0.7cm} \large{Wrocław \@date}} 
 		
@@ -262,6 +269,7 @@
 %
 %      \vspace{4cm} \large Wroc\l aw \@date
 %   \end{center}
+
 %\if@twoside
 %   \clearpage
 %	 

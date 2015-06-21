@@ -180,16 +180,20 @@
 
 \usepackage{subfiles}
 
+%\usepackage{atbegshi}% http://ctan.org/pkg/atbegshi
+%\AtBeginDocument{\AtBeginShipoutNext{\AtBeginShipoutDiscard}}
 
 \begin{document}
 
 \title{Algorytmy ewolucyjne z uwzględnieniem płci w rozwiązywaniu wybranych problemów}
 \author{Filip Malczak}
-%\major{Inteligentne Systemy Informatyczne}
-\advisor{dr hab. inż. Urszula Markowska-Kaczmar}
+\major{Inteligentne Systemy Informatyczne}
+\advisor{\begin{tabular}{c}
+		dr hab. inż. \\
+		Urszula Markowska-Kaczmar
+	\end{tabular}}
 \instituteLogo{logos/pwr}
 \slowaKluczowe{algorytmy ewolucyjne\\płeć\\operator selekcji}
-
 \date{\number\the\year}
 
 % Wstawienie abstractu pracy
@@ -207,12 +211,7 @@ Bardzo krótkie streszczenie w którym powinno się znaleźć omówienie tematu 
 }
 
 \maketitle
-
-
-
 \textpages
-
-\todo{referencje oddzielnie -> razem (1) (2) -> (1, 2)}
 
 \subfile{chapter1.tex}
 %\subfile{stubs/chapter1.tex}

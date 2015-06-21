@@ -35,48 +35,59 @@ Polega ona na zmienianiu tylko jednego parametru na raz, co zostało wyjaśnione
 		\Start
 		\Operator{eksploruj}{$cialo$}
 		\Var $konfiguracja = [x_{1, 1}, x_{2, 1}, \ldots, x_{p, 1}]$
-		\For{$nawrot \gets 1$ \To $R$}
-		\For{$parametr \gets 1$ \To $p$}
-		\Var $statystyki = [NULL, NULL, \ldots]$ \Comment{Tablica o rozmiarze $|X_{parametr}|$}
-		\For{$ i \gets 1$ \To $|X_{parametr}|$}
-		\State $konfiguracja[parametr] \gets x_{parametr, i}$ 
-		\Var $wyniki \gets \emptyset$
-		\For{$powtorzenie \gets 1$ \To $I$}
-		\State $wyniki \gets wyniki \cup \{ cialo(konfiguracja) \}$
-		\EndFor
-		\State $statystyki[i] \gets statystyka(wyniki)$
-		\EndFor
-		\Var $najlepszaWartosc \gets \argmin_{i} statystyki[i]$
-		\State $konfiguracja[parametr] \gets x_{parametr, najlepszaWartosc}$
-		\EndFor
+		\label{line:explore-init}
+		\For{$nawrot \gets 1$ \To $R$} 
+		\label{line:nawroty}
+			\For{$parametr \gets 1$ \To $p$}
+			\label{line:parametry}
+				\Var $statystyki = [NULL, NULL, \ldots]$ 
+				\Comment{Tablica o rozmiarze $|X_{parametr}|$}
+				\For{$ i \gets 1$ \To $|X_{parametr}|$}
+					\label{line:wartosci}
+					\State $konfiguracja[parametr] \gets x_{parametr, i}$ 
+					\Var $wyniki \gets \emptyset$
+					\For{$powtorzenie \gets 1$ \To $I$}
+					\label{line:powtorzenia}
+						\State $wyniki \gets wyniki \cup \{ cialo(konfiguracja) \}$
+						\label{line:explore-append}
+					\EndFor
+					\State $statystyki[i] \gets statystyka(wyniki)$
+					\label{line:save-stats}
+				\EndFor
+				\Var $najlepszaWartosc \gets \argmin_{i} statystyki[i]$
+				\label{line:explore-choose}
+				\State $konfiguracja[parametr] \gets x_{parametr, najlepszaWartosc}$
+				\label{line:explore-use}
+			\EndFor
 		\EndFor
 		\State \Return $konfiguracja$
+		\label{line:explore-return}
 		\EndOperator
 	\end{algorithmic}
 	Zapis $a[b]$ oznacza element tablicy $a$ o indeksie $b$
 \end{algorithm}
 
 
-Procedura eksploracji jest zapisana jako operator, ponieważ zwraca pewną wartość (więc nie jest procedurą), która za każdym razem może być inna (więc nie jest funkcją).
+Procedura eksploracji jest zapisana jako operator, ponieważ zwraca pewną wartość (więc nie jest procedurą sensu stricte), która za każdym razem może być inna (więc nie jest funkcją).
 
-Jej działanie zaczyna się od określenia początkowej konfiguracji, czyli zestawu parametrów. 
+Jej działanie zaczyna się od określenia początkowej konfiguracji, czyli zestawu parametrów, w linii \ref{line:explore-init}. 
 W tym celu wykorzystywane są pierwsze elementy każdego z zestawów wartości.
 Wybór konkretnie tych wartości jest zupełnie arbitralny.
 
-Następnie wykonywane jest $R$ iteracji nazywanych \emph{nawrotami}.
+Następnie wykonywane jest $R$ iteracji nazywanych \emph{nawrotami} (linia \ref{line:nawroty}).
 Ma to na celu upewnienie się, że dla parametrów wybranych w dalszej części każdego nawrotu wartości wybrane wcześniej faktycznie są jak najlepsze.
 
-W każdym nawrocie badane są wszystkie zestawy wartości parametrów, w kolejności określonej przez parametry procedury.
-Dla każdego z nich sprawdzane są wszystkie elementy.
+W każdym nawrocie badane są wszystkie zestawy wartości parametrów, w kolejności określonej przez parametry procedury (linia \ref{line:parametry}).
+Dla każdego z nich sprawdzane są wszystkie elementy (linia \ref{line:wartosci}).
 Dzieje się to przez zmianę odpowiedniej wartości w konfiguracji na element badany w danym momencie.
 
-Po takim podstawieniu ciało eksperymentu wykonywane jest $I$ razy, a wyniki tych wykonań zbierane są do zbioru $wyniki$.
-Po odpowiedniej liczbie powtórzeń obliczana jest statystyka tego zbioru.
+Po takim podstawieniu ciało eksperymentu wykonywane jest $I$ razy (linia \ref{line:powtorzenia}), a wyniki tych wykonań zbierane są do zbioru $wyniki$ (w linii \ref{line:explore-append}).
+Po odpowiedniej liczbie powtórzeń, w linii \ref{line:save-stats}, obliczana jest statystyka tego zbioru.
 W tym celu wykorzystywany jest parametr procedury $statystyka$.
 Jej wartość jest zapisywana tak, żeby można było określić dla której wartości parametru została ona określona.
 
-Kiedy wszystkie wartości parametru zostaną zbadane, wybiera się najlepszą z nich, oceniając je po wartości statystyk.
-Wartość ta zostaje zapisana w konfiguracji używanej do badania kolejnego z parametrów.
+Kiedy wszystkie wartości parametru zostaną zbadane, wybiera się najlepszą z nich, oceniając je po wartości statystyk (linia \ref{line:explore-choose}).
+Wartość ta zostaje zapisana w konfiguracji używanej do badania kolejnego z parametrów (w linii \ref{line:explore-use}).
 
-\todo{referencje do linii}
+Po zakończeniu wszystkich nawrotów, w linii \ref{line:explore-return} zwracana jest tak znaleziona konfiguracja.
 \end{document}
