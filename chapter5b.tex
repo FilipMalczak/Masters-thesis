@@ -32,7 +32,7 @@ Polega ona na wielokrotnym powtórzeniu iteracji nazwanej nawrotem.
 W ramach jednego nawrotu każdy parametr był dobierany osobno tak, aby heurystyka dawała jak najlepsze wyniki.
 Polegało to na ,,zamrożeniu'' wartości pozostałych parametrów i wielokrotnym uruchomieniu heurystyki z różną wartością badanego parametru.
 Kiedy określono najlepszą wartość, zaczynano badać wartość kolejnego z nich.
-Aby zastosować taką procedurę należało określić (prócz samych wartości parametrów) ilość nawrotów, ilość powtórzeń dla każdego zestawu parametrów oraz sposób oceny tego który zestaw jest lepszy.
+Aby zastosować taką procedurę należało określić (prócz samych wartości parametrów) liczbę nawrotów, liczbę powtórzeń dla każdego zestawu parametrów oraz sposób oceny tego który zestaw jest lepszy.
 
 \subsubsection*{Przebieg}
 Cały eksperyment był dodatkowo podzielony na 2 kroki. 
@@ -360,16 +360,16 @@ Równocześnie są to zestawy parametrów z dwoma różnymi lub takimi samymi op
 		\hline
 		\multicolumn{1}{|c|}{\multirow{2}{*}{{\bf Nr.}}} &\multicolumn{1}{c|}{\multirow{2}{*}{{\bf Heurystyka}}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{1}{c|}{{\bf Op. selekcji}} & \multicolumn{2}{c|}{\multirow{2}{*}{{\bf Ocena}}} \\
 		& \multicolumn{1}{c|}{}                                  & \multicolumn{1}{c|}{{\bf naturalnej}}          & \multicolumn{1}{c|}{{\bf płciowej}}        & \multicolumn{2}{c|}{}                             \\ \hline \hline
-		1 & Alg. ewolucyjny                    & opNatSel(RS)                                          & stdGenSel($\bot$, R, R)                                 & 37830,7834      & 1865,7587      \\ \hline
-		2 & GGA                                    & opNatSel(RS)                                          & stdGenSel($\top$, R, R)                                 & 68582,5919      & 2240,5888      \\ \hline
-		3 & \multirow{2}{*}{SexualGA}              & \multirow{2}{*}{opNatSel(R)}                          & stdGenSel($\bot$, RS, RS)                               & 65454,5598      & 4541,7191      \\ \cline{1-1}\cline{4-6} 
-		4 & &                                                       & stdGenSel($\bot$, RS, R)                                & 72023,5817      & 5135,7596      \\ \hline
-		5 & \multirow{6}{*}{DSEA}                  & \multirow{6}{*}{opNatSel(RS)}                         & stdGenSel($\bot$, RS, RS)                               & 40199,6226      & 3708,8267      \\ \cline{1-1}\cline{4-6} 
-		6 & &                                                       & stdGenSel($\bot$, RS, R)                                & 45328,6013      & 967,5844       \\ \cline{1-1}\cline{4-6} 
-		7 & &                                                       & stdGenSel($\top$, RS, RS)                               & 41555,6377      & 3146,2442      \\ \cline{1-1}\cline{4-6} 
-		8 & &                                                       & stdGenSel($\top$, RS, R)                                & 46760,4675      & 4193,2035      \\ \cline{1-1}\cline{4-6} 
-		9 & &                                                       & harem(5, 0,1, RS, RS, R)                                & 49180,7887      & 4249,2504      \\ \cline{1-1}\cline{4-6} 
-		10 & &                                                       & harem(5, 0,1, RS, R, R)                                 & 48915,0643      & 799,6703       \\ \hline
+		1 & Alg. ewolucyjny                    & \opName{opNatSel}(RS)                                          & \opName{stdGenSel}($\bot$, R, R)                                 & 37830,7834      & 1865,7587      \\ \hline
+		2 & GGA                                    & \opName{opNatSel}(RS)                                          & \opName{stdGenSel}($\top$, R, R)                                 & 68582,5919      & 2240,5888      \\ \hline
+		3 & \multirow{2}{*}{SexualGA}              & \multirow{2}{*}{\opName{opNatSel}(R)}                          & \opName{stdGenSel}($\bot$, RS, RS)                               & 65454,5598      & 4541,7191      \\ \cline{1-1}\cline{4-6} 
+		4 & &                                                       & \opName{stdGenSel}($\bot$, RS, R)                                & 72023,5817      & 5135,7596      \\ \hline
+		5 & \multirow{6}{*}{DSEA}                  & \multirow{6}{*}{\opName{opNatSel}(RS)}                         & \opName{stdGenSel}($\bot$, RS, RS)                               & 40199,6226      & 3708,8267      \\ \cline{1-1}\cline{4-6} 
+		6 & &                                                       & \opName{stdGenSel}($\bot$, RS, R)                                & 45328,6013      & 967,5844       \\ \cline{1-1}\cline{4-6} 
+		7 & &                                                       & \opName{stdGenSel}($\top$, RS, RS)                               & 41555,6377      & 3146,2442      \\ \cline{1-1}\cline{4-6} 
+		8 & &                                                       & \opName{stdGenSel}($\top$, RS, R)                                & 46760,4675      & 4193,2035      \\ \cline{1-1}\cline{4-6} 
+		9 & &                                                       & \opName{harem}(5, 0,1, RS, RS, R)                                & 49180,7887      & 4249,2504      \\ \cline{1-1}\cline{4-6} 
+		10 & &                                                       & \opName{harem}(5, 0,1, RS, R, R)                                 & 48915,0643      & 799,6703       \\ \hline
 	\end{tabular}
 \end{table}
 
@@ -448,16 +448,16 @@ Są one jednak od 3 do ponad 8 razy mniejsze niż w przypadku innych heurystyk.
 		\hline
 		\multicolumn{1}{|c|}{\multirow{2}{*}{{\bf Nr.}}} & \multicolumn{1}{c|}{\multirow{2}{*}{{\bf Heurystyka}}} & \multicolumn{1}{c|}{{\bf Op.selekcji}} & \multicolumn{1}{c|}{{\bf Op.selekcji}} & \multicolumn{2}{c|}{\multirow{2}{*}{{\bf Ocena}}} \\
 		& \multicolumn{1}{c|}{}                                  & \multicolumn{1}{c|}{{\bf naturalnej}}    & \multicolumn{1}{c|}{{\bf płciowej}}  & \multicolumn{2}{c|}{}                             \\ \hline \hline
-		1 & Alg. ewolucyjny                                         & opNatSel(RS)                           & stdGenSel($\bot$, R, R)                & -1068                   & 10,9727                 \\ \hline
-		2 & GGA                                                     & opNatSel(RS)                           & stdGenSel($\top$, R, R)                & -1020                   & 115,6045                \\ \hline
-		3 & \multirow{2}{*}{SexualGA}                               & \multirow{2}{*}{opNatSel(R)}           & stdGenSel($\bot$, RS, RS)              & -1102                   & 66,7383                 \\ \cline{1-1}\cline{4-6} 
-		4 & &                                        & stdGenSel($\bot$, RS, TS(2))           & -909,2                  & 169,7308                \\ \hline
-		5 & \multirow{6}{*}{DSEA}                                   & \multirow{6}{*}{opNatSel(RS)}          & stdGenSel($\bot$, RS, RS)              & -1152,8                 & 14,8647                 \\ \cline{1-1}\cline{4-6} 
-		6 & &                                        & stdGenSel($\bot$, RS, R)               & -1143,2                 & 12,3839                 \\ \cline{1-1}\cline{4-6} 
-		7 & &                                        & stdGenSel($\top$, RS, RS)              & -1138,6                 & 20,5777                 \\ \cline{1-1}\cline{4-6} 
-		8 & &                                        & stdGenSel($\top$, RS, R)               & -1136,2                 & 20,4783                 \\ \cline{1-1}\cline{4-6} 
-		9 & &                                        & harem(5, 0,25, RS, RS, R)              & -1144,2                 & 20,4294                 \\ \cline{1-1}\cline{4-6} 
-		10 & &                                        & harem(3, 0,0, RS, TS(2), R)            & -1142                   & 19,308                  \\ \hline
+		1 & Alg. ewolucyjny                                         & \opName{opNatSel}(RS)                           & \opName{stdGenSel}($\bot$, R, R)                & -1068                   & 10,9727                 \\ \hline
+		2 & GGA                                                     & \opName{opNatSel}(RS)                           & \opName{stdGenSel}($\top$, R, R)                & -1020                   & 115,6045                \\ \hline
+		3 & \multirow{2}{*}{SexualGA}                               & \multirow{2}{*}{\opName{opNatSel}(R)}           & \opName{stdGenSel}($\bot$, RS, RS)              & -1102                   & 66,7383                 \\ \cline{1-1}\cline{4-6} 
+		4 & &                                        & \opName{stdGenSel}($\bot$, RS, TS(2))           & -909,2                  & 169,7308                \\ \hline
+		5 & \multirow{6}{*}{DSEA}                                   & \multirow{6}{*}{\opName{opNatSel}(RS)}          & \opName{stdGenSel}($\bot$, RS, RS)              & -1152,8                 & 14,8647                 \\ \cline{1-1}\cline{4-6} 
+		6 & &                                        & \opName{stdGenSel}($\bot$, RS, R)               & -1143,2                 & 12,3839                 \\ \cline{1-1}\cline{4-6} 
+		7 & &                                        & \opName{stdGenSel}($\top$, RS, RS)              & -1138,6                 & 20,5777                 \\ \cline{1-1}\cline{4-6} 
+		8 & &                                        & \opName{stdGenSel}($\top$, RS, R)               & -1136,2                 & 20,4783                 \\ \cline{1-1}\cline{4-6} 
+		9 & &                                        & \opName{harem}(5, 0,25, RS, RS, R)              & -1144,2                 & 20,4294                 \\ \cline{1-1}\cline{4-6} 
+		10 & &                                        & \opName{harem}(3, 0,0, RS, TS(2), R)            & -1142                   & 19,308                  \\ \hline
 	\end{tabular}
 \end{table}
 
