@@ -1,29 +1,29 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\chapter{Wnioski i spostrzeżenia}
+\chapter{Podsumowanie}
 
-Spośród dwóch zbadanych problemów w jednym heurystyka DSEA dała najlepsze rezultaty, a w obu lepsze niż pozostałe heurystyki inne niż klasyczny algorytm ewolucyjny.
-Można z tego wnioskować, że dla wybranych klas problemów dodanie dodatkowego operatora selekcji jest najlepszym z porównanych podejść do zagadnienia płci.
+Spośród dwóch zbadanych problemów, w jednym zaproponowana metaheurystyka DSEA dała najlepsze rezultaty, a w obu lepsze niż pozostałe heurystyki inne niż klasyczny algorytm ewolucyjny.
+Można z tego wnioskować, że dla wybranych klas problemów wprowadzenie dodatkowego operatora selekcji jest najlepszym z porównanych podejść do zagadnienia płci.
 
 W ogólności, operator selekcji płciowej działa lepiej, jeżeli korzysta z tego samego operatora wyboru co operator selekcji naturalnej.
 Można podejrzewać, że dodatkowy operator selekcji zwiększa różnice między prawdopodobieństwami wydania potomstwa osobników gorzej i lepiej dopasowanych.
-Co za tym idzie przeszukiwanie przestrzeni jest znacznie bardziej rygorystyczne.
-W wyniku tego w niektórych przypadkach, jak dla problemu plecakowego, otrzymywane są lepsze rezultaty.
+W wyniku tego, w niektórych przypadkach, jak dla problemu plecakowego, otrzymywane są lepsze rezultaty.
 W innych przypadkach, jak dla problemu komiwojażera, takie zjawisko powoduje zbyt drastyczną selekcję, czego skutkiem są wyniki gorsze niż dla klasycznego algorytmu ewolucyjnego.
 
-Algorytm DSEA jest na tyle ogólny, żeby można było skutecznie zbadać i porównać różne istniejące rozwiązania przy jego użyciu.
-Ponadto w ramach eksperymentów wyniki osiągane przez DSEA korzystające z uogólnionego rozwiązania opartego o heurystyki SexualGA i GGA udało się osiągnąć lepsze wyniki niż dla obu tych metod.
+Opis algorytmu DSEA jest na tyle ogólny, żeby można było skutecznie zbadać i porównać różne istniejące rozwiązania przy jego użyciu.
+Ponadto w ramach eksperymentów wyniki osiągane przez DSEA korzystające z uogólnionego rozwiązania opartego o heurystyki SexualGA i GGA były lepsze niż wyniki dla obu tych metod.
 
-Haremowy operator selekcji płciowej sprawdza się gorzej niż uogólniony operator.
+Haremowy operator selekcji płciowej sprawdza się gorzej niż operator uogólniony.
 Można to stwierdzić jedynie w sytuacji, w której operator wyboru partnerów jest losowy.
 Liczba osobników alfa i beta wydaje się nie mieć większego wpływu na efektywność heurystyki.
 Mimo to wiele z najlepszych wyników dla obu problemów uzyskano dla małej liczby osobników beta lub wręcz ich braku.
 Można podejrzewać, że osobniki alfa mają większe znaczenie niż osobniki beta.
 
 Zauważono bardzo mocny związek między operatorem selekcji płciowej, a operatorem selekcji naturalnej.
-Dla obu badanych problemów określono, że operator ruletkowy daje najlepsze rezultaty w sytuacji w której rodzice wybierani są losowo.
-W trakcie badań wszystkie metody dawały najlepsze rezultaty korzystając z tego samego operatora.
+Dla obu badanych problemów określono, że operator ruletkowy daje najlepsze rezultaty w sytuacji, w której rodzice wybierani są losowo.
+W trakcie badań wszystkie metody dawały najlepsze rezultaty jeżeli wykorzystywały ten sam operatora.
+W innym wypadku wyniki były gorsze.
 
 Można wywnioskować, że strategia doboru płciowego nie ma w gruncie rzeczy znaczenia, a pozytywny rezultat przynosi zwiększenie dysproporcji między prawdopodobieństwem krzyżowania się źle, a dobrze dopasowanych osobników.
 Pierwsza przesłanka ku temu to fakt, iż działanie heurystyki jest wrażliwe na dobór operatora wyboru, a nie liczbowych i binarnych parametrów operatorów.
@@ -33,7 +33,7 @@ Spowodowało to gorsze wyniki niż osiągnięte przez DSEA, które korzystało z
 Cel niniejszej pracy został osiągnięty.
 Zaproponowano metaheurystykę DSEA pozwalającą na użycie dwóch oddzielnych operatorów selekcji. 
 Zaproponowano również nowe podejście do zagadnienia płci, pod postacią haremowego operatora selekcji płciowej.
-Porównano klasyczny algorytm ewolucyjny, dwie wybrane heurystyki oraz dwa rozwiązania oparte o zaproponowaną heurystykę i operator.
-Dla zaproponowanej heurystyki uzyskano wyniki lepsze niż dla innych heurystyk, jednak nie zawsze lepsze od standardowego algorytmu ewolucyjnego.
+W pracy porównano wyniki klasycznego algorytmu ewolucyjnego, dwóch wybranych heurystyki oraz dwóch rozwiązań opartych o metaheurystykę DSEA.
+Dla zaproponowanej metaheurystyki uzyskano wyniki lepsze niż dla innych metaheurystyk, jednak nie zawsze lepsze od standardowego algorytmu ewolucyjnego.
 
 \end{document}

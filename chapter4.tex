@@ -1,7 +1,7 @@
 \documentclass[./FM_mgr.tex]{subfiles}
 
 \begin{document}
-\chapter{Proponowane rozwiązania - algorytm ewolucyjny DSEA (\emph{ang. double selection evolutionary algorithm})} \label{chapter:proposed}
+\chapter{Proponowane rozwiązanie - algorytm ewolucyjny o podwójnej selekcji} \label{chapter:proposed}
 
 Dotychczasowe implementacje algorytmów ewolucyjnych zazwyczaj (choć nie zawsze \cite{GGA, SexualGA}) pomijały ważny aspekt rzeczywistości, który w przyrodzie okazuje się mieć duży wpływ na dopasowywanie się gatunków do środowiska - podział gatunku na płcie. 
 W naturze większa część istniejących gatunków, zaczynając od dość prostych jak owady, czy rośliny, a kończąc na złożonych takich jak ssaki, do rozmnażania potrzebują dwóch rodziców różniących się konkretnym chromosomem. 
@@ -60,7 +60,7 @@ Na rysunku \ref{figure:dsea} przedstawiono schemat działania metaheurystyki DSE
 \end{figure}
 
 W większej części diagram zgadza się z diagramem \ref{figure:ea_general} przedstawionym w podrozdziale \ref{section:general_idea}. 
-Istotne różnice między diagramami to zmiana działania kroku ,,Wykonaj krzyżowanie'' oraz dodanie nowego kroku ,,Zadbaj o różnorodność populacji'' zaraz przed nim. 
+Istotne różnice między diagramami to zmiana działania kroku ,,Wykonaj krzyżowanie'' oraz dodanie nowego kroku ,,Zachowaj różnorodność populacji'' zaraz przed nim. 
 
 Dodatkowo, DSEA wykorzystuje dwa operatory selekcji zamiast jednego - operator selekcji płciowej i naturalnej.
 Pierwszy z nich wraz z operatorem krzyżowania jest używany w kroku ,,Wykonaj krzyżowanie'',a drugi w kroku ,,Dokonaj selekcji naturalnej''.
@@ -229,7 +229,7 @@ Ma to zapobiegać sytuacjom, w których potomek wygenerowany w tym pokoleniu zos
 W heurystyce potomstwo jest od razu dołączane do całości populacji.
 Dzieje się tak, ponieważ zadanie wyboru rodziców jest oddelegowane do operatora, który zawsze zostanie użyty przed operatorem krzyżowania.
 
-\subsubsection{Krok ,,Zadbaj o różnorodność populacji''} \label{subsubsection:fixing}
+\subsubsection{Krok ,,Zachowaj różnorodność populacji''} \label{subsubsection:fixing}
 
 Wprowadzenie podziału populacji na płcie powinno skutkować odmiennym traktowaniem osobników w zależności od tej cechy. 
 Negatywną stroną tego zjawiska jest fakt, że operator selekcji naturalnej, który nie powinien brać pod uwagę płci, może zaburzyć stosunek liczności osobników danej płci względem siebie. 
@@ -240,7 +240,7 @@ Ponadto, im dysproporcje między różnymi płciami będą większe, tym mniejsz
 
 \begin{figure}[H]
 	\img{fixing.png}
-	\caption{Szczegóły działania kroku ,,Zadbaj o różnorodność populacji'' \label{figure:fixing}}
+	\caption{Szczegóły działania kroku ,,Zachowaj różnorodność populacji'' \label{figure:fixing}}
 \end{figure}
 
 Na rysunku \ref{figure:fixing} przedstawiono krok mający ograniczyć negatywne efekty podziału na płcie, opisane wyżej. 

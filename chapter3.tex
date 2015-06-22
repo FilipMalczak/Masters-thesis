@@ -3,67 +3,65 @@
 \begin{document}
 \section{Przegląd literatury} \label{chapter:literature}
 
-Badania nad algorytmami ewolucyjnymi wykorzystującymi płeć trwają już od pewnego czasu.
-Niniejszy rozdział poświęcony jest na przegląd prac naukowych które mają temat podobny do badanego w tej pracy.
-Większość pozycji zajmuje się optymalizacja jednokryterialną wykorzystując dość podobne rozwiązania.
-Zostaną one opisane na początku tego rozdziału.
+Badania nad algorytmami ewolucyjnymi wykorzystującymi płeć trwają już od pewnego czasu, chociaż lista tych prac nie jest zbyt długa.
+Większość pozycji zajmuje się optymalizacja jednokryterialną wykorzystując dość podobne do siebie rozwiązania.
 Jedna z prac znacząco różni się od innych, ponieważ zamiast analizować jakieś miary skuteczności obliczeń ewolucyjnych, bada ona zachowanie podgrup sztucznie utworzonej populacji.
-Zostanie ona poruszona w dalszej kolejności.
-Ostatnie dwie opisane prace traktują o optymalizacji wielokryterialnej i stosują podobne podejście.
+Ostatnie dwie opisane tu prace traktują o optymalizacji wielokryterialnej i opisują zbliżone do siebie podejścia.
 
 
-W pracy \cite{GGA} przedstawiono heurystykę GGA.
+W pracy \cite{GGA} przedstawiono metaheurystykę \emph{GGA}.
 Została ona wykorzystana do rozwiązania problemu partycjonowania grafu.
-GGA czyli algorytm genetyczny oparty o płeć (\emph{ang. gender-based genetic algorithm}) to algorytm genetyczny w którym każdy osobnik w populacji miał cechę określającą jego płeć.
-Była ona wykorzystywana jedynie podczas krzyżowania.
-Algorytm GGA losował każdego z rodziców z osobnego podzbioru populacji, zawierającego osobniki jednej płci.
+\emph{GGA} czyli algorytm genetyczny oparty o płeć (\emph{ang. gender-based genetic algorithm}) to algorytm genetyczny, w którym każdy osobnik w populacji ma przypisaną cechę określającą jego płeć.
+Jest ona wykorzystywana jedynie podczas krzyżowania.
+W \emph{GGA} każdy z rodziców losowany jest z osobnego podzbioru populacji, który zawiera osobniki jednej płci.
 
-Pozycja \cite{SexualGA} opisuje kolejną heurystykę SexualGA.
-W tej pracy nie badano wyników heurystyki, a ,,ciśnienie selekcyjne'' (\emph{ang. selection pressure}).
+Artykuł \cite{SexualGA} opisuje kolejną metaheurystykę nazywaną \emph{SexualGA}.
+W tej pracy nie badano wyników metaheurystyki, a ,,ciśnienie selekcyjne'' (\emph{ang. selection pressure}).
 Termin ten oznacza pewną miarę prawdopodobieństwa tego, że pojedynczy osobnik zostanie rodzicem w danym pokoleniu.
-Sama heurystyka SexualGA nie wymagała użycia cechy osobnika mówiącej o jego płci.
+Sama heurystyka \emph{SexualGA} nie wymagała użycia cechy osobnika mówiącej o jego płci.
 W zamian wykorzystywała operator selekcji do wyboru rodziców zamiast do selekcji naturalnej.
-Ponadto, każdy z rodziców był wybierany za pomocą innego operatora.
+Ponadto, każdy z rodziców był wybierany za pomocą osobnego operatora.
 
 W pracy \cite{ansotegui} wykorzystano zmodyfikowany algorytm ewolucyjny do dostrajania innych heurystyk.
-Przedstawiona tutaj heurystyka nazywała się tak samo jak opisana w pracy \cite{GGA} - GGA, rozwijane i tłumaczone w ten sam sposób.
+Przedstawiona tutaj metaheurystyka nazywała się tak samo jak opisana w pracy \cite{GGA} - \emph{GGA}, ze skrótem rozwijanym i tłumaczonym w ten sam sposób.
 Nadawała ona każdemu z osobników cechę płci.
 Podczas krzyżowania wybierani byli rodzice różniący się płcią.
 Jeden z nich był wybierany elitystycznie, a drugi losowo.
 Dodatkowo, zamiast selekcji naturalnej zasymulowano tutaj starzenie się osobników.
-Jednostki które były w populacji więcej niż określoną liczbę pokoleń były z niej odrzucane.
+Jednostki, które były w populacji przez więcej niż określoną liczbę pokoleń były z niej odrzucane.
 
-Praca \cite{sanchez} przedstawia badania nad nienazwanym rozwiązaniem w którym osobnicy mają cechę płci.
+Praca \cite{sanchez} przedstawia badania nad nienazwanym rozwiązaniem, w którym genotyp osobnika zawiera cechę płci.
 Rodzice jednej z tych płci są wybierani za pomocą operatora selekcji. 
-Drugie osobniki w każdej parze sa wybierane tym samym operatorem, jednak ich ocena jest obliczana jako pewna funkcja oceny używanej przy płci pierwszej.
-Funkcja ta bierze pod uwagę wiek osobnika oraz pewną miarę tego jak dużą szansę drugi z rodziców ma na poprawienie jakości pierwszego rodzica poprzez krzyżowanie.
-Miało to symulować szereg czynników jakie biorą pod uwagę samce wybierając swoje partnerki.
-Podejście to zostało zbadane dla problemu komiwojażera oraz dwóch problemach przeznaczonych tylko do testów, opisanych funkcjami analitycznymi.
+Drugie osobniki w każdej parze są wybierane tym samym operatorem, jednak ich ocena jest obliczana jako pewna funkcja optymalizowanego kryterium.
+Funkcja ta bierze pod uwagę wiek osobnika oraz pewną miarę tego, jak dużą szansę drugi z rodziców ma na poprawienie jakości pierwszego rodzica poprzez krzyżowanie.
+Miało to symulować szereg czynników, jakie biorą pod uwagę samce wybierając swoje partnerki.
+Podejście to zostało zbadane dla problemu komiwojażera oraz dwóch problemów przeznaczonych tylko do testów, opisanych funkcjami analitycznymi.
 
-Pozycja \cite{simulating} różni się znacząco od wyżej opisanych.
-Nie badano w niej efektywności w rozwiązywaniu problemu za pomocą heurystyki, a raczej ewolucję pewnego systemu w którym pewne grupy osobników ze sobą współżyją.
+Praca \cite{simulating} różni się znacząco od wyżej opisanych.
+Nie badano w niej efektywności w rozwiązywaniu problemu za pomocą heurystyki, a raczej ewolucję pewnego systemu, w którym pewne grupy osobników ze sobą współżyją.
 Grupy te powstały przez podział populacji na 4 płcie: męską, żeńską, samo-zapładniającą (\emph{ang. self-fertilizing}) oraz obojniacką (\emph{ang. hermaphrodite}).
 Osobnicy każdej z płci mogli dobierać się w pary jedynie z osobnikami wybranych płci.
 Osobniki trzeciej z płci mogły dobierać się w pary z każdym, łącznie z osobnikami swojej płci.
 Przedstawiciele pozostałych płci mogli wydawać potomstwo z osobnikiem dowolnej płci niż jego.
-Ponadto, wprowadzono mechanizm mający zapobiec sytuacjom w których któraś z płci jest źle reprezentowana.
-Losowe osobniki które przez pewną liczbę pokoleń nie wydawały potomstwa miały szansę z pewnym prawdopodobieństwem zmienić swoją płeć.
+Ponadto, wprowadzono mechanizm mający zapobiec sytuacjom, w których któraś z płci jest źle reprezentowana.
+Losowe osobniki, które przez pewną liczbę pokoleń nie wydawały potomstwa, miały szansę z pewnym prawdopodobieństwem zmienić swoją płeć.
 
-Ponadto, znaleziono dwie prace: \cite{msga} oraz \cite{allenson}.
-Obie opisywały bardzo podobne podejście do optymalizacji wielokryterialnej.
-Pierwsza z nich opisywała heurystykę MSGA (\emph{ang. Multisexual Genetic Algorithm}, czyli wielopłciowy algorytm genetyczny).
-Przypisywała ona każdemu osobnikowi cechę płci.
-Możliwych wartości tej cechy było tyle ile kryteriów w rozwiązywanym problemie.
-Każda z nich miała do siebie przypisane jedną z wielu funkcji oceny.
-Osobniki z tą wartością płci były oceniane za pomocą tej wybranej funkcji.
-Poza tym, podobnie jak w GGA wymuszano różne płci rodziców, wybierając ich losowo.
-W pracy \cite{msga} zbadano działanie MSGA na dwóch testowych parach funkcji analitycznych.
+Oprócz wyżej omówionych, znaleziono dwie prace: \cite{msga} oraz \cite{allenson}.
+Obie opisują bardzo podobne podejście do optymalizacji wielokryterialnej.
+Pierwsza z nich opisuje heurystykę \emph{MSGA} (\emph{ang. Multisexual Genetic Algorithm}, czyli wielopłciowy algorytm genetyczny).
+Przypisuje ona każdemu osobnikowi cechę płci.
+Możliwych wartości tej cechy było tyle ile kryteriów rozważano w rozwiązywanym problemie.
+Każda z płci miała do siebie przypisane jedną z wielu funkcji oceny.
+Osobniki tej płci były oceniane za pomocą przypisanej jej funkcji.
+Poza tym, podobnie jak w \emph{GGA}, wymuszano różne płci rodziców, wybierając ich losowo.
+W pracy \cite{msga} zbadano działanie \emph{MSGA} na dwóch testowych problemach, z których każdy opisany był parą funkcji analitycznych.
 
-Praca \cite{allenson} opisuje bardzo podobne podejście, nie nadając mu nazwy.
-Jedyna różnica względem MSGA to zastosowanie atraktorów płciowych (\emph{ang. sexual attractors}).
+Praca \cite{allenson} opisuje bardzo podobne podejście do opisanego wyżeh.
+Nie nadano mu jednak nazwy.
+Jedyna różnica względem \emph{MSGA} to zastosowanie atraktorów płciowych (\emph{ang. sexual attractors}).
 Są to czynniki wpływające na prawdopodobieństwo dobrania się w parę z innym osobnikiem.
-W opisywanej pracy zasymulowano to poprzez wykorzystanie dodatkowej cechy atrakcyjności, która dla rozwiązań początkowych jest tożsama z rangą.
-Zbadano różne podejścia do dziedziczenia cechy, decydując się ostatecznie na obliczanie wypadkowej atrakcyjności rodziców.
-Taka heurystyka została zastosowana do planowania ścieżki dla rurociągu, oceniając rozwiązanie zarówno po jego długości jak i po szkodliwym wpływie na środowisko.
+W opisywanej pracy zasymulowano to poprzez wykorzystanie dodatkowej cechy atrakcyjności, dołączanej do genotypu osobnika, która dla rozwiązań początkowych jest tożsama z rangą.
+Zbadano różne podejścia do dziedziczenia tej cechy, decydując się ostatecznie na obliczanie wypadkowej atrakcyjności rodziców.
+Taka heurystyka została zastosowana do planowania ścieżki dla rurociągu, oceniając rozwiązanie zarówno po jego długości, jak i po szkodliwym wpływie na środowisko.
 
 \end{document}
