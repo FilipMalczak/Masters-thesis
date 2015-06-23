@@ -23,7 +23,7 @@ Oznacza to, że reprezentację rozwiązania musimy powiększyć o odpowiednią c
 	\caption{Osobnik w metaheurystyce DSEA \label{signature:specimen_dsea}}
 	\begin{align}
 		osobnik  \in &\important{S} \\
-		osobnik_{DSEA} &= osobnik_{EA} | g \\
+		osobnik_{DSEA} &= (osobnik_{EA} | g) \\
 		g \in &\important{G} \\
 		\important{G} \neq & \emptyset \\
 		|\important{G}| < &\infty
@@ -120,10 +120,11 @@ Operator wyboru natomiast służy do wyboru pojedynczego elementu z tego zbioru.
 	\param{opWyboru}: &\withSize{\important{S}}{k} \rightarrow \important{S} \\
 	S' \gets &\left\{ s_1, \ldots s_k \right\} \\
 	s \in \param{opSelNat}(S') &\Rightarrow \exists_{s_i \in S'}  s_i = s
+	\label{line:chooseOpLast}
 	\end{align}
 	$\param{opWyboru}$ to operator wyboru.
 	Przyjmuje on $k$ osobników, spośród których wybiera jednego. \\
-	$S'$ to pomocniczy zbiór osobników $s_i$ wykorzystywany w kolejnych równaniach.
+	$S'$ to pomocniczy zbiór osobników $s_i$ wykorzystywany w równaniu \ref{line:chooseOpLast}.
 \end{signature}
 
 Realizacje operatorów wyboru nazywane są zgodnie z nazwami operatorów selekcji które z nich korzystają.
@@ -332,7 +333,7 @@ Algorytm można dość łatwo uogólnić do postaci, w której liczby te są wi�
 
 Metaheurystyka DSEA jest w pewien sposób ogólniejsza od zwykłych algorytmów ewolucyjnych.
 Jeżeli dobierze się odpowiednie operatory i parametry, to można za jej pomocą zasymulować istniejących rozwiązań.
-Następne 3 podrozdziały opisują sposoby parametryzacji DSEA potrzebne do odtworzenia innych metaheurystyk znanych z literatury.
+Następne 3 paragrafy opisują sposoby parametryzacji DSEA potrzebne do odtworzenia innych metaheurystyk znanych z literatury.
 
 \subsubsection{Standardowe algorytmy ewolucyjne}
 
@@ -385,7 +386,7 @@ Według autorów najlepsze wyniki osiągano używając operatora losowego w poł
 
 \section{Proponowany operator selekcji płciowej}
 
-U wielu gatunków występujących w przyrodzie (np. u większości płetwonogich\cite{pletwonogiMajaHaremy}, w tym morsów i fok) występuje zjawisko formowania się haremów.
+U wielu gatunków występujących w przyrodzie (np. u większości płetwonogich \cite{pletwonogiMajaHaremy}, w tym morsów i fok) występuje zjawisko formowania się haremów.
 Polega ono na tym, że tylko mała liczba osobników jednej z płci (zazwyczaj samców\footnote{
 	Mimo, że nie zawsze osobniki alfa są płci męskiej, to przyjęte zostanie takie uproszczenie. 
 	Osobniki alfa i beta będą nazywane samcami, a ich partnerki - samicami.
